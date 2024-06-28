@@ -1,0 +1,4 @@
+# 配置文件模板或默认配置。
+# IaaS，PaaS，系统和容器编排部署配置和模板（docker-compose，kubernetes/helm，mesos，terraform，bosh）。请注意，在某些存储库中（尤其是使用 kubernetes 部署的应用程序），该目录的名字是 /deploy。
+
+# 注：如果是用 kubernetes 部署，建议改成 deploy，因为在 kubernetes 领域内更让人熟悉。
