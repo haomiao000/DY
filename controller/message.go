@@ -60,7 +60,7 @@ func MessageChat(c *gin.Context) {
 		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 	}
 }
-
+// 生成用户聊天记录的键，确保两个用户之间的聊天记录存储在同一个键下。比较两个用户ID，生成一个唯一的字符串作为聊天记录的键。
 func genChatKey(userIdA int64, userIdB int64) string {
 	if userIdA > userIdB {
 		return fmt.Sprintf("%d_%d", userIdB, userIdA)
