@@ -17,6 +17,7 @@ func InitMySQL(user, password, ip, port, dbname string) error {
 	if err != nil {
 		return err
 	}
+	db.Set("gorm:table_options", "ENDGIN=InnoDB")
 	fmt.Println("database init success")
 	return nil
 }

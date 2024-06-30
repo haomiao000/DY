@@ -47,22 +47,7 @@ func Publish(c *gin.Context) {
 		})
 		return
 	}
-	// 先查一下数据库中是否有相同的数据
-	videos, err := db.QueryPublishRecords("user_id = ? and file_name = ?", user.Id, finalName)
-	if err != nil {
-		c.JSON(http.StatusOK, common.Response{
-			StatusCode: 1,
-			StatusMsg:  err.Error(),
-		})
-		return
-	}
-	if len(videos) > 0 {
-		c.JSON(http.StatusOK, common.Response{
-			StatusCode: 1,
-			StatusMsg:  finalName + "exists",
-		})
-		return
-	}
+
 	video := &common.VideoRecord{ // TODO 记录信息不完整，待补充
 		VideoID:       atomic.AddInt64(&videoCount, 1),
 		UserID:        user.Id,
@@ -73,7 +58,14 @@ func Publish(c *gin.Context) {
 		FavoriteCount: 0,
 		CommentCount:  0,
 	}
-	db.InsertPublishRecords([]*common.VideoRecord{video})
+	if err = db.InsertPublishRecords([]*common.VideoRecord{video}); err != nil {
+		fmt.Printf("%v uploaded error: %v", finalName, err)
+		c.JSON(http.StatusOK, common.Response{
+			StatusCode: 0,
+			StatusMsg:  finalName + " uploaded failed",
+		})
+		return
+	}
 	videoInfo.Store(finalName, video)
 
 	c.JSON(http.StatusOK, common.Response{
