@@ -11,5 +11,6 @@ func QueryPublishRecords(query any, args ...any) ([]*common.VideoRecord, error) 
 		tx.Rollback()
 		return nil, err
 	}
+	tx.Commit()
 	return res, err
 }

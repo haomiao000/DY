@@ -14,5 +14,6 @@ func InsertPublishRecords(records []*common.VideoRecord) error {
 			return err
 		}
 	}
+	tx.Commit()
 	return nil
 }

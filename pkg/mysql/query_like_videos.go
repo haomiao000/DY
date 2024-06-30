@@ -11,5 +11,6 @@ func QueryLikeVideos(query any, args ...any) ([]*common.LikeVideo, error) {
 		tx.Rollback()
 		return nil, err
 	}
+	tx.Commit()
 	return res, err
 }
