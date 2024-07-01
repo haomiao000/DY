@@ -1,14 +1,21 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
 	"main/internal/service"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	go service.RunMessageServer()
 
 	r := gin.Default()
+
+	// TODO 数据库初始化
+	// if err := db.InitMySQL(user,password,ip,port,dbname); err != nil {
+	// 	fmt.Printf("database init error: %v",err)
+	// 	return
+	// }
 
 	initRouter(r)
 

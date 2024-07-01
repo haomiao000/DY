@@ -1,8 +1,8 @@
 package main
 
 import (
-	"main/pkg/controller"
 	"github.com/gin-gonic/gin"
+	"main/pkg/controller"
 )
 
 func initRouter(r *gin.Engine) {
