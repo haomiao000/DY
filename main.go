@@ -1,13 +1,12 @@
 package main
 
 import (
-	"main/internal/service"
-
 	"github.com/gin-gonic/gin"
+	"main/internal/initialize"
 )
 
 func main() {
-	go service.RunMessageServer()
+	go initialize.InitServer()
 
 	r := gin.Default()
 

@@ -1,4 +1,4 @@
-package service
+package initialize
 
 import (
 	"encoding/json"

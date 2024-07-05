@@ -1,2 +1,6 @@
 go.sum
-main.exe
+
+main
+
+testLog.log
+

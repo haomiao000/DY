@@ -10,3 +10,6 @@ type CommentActionResponse struct {
 	common.Response
 	Comment common.Comment `json:"comment,omitempty"`
 }
+
+
+//<------------------------------- gorm ------------------------------->
