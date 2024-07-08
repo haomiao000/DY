@@ -1,10 +1,10 @@
-package controller
+package pkg
 
 import (
 	"fmt"
-	"main/pkg/common"
-	"main/pkg/model"
-	db "main/pkg/mysql"
+	"main/server/common"
+	"main/server/service/publish/model"
+	db "main/server/service/mysql"
 	"main/test/testcase"
 	"net/http"
 	"path/filepath"
@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"main/server/service/user/pkg"
 )
 
 var videoInfo sync.Map
@@ -22,7 +23,7 @@ var videoCount int64 = 0
 func Publish(c *gin.Context) {
 	token := c.PostForm("token")
 
-	if _, exist := usersLoginInfo[token]; !exist {
+	if _, exist := pkg.UsersLoginInfo[token]; !exist {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return
 	}
@@ -37,7 +38,7 @@ func Publish(c *gin.Context) {
 	}
 
 	filename := filepath.Base(data.Filename)
-	user := usersLoginInfo[token]
+	user := pkg.UsersLoginInfo[token]
 	finalName := fmt.Sprintf("%d_%s", user.Id, filename)
 	saveFile := filepath.Join("./assets/public/", finalName)
 	if err := c.SaveUploadedFile(data, saveFile); err != nil {
@@ -77,7 +78,7 @@ func Publish(c *gin.Context) {
 // PublishList all users have same publish video list
 func PublishList(c *gin.Context) {
 	token := c.Query("token")
-	user, exist := usersLoginInfo[token]
+	user, exist := pkg.UsersLoginInfo[token]
 	if !exist {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return

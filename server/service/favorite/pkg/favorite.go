@@ -1,18 +1,20 @@
-package controller
+package pkg
 
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"main/test/testcase"
-	"main/pkg/common"
-	"main/pkg/model"
+	"main/server/common"
+	_ "main/server/service/favorite/model"
+	PublishModel "main/server/service/publish/model"
+	"main/server/service/user/pkg"
 )
 
 // FavoriteAction no practical effect, just check if token is valid
 func FavoriteAction(c *gin.Context) {
 	token := c.Query("token")
 
-	if _, exist := usersLoginInfo[token]; exist {
+	if _, exist := pkg.UsersLoginInfo[token]; exist {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 0})
 	} else {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
@@ -21,7 +23,7 @@ func FavoriteAction(c *gin.Context) {
 
 // FavoriteList all users have same favorite video list
 func FavoriteList(c *gin.Context) {
-	c.JSON(http.StatusOK, model.VideoListResponse{
+	c.JSON(http.StatusOK, PublishModel.VideoListResponse{
 		Response: common.Response{
 			StatusCode: 0,
 		},

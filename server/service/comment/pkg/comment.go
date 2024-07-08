@@ -1,19 +1,19 @@
-package controller
+package pkg
 
 import (
 	"github.com/gin-gonic/gin"
-	"main/pkg/common"
+	"main/server/common"
 	"main/test/testcase"
-	"main/pkg/model"
+	"main/server/service/comment/model"
 	"net/http"
+	"main/server/service/user/pkg"
 )
 
 // CommentAction no practical effect, just check if token is valid
 func CommentAction(c *gin.Context) {
 	token := c.Query("token")
 	actionType := c.Query("action_type")
-
-	if user, exist := usersLoginInfo[token]; exist {
+	if user, exist := pkg.UsersLoginInfo[token]; exist {
 		if actionType == "1" {
 			text := c.Query("comment_text")
 			c.JSON(http.StatusOK, model.CommentActionResponse{Response: common.Response{StatusCode: 0},

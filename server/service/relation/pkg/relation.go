@@ -1,11 +1,12 @@
-package controller
+package pkg
 
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
-	"main/pkg/common"
+	"main/server/common"
 	"main/test/testcase"
-	"main/pkg/model"
+	"main/server/service/relation/model"
+	"main/server/service/user/pkg"
 )
 
 
@@ -13,7 +14,7 @@ import (
 func RelationAction(c *gin.Context) {
 	token := c.Query("token")
 
-	if _, exist := usersLoginInfo[token]; exist {
+	if _, exist := pkg.UsersLoginInfo[token]; exist {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 0})
 	} else {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})

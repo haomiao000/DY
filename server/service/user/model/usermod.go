@@ -1,5 +1,5 @@
 package model
-import "main/pkg/common"
+import "main/server/common"
 
 //<------------------------------- Request ------------------------------->
 type UserRegisterRequest struct{
@@ -27,7 +27,7 @@ type UserResponse struct {
 type UserLoginInfo struct {
 	UID      	  int64  `gorm:"column:uid;		 auto_increment;primary_key"`
 	Username      string `gorm:"column:username; type:nvarchar(255); not null"`
-	Password 	  string `gorm:"column:passWord; type:nvarchar(255); not null"`
+	Password 	  string `gorm:"column:password; type:nvarchar(255); not null"`
 }
 type User struct {
 	UID           int64  `gorm:"column:uid;			 auto_increment;primary_key;"`

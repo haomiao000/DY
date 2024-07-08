@@ -1,5 +1,5 @@
 package model
-import "main/pkg/common"
+import "main/server/common"
 
 type FeedResponse struct {
 	common.Response

@@ -1,6 +1,6 @@
 package model
 
-import "main/pkg/common"
+import "main/server/common"
 
 type VideoListResponse struct {
 	common.Response

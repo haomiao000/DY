@@ -7,6 +7,6 @@ import(
 func Gen_sha256(str string) string{
 	hasher := sha256.New()
 	hasher.Write([]byte(str))
-	hashstr := hasher.Sum(nil)
-	return hex.EncodeToString(hashstr)
+	hashStr := hasher.Sum(nil)
+	return hex.EncodeToString(hashStr)
 }

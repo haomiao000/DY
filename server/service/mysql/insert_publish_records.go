@@ -1,7 +1,7 @@
 package db
 
 import (
-	"main/pkg/common"
+	"main/server/common"
 )
 
 // InsertPublishRecords 插入记录

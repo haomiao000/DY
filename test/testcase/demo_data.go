@@ -1,5 +1,5 @@
 package testcase
-import "main/pkg/common"
+import "main/server/common"
 
 var DemoVideos = []common.Video{
 	{

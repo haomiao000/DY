@@ -1,6 +1,6 @@
 package db
 
-import "main/pkg/common"
+import "main/server/common"
 
 // QueryPublishRecords 查询特定条件的上传记录 入参示例："user_id = ? and file_name = ?","{UserID}","{FileName}"
 func QueryPublishRecords(query any, args ...any) ([]*common.VideoRecord, error) {

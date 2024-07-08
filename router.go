@@ -1,58 +1,65 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"main/pkg/controller"
 	"main/middleware"
+	CommentService "main/server/service/comment/pkg"
+	FavoriteService "main/server/service/favorite/pkg"
+	FeedService "main/server/service/feed/pkg"
+	MessageService "main/server/service/message/pkg"
+	PublishService "main/server/service/publish/pkg"
+	RelationService "main/server/service/relation/pkg"
+	UserService "main/server/service/user/pkg"
+
+	"github.com/gin-gonic/gin"
 )
 
 func initRouter(r *gin.Engine) {
-    // public directory is used to serve static resources
-    r.Static("/static", "./public")
+	// public directory is used to serve static resources
+	r.Static("/static", "./public")
 
-    apiRouter := r.Group("/douyin")
-    
-    // basic apis
-    apiRouter.GET("/feed/", controller.Feed)
-	apiRouter.GET("/user/", middleware.VerifyToken(), controller.UserInfo)
-    apiRouter.POST("/user/register/", controller.Register)
-    apiRouter.POST("/user/login/", controller.Login)
-	
-    // apply VerifyToken middleware to /publish routes
-    publishRouter := apiRouter.Group("/publish")
-    publishRouter.Use(middleware.VerifyToken())
+	apiRouter := r.Group("/douyin")
+
+	// basic apis
+	apiRouter.GET("/feed/", FeedService.Feed)
+	apiRouter.GET("/user/", middleware.VerifyToken(), UserService.UserInfo)
+	apiRouter.POST("/user/register/", UserService.Register)
+	apiRouter.POST("/user/login/", UserService.Login)
+
+	// apply VerifyToken middleware to /publish routes
+	publishRouter := apiRouter.Group("/publish")
+	publishRouter.Use(middleware.VerifyToken())
 	{
-		publishRouter.POST("/action/", controller.Publish)
-		publishRouter.GET("/list/", controller.PublishList)
+		publishRouter.POST("/action/", PublishService.Publish)
+		publishRouter.GET("/list/", PublishService.PublishList)
 	}
-    // apply VerifyToken middleware to /favorite routes
-    favoriteRouter := apiRouter.Group("/favorite")
-    favoriteRouter.Use(middleware.VerifyToken())
+	// apply VerifyToken middleware to /favorite routes
+	favoriteRouter := apiRouter.Group("/favorite")
+	favoriteRouter.Use(middleware.VerifyToken())
 	{
-		favoriteRouter.POST("/action/", controller.FavoriteAction)
-		favoriteRouter.GET("/list/", controller.FavoriteList)
+		favoriteRouter.POST("/action/", FavoriteService.FavoriteAction)
+		favoriteRouter.GET("/list/", FavoriteService.FavoriteList)
 	}
-    // apply VerifyToken middleware to /comment routes
-    commentRouter := apiRouter.Group("/comment")
-    commentRouter.Use(middleware.VerifyToken())
+	// apply VerifyToken middleware to /comment routes
+	commentRouter := apiRouter.Group("/comment")
+	commentRouter.Use(middleware.VerifyToken())
 	{
-		commentRouter.POST("/action/", controller.CommentAction)
-		commentRouter.GET("/list/", controller.CommentList)
+		commentRouter.POST("/action/", CommentService.CommentAction)
+		commentRouter.GET("/list/", CommentService.CommentList)
 	}
-    // apply VerifyToken middleware to /relation routes
-    relationRouter := apiRouter.Group("/relation")
-    relationRouter.Use(middleware.VerifyToken())
+	// apply VerifyToken middleware to /relation routes
+	relationRouter := apiRouter.Group("/relation")
+	relationRouter.Use(middleware.VerifyToken())
 	{
-		relationRouter.POST("/action/", controller.RelationAction)
-		relationRouter.GET("/follow/list/", controller.FollowList)
-		relationRouter.GET("/follower/list/", controller.FollowerList)
-		relationRouter.GET("/friend/list/", controller.FriendList)
+		relationRouter.POST("/action/", RelationService.RelationAction)
+		relationRouter.GET("/follow/list/", RelationService.FollowList)
+		relationRouter.GET("/follower/list/", RelationService.FollowerList)
+		relationRouter.GET("/friend/list/", RelationService.FriendList)
 	}
-    // apply VerifyToken middleware to /message routes
-    messageRouter := apiRouter.Group("/message")
-    messageRouter.Use(middleware.VerifyToken())
+	// apply VerifyToken middleware to /message routes
+	messageRouter := apiRouter.Group("/message")
+	messageRouter.Use(middleware.VerifyToken())
 	{
-		messageRouter.GET("/chat/", controller.MessageChat)
-		messageRouter.POST("/action/", controller.MessageAction)
+		messageRouter.GET("/chat/", MessageService.MessageChat)
+		messageRouter.POST("/action/", MessageService.MessageAction)
 	}
 }

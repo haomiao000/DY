@@ -1,4 +1,4 @@
-package controller
+package pkg
 
 import (
 	"fmt"
@@ -7,8 +7,9 @@ import (
 	"strconv"
 	"sync/atomic"
 	"time"
-	"main/pkg/common"
-	"main/pkg/model"
+	"main/server/common"
+	"main/server/service/message/model"
+	"main/server/service/user/pkg"
 )
 
 var tempChat = map[string][]common.Message{}
@@ -21,7 +22,7 @@ func MessageAction(c *gin.Context) {
 	toUserId := c.Query("to_user_id")
 	content := c.Query("content")
 
-	if user, exist := usersLoginInfo[token]; exist {
+	if user, exist := pkg.UsersLoginInfo[token]; exist {
 		userIdB, _ := strconv.Atoi(toUserId)
 		chatKey := genChatKey(user.Id, int64(userIdB))
 
@@ -48,7 +49,7 @@ func MessageChat(c *gin.Context) {
 	token := c.Query("token")
 	toUserId := c.Query("to_user_id")
 
-	if user, exist := usersLoginInfo[token]; exist {
+	if user, exist := pkg.UsersLoginInfo[token]; exist {
 		userIdB, _ := strconv.Atoi(toUserId)
 		chatKey := genChatKey(user.Id, int64(userIdB))
 

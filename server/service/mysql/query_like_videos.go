@@ -1,6 +1,6 @@
 package db
 
-import "main/pkg/common"
+import "main/server/common"
 
 // QueryLikeVideos 查询特定条件的点赞视频 入参示例："user_id = ?","{UserID}"
 func QueryLikeVideos(query any, args ...any) ([]*common.LikeVideo, error) {

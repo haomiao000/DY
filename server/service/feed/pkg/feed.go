@@ -1,11 +1,11 @@
-package controller
+package pkg
 
 import (
 	"github.com/gin-gonic/gin"
 	"net/http"
 	"main/test/testcase"
-	"main/pkg/common"
-	"main/pkg/model"
+	"main/server/common"
+	"main/server/service/feed/model"
 	"time"
 )
 
