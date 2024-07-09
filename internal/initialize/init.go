@@ -9,7 +9,8 @@ import (
     "gorm.io/gorm"
     "main/configs"
     "main/internal"
-    "main/pkg/model"
+    "main/server/service/user/model"
+    
 )
 
 var DB *gorm.DB
@@ -39,16 +40,28 @@ func InitMySQL() error {
     }
     if err = DB.AutoMigrate(&model.UserLoginInfo{}); err != nil {
 		fmt.Printf("[DB Err]\t%v\n", err)
+         return err
 	}
     if err = DB.AutoMigrate(&model.User{}); err != nil {
 		fmt.Printf("[DB Err]\t%v\n", err)
+        return err
 	}
     log.Println("数据库初始化成功")
     return nil
 }
 
-func InitServer() {
-    InitLog()
-    InitMySQL()
+func InitServer() error{
+    err1 := InitLog(); 
+    if err1 != nil {
+        fmt.Println("Init Log error")
+        return err1
+    }
+    err2 := InitMySQL();
+    if err2 != nil{
+        fmt.Println("Init Mysql error")
+        return err2
+    }
+    // err3 := 
     RunMessageServer()
+    return nil
 }

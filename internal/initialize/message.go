@@ -6,7 +6,7 @@ import (
 	"io"
 	"net"
 	"sync"
-	"main/pkg/common"
+	"main/server/common"
 )
 
 // chatConnMap 是一个并发安全的映射，用于存储用户之间的连接。
