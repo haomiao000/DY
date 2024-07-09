@@ -2,4 +2,11 @@ go.sum
 
 main
 
-testLog
+testLog.log
+
+# Ignore go.sum file
+go.sum
+
+# Ignore d_db and q_db directories
+/scripts/db_operations/d_db/
+/scripts/db_operations/q_db/
