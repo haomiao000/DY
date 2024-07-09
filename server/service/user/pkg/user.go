@@ -35,7 +35,7 @@ func Register(c *gin.Context) {
         return
 	}
 	userRegisterInfo.Username = userRegisterReq.Username
-	userRegisterInfo.Password = middleware.Gen_sha256(userRegisterInfo.Password)
+	userRegisterInfo.Password = middleware.Gen_sha256(userRegisterReq.Password)
 	if err := dao.CreateUserLoginInfo(&userRegisterInfo); err!=nil{
 		c.JSON(http.StatusInternalServerError , gin.H{"error": "create userLoginInfo error"})
 	}

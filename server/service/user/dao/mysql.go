@@ -22,6 +22,9 @@ func CreateUser(user *model.User)(error){
 }
 func CheckUserLoginInfo(userLoginReq *model.UserLoginRequest)(model.UserLoginInfo , error){
 	var userLoginInfo model.UserLoginInfo
+	// fmt.Println(userLoginReq.Username)
+	// fmt.Println(userLoginReq.Password)
+	// fmt.Println(middleware.Gen_sha256(userLoginReq.Password))
 	err := initialize.DB.Where("username = ? AND password = ?" , userLoginReq.Username , 
 	middleware.Gen_sha256(userLoginReq.Password)).First(&userLoginInfo).Error
 	return userLoginInfo , err
