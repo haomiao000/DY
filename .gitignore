@@ -4,9 +4,8 @@ main
 
 testLog.log
 
-# Ignore go.sum file
-go.sum
+/scripts/db_operations/d_db
 
-# Ignore d_db and q_db directories
-/scripts/db_operations/d_db/
-/scripts/db_operations/q_db/
+/scripts/db_operations/q_db
+
+database.log
