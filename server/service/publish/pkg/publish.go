@@ -4,16 +4,17 @@ import (
 	"fmt"
 	"main/server/common"
 	"main/server/service/publish/model"
-	db "main/server/service/mysql"
-	"main/test/testcase"
+	videoconf "main/server/service/video/model"
+	videopkg "main/server/service/video/pkg"
 	"net/http"
 	"path/filepath"
 	"sync"
 	"sync/atomic"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"main/server/service/user/pkg"
+
+	"github.com/gin-gonic/gin"
 )
 
 var videoInfo sync.Map
@@ -49,7 +50,7 @@ func Publish(c *gin.Context) {
 		return
 	}
 
-	video := &common.VideoRecord{ // TODO 记录信息不完整，待补充
+	video := &videoconf.VideoRecord{ // TODO 记录信息不完整，待补充
 		VideoID:       atomic.AddInt64(&videoCount, 1),
 		UserID:        user.Id,
 		FileName:      finalName,
@@ -59,7 +60,7 @@ func Publish(c *gin.Context) {
 		FavoriteCount: 0,
 		CommentCount:  0,
 	}
-	if err = db.InsertPublishRecords([]*common.VideoRecord{video}); err != nil {
+	if err = videopkg.InsertPublishRecords([]*videoconf.VideoRecord{video}); err != nil {
 		fmt.Printf("%v uploaded error: %v", finalName, err)
 		c.JSON(http.StatusOK, common.Response{
 			StatusCode: 0,
@@ -83,13 +84,13 @@ func PublishList(c *gin.Context) {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return
 	}
-	videos, err := db.QueryPublishRecords("user_id = ?", user.Id)
+	videos, err := videopkg.QueryPublishRecords("user_id = ?", user.Id)
 	if err != nil {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "get video error"})
 		return
 	}
 	// 查询用户点赞过的视频
-	likeVideosList, err := db.QueryLikeVideos("user_id = ?", user.Id)
+	likeVideosList, err := videopkg.QueryLikeVideos("user_id = ?", user.Id)
 	if err != nil {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "get like video error"})
 		return
@@ -106,7 +107,7 @@ func PublishList(c *gin.Context) {
 			fmt.Printf("video not exist, video id: %d", video.VideoID)
 			continue
 		}
-		video, ok := v.(*common.VideoRecord)
+		video, ok := v.(*videoconf.VideoRecord)
 		if !ok {
 			continue
 		}
@@ -125,6 +126,6 @@ func PublishList(c *gin.Context) {
 		Response: common.Response{
 			StatusCode: 0,
 		},
-		VideoList: testcase.DemoVideos, // TODO 补充逻辑后返回videoList
+		VideoList: videoList, // TODO 补充逻辑后返回videoList
 	})
 }
