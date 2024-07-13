@@ -9,3 +9,7 @@ testLog.log
 /scripts/db_operations/q_db
 
 database.log
+
+tmp
+
+.air.conf

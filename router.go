@@ -34,17 +34,18 @@ func initRouter(r *gin.Engine) {
 	}
 	// apply VerifyToken middleware to /favorite routes
 	favoriteRouter := apiRouter.Group("/favorite")
+	
 	favoriteRouter.Use(middleware.VerifyToken())
 	{
-		favoriteRouter.POST("/action/", FavoriteService.FavoriteAction)
 		favoriteRouter.GET("/list/", FavoriteService.FavoriteList)
+		favoriteRouter.POST("/action/", FavoriteService.FavoriteAction)
 	}
 	// apply VerifyToken middleware to /comment routes
 	commentRouter := apiRouter.Group("/comment")
+	commentRouter.GET("/list/", CommentService.CommentList)
 	commentRouter.Use(middleware.VerifyToken())
 	{
 		commentRouter.POST("/action/", CommentService.CommentAction)
-		commentRouter.GET("/list/", CommentService.CommentList)
 	}
 	// apply VerifyToken middleware to /relation routes
 	relationRouter := apiRouter.Group("/relation")
