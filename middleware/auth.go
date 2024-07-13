@@ -2,11 +2,8 @@ package middleware
 
 import (
 	"errors"
-	_ "errors"
 	"fmt"
-	_ "fmt"
 	"net/http"
-	_ "strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -41,7 +38,9 @@ func ParseToken(tokenString string) (*MyClaims , error){
 	if err != nil{
 		return nil, fmt.Errorf("failed to parse token: %v", err)
 	}
-	if(claims.ExpiresAt.After(time.Now())){
+	if(claims.ExpiresAt.Before(time.Now())){
+		// fmt.Println(claims.ExpiresAt)
+		// fmt.Println(time.Now())
 		token.Valid = false
 	}
 	if !token.Valid {
@@ -57,7 +56,7 @@ func VerifyToken() gin.HandlerFunc{
 		if token == "" {
 			token = string(c.PostForm("token"))
 			if token == "" {
-				c.JSON(http.StatusInternalServerError, gin.H{"error":"token is empty"})
+				c.JSON(http.StatusNotFound, gin.H{"error":"token is empty"})
 				c.Abort()
 				return
 			}
@@ -68,7 +67,7 @@ func VerifyToken() gin.HandlerFunc{
 			c.Abort()
 			return
 		}
-		c.Set("uid" , claims.UserID)
+		c.Set("userID" , claims.UserID)
 		c.Next()
     } 
 }

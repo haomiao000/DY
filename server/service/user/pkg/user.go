@@ -25,19 +25,22 @@ var UsersLoginInfo = map[string]common.User{
 
 func Register(c *gin.Context) {
 	var userRegisterReq model.UserRegisterRequest
-	userRegisterReq.Username = c.Query("username")
-	userRegisterReq.Password = c.Query("password")
+	if err := c.ShouldBind(&userRegisterReq); err != nil {
+		c.JSON(http.StatusNotFound , gin.H{"error" : "missing field"})
+		return
+	}
 	if userRegisterReq.Password == "" || userRegisterReq.Username == "" {
-		c.JSON(http.StatusInternalServerError , gin.H{"error":"Username or Password is empty"})
+		c.JSON(http.StatusNotFound , gin.H{"error":"Username or Password is empty"})
 		return
 	}
 	// fmt.Println(userRegisterReq.Username)
 	// fmt.Println(userRegisterReq.Password)
 	var userRegisterInfo model.UserLoginInfo
 	if err := dao.FindByUsername(userRegisterReq.Username);err == nil{
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "username already exist"})
+		c.JSON(http.StatusConflict, gin.H{"error": "username already exist"})
         return
 	}
+
 	userRegisterInfo.Username = userRegisterReq.Username
 	userRegisterInfo.Password = middleware.Gen_sha256(userRegisterReq.Password)
 	if err := dao.CreateUserLoginInfo(&userRegisterInfo); err!=nil{
@@ -56,27 +59,31 @@ func Register(c *gin.Context) {
 }
 
 func Login(c *gin.Context) {
+	// fmt.Println("Content-Type:", c.ContentType())
 	var userLoginReq model.UserLoginRequest
-	userLoginReq.Username = c.Query("username")
-	userLoginReq.Password = c.Query("password")
-	if userLoginReq.Username == "" || userLoginReq.Password == "" {
-		c.JSON(http.StatusUnauthorized, gin.H{"error" : "empty login username or password"})
+	if err := c.ShouldBind(&userLoginReq); err != nil {
+		c.JSON(http.StatusNotFound , gin.H{"error" : "missing field"})
 		return
 	}
+	if userLoginReq.Username == "" || userLoginReq.Password == "" {
+		c.JSON(http.StatusNotFound, gin.H{"error" : "empty login username or password"})
+		return
+	}
+
 	var userLoginInfo model.UserLoginInfo
 	var err error
 	if userLoginInfo , err = dao.CheckUserLoginInfo(&userLoginReq) ; err != nil{
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid credentials"})
         return
 	}
-	userID := userLoginInfo.UID
+	userID := userLoginInfo.UserID
 	token , err := middleware.GenToken(userID)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "generate token error"})
 		return
 	}
 	if user , err := GetUser(userID);err != nil{
-		c.JSON(http.StatusInternalServerError , gin.H{"error":"login , get user error"})
+		c.JSON(http.StatusNotFound , gin.H{"error":"login , get user error"})
 		return
 	}else{
 		//here use UsersLoginInfo
@@ -96,7 +103,7 @@ func GetUser(userID int64) (*common.User , error){
 	}
 	// fmt.Printf("User: %+v\n", user)
 	commonUser := &common.User{
-		Id:            user.UID,
+		Id:            user.UserID,
 		Name:          user.Name,
 		FollowCount:   user.FollowCount,
 		FollowerCount: user.FollowerCount,
@@ -105,12 +112,12 @@ func GetUser(userID int64) (*common.User , error){
 	return commonUser , nil
 }
 func UserInfo(c *gin.Context) {
-	if uid, exists := c.Get("uid"); exists { 
-		user , err := GetUser(uid.(int64))
+	if userID, exists := c.Get("userID"); exists { 
+		user , err := GetUser(userID.(int64))
 		if err != nil{
 			fmt.Println("Failed to get user:", err)
-			c.JSON(http.StatusInternalServerError, model.UserResponse{
-				Response: common.Response{StatusCode: 1, StatusMsg: "User can't find"},
+			c.JSON(http.StatusNotFound, model.UserResponse{
+				Response: common.Response{StatusCode: 1, StatusMsg: "dao can't find user"},
 			})
 		}else {
 			c.JSON(http.StatusOK, model.UserResponse{
