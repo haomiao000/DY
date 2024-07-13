@@ -67,7 +67,7 @@ func VerifyToken() gin.HandlerFunc{
 			c.Abort()
 			return
 		}
-		c.Set("uid" , claims.UserID)
+		c.Set("userID" , claims.UserID)
 		c.Next()
     } 
 }

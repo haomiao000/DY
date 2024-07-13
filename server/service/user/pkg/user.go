@@ -112,7 +112,7 @@ func GetUser(userID int64) (*common.User , error){
 	return commonUser , nil
 }
 func UserInfo(c *gin.Context) {
-	if userID, exists := c.Get("uid"); exists { 
+	if userID, exists := c.Get("userID"); exists { 
 		user , err := GetUser(userID.(int64))
 		if err != nil{
 			fmt.Println("Failed to get user:", err)

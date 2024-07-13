@@ -20,7 +20,7 @@ func FavoriteAction(c *gin.Context) {
 		c.JSON(http.StatusNotFound , gin.H{"error" : "missing field"})
 		return
 	}
-	userID , exists := c.Get("uid") 
+	userID , exists := c.Get("userID") 
 	if !exists {
 		c.JSON(http.StatusUnauthorized , gin.H{"error" : "user not logged in"})
 		return
