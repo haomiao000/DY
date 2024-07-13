@@ -27,6 +27,10 @@ func Register(c *gin.Context) {
 	var userRegisterReq model.UserRegisterRequest
 	userRegisterReq.Username = c.Query("username")
 	userRegisterReq.Password = c.Query("password")
+	if userRegisterReq.Password == "" || userRegisterReq.Username == "" {
+		c.JSON(http.StatusInternalServerError , gin.H{"error":"Username or Password is empty"})
+		return
+	}
 	// fmt.Println(userRegisterReq.Username)
 	// fmt.Println(userRegisterReq.Password)
 	var userRegisterInfo model.UserLoginInfo
@@ -55,6 +59,10 @@ func Login(c *gin.Context) {
 	var userLoginReq model.UserLoginRequest
 	userLoginReq.Username = c.Query("username")
 	userLoginReq.Password = c.Query("password")
+	if userLoginReq.Username == "" || userLoginReq.Password == "" {
+		c.JSON(http.StatusUnauthorized, gin.H{"error" : "empty login username or password"})
+		return
+	}
 	var userLoginInfo model.UserLoginInfo
 	var err error
 	if userLoginInfo , err = dao.CheckUserLoginInfo(&userLoginReq) ; err != nil{
@@ -67,6 +75,13 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "generate token error"})
 		return
 	}
+	if user , err := GetUser(userID);err != nil{
+		c.JSON(http.StatusInternalServerError , gin.H{"error":"login , get user error"})
+		return
+	}else{
+		//here use UsersLoginInfo
+		UsersLoginInfo[token] = *user
+	}
 	var userLoginResp model.UserLoginResponse
 	userLoginResp.UserId = userID
 	userLoginResp.Token = token
@@ -77,7 +92,7 @@ func GetUser(userID int64) (*common.User , error){
 	var user model.User
 	var err error
 	if user , err = dao.GetUserByUid(userID); err != nil{
-		fmt.Println("bind user error maybe userID is wrong")
+		return nil, fmt.Errorf("bind user error maybe userID is wrong: %v", err)
 	}
 	// fmt.Printf("User: %+v\n", user)
 	commonUser := &common.User{
@@ -87,7 +102,7 @@ func GetUser(userID int64) (*common.User , error){
 		FollowerCount: user.FollowerCount,
 		IsFollow:      user.IsFollow,
 	}
-	return commonUser , err
+	return commonUser , nil
 }
 func UserInfo(c *gin.Context) {
 	if uid, exists := c.Get("uid"); exists { 

@@ -1,6 +1,7 @@
 package middleware
 
 import (
+	"errors"
 	_ "errors"
 	"fmt"
 	_ "fmt"
@@ -38,10 +39,14 @@ func ParseToken(tokenString string) (*MyClaims , error){
 	var claims MyClaims
 	token , err := jwt.ParseWithClaims(tokenString , &claims ,  GetKey)
 	if err != nil{
-		fmt.Println("generate token error")
+		return nil, fmt.Errorf("failed to parse token: %v", err)
+	}
+	if(claims.ExpiresAt.After(time.Now())){
+		token.Valid = false
 	}
 	if !token.Valid {
 		fmt.Println("token is invalid")
+		return nil , errors.New("token is invalid")
 	}
 	return &claims , nil
 }

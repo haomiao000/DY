@@ -3,12 +3,12 @@ import "main/server/common"
 
 //<------------------------------- Request ------------------------------->
 type UserRegisterRequest struct{
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 type UserLoginRequest struct{
-	Username string `json:"username"`
-	Password string `json:"password"`
+	Username string `json:"username" binding:"required"`
+	Password string `json:"password" binding:"required"`
 }
 
 //<------------------------------- Response ------------------------------->
