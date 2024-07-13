@@ -5,7 +5,7 @@ import (
 	videoconf "main/server/service/video/model"
 )
 
-// QueryLikeVideos 查询特定条件的点赞视频 入参示例："user_id = ?","{UserID}"
+// QueryLikeVideos 查询特定条件的点赞视频 入参示例："uid = ?","{UserID}"
 func QueryLikeVideos(query any, args ...any) ([]*videoconf.LikeVideo, error) {
 	tx := initialize.DB.Begin()
 	res := []*videoconf.LikeVideo{}

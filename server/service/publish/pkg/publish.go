@@ -8,17 +8,12 @@ import (
 	videopkg "main/server/service/video/pkg"
 	"net/http"
 	"path/filepath"
-	"sync"
-	"sync/atomic"
 	"time"
 
 	"main/server/service/user/pkg"
 
 	"github.com/gin-gonic/gin"
 )
-
-var videoInfo sync.Map
-var videoCount int64 = 0
 
 // Publish check token then save upload file to public directory
 func Publish(c *gin.Context) {
@@ -51,8 +46,7 @@ func Publish(c *gin.Context) {
 	}
 
 	video := &videoconf.VideoRecord{ // TODO 记录信息不完整，待补充
-		VideoID:       atomic.AddInt64(&videoCount, 1),
-		UserID:        user.Id,
+		UID:           user.Id,
 		FileName:      finalName,
 		UpdateTime:    time.Now().UnixMilli(),
 		PlayUrl:       "",
@@ -68,7 +62,6 @@ func Publish(c *gin.Context) {
 		})
 		return
 	}
-	videoInfo.Store(finalName, video)
 
 	c.JSON(http.StatusOK, common.Response{
 		StatusCode: 0,
@@ -78,19 +71,23 @@ func Publish(c *gin.Context) {
 
 // PublishList all users have same publish video list
 func PublishList(c *gin.Context) {
-	token := c.Query("token")
-	user, exist := pkg.UsersLoginInfo[token]
+	uid, exist := c.Get("uid")
 	if !exist {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return
 	}
-	videos, err := videopkg.QueryPublishRecords("user_id = ?", user.Id)
+	user, err := pkg.GetUser(uid.(int64))
+	if !exist {
+		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
+		return
+	}
+	videos, err := videopkg.QueryPublishRecords("uid = ?", user.Id)
 	if err != nil {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "get video error"})
 		return
 	}
 	// 查询用户点赞过的视频
-	likeVideosList, err := videopkg.QueryLikeVideos("user_id = ?", user.Id)
+	likeVideosList, err := videopkg.QueryLikeVideos("uid = ?", user.Id)
 	if err != nil {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "get like video error"})
 		return
@@ -102,22 +99,19 @@ func PublishList(c *gin.Context) {
 	}
 	videoList := []common.Video{}
 	for _, video := range videos {
-		v, ok := videoInfo.Load(video.FileName)
-		if !ok {
-			fmt.Printf("video not exist, video id: %d", video.VideoID)
-			continue
-		}
-		video, ok := v.(*videoconf.VideoRecord)
-		if !ok {
-			continue
+		videoRecord := &videoconf.VideoRecord{}
+		videoRecord, err = videopkg.GetVideoByID(video.VideoID)
+		if err != nil {
+			fmt.Printf("get video by id error: %v", err)
+			return
 		}
 		videoList = append(videoList, common.Video{
-			Id:            video.VideoID,
-			Author:        user,
-			PlayUrl:       video.PlayUrl,
-			CoverUrl:      video.CoverUrl,
-			FavoriteCount: video.FavoriteCount,
-			CommentCount:  video.CommentCount,
+			Id:            videoRecord.VideoID,
+			Author:        *user,
+			PlayUrl:       videoRecord.PlayUrl,
+			CoverUrl:      videoRecord.CoverUrl,
+			FavoriteCount: videoRecord.FavoriteCount,
+			CommentCount:  videoRecord.CommentCount,
 			IsFavorite:    likeVideos[video.VideoID],
 		})
 	}

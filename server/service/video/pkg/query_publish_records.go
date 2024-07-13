@@ -5,7 +5,7 @@ import (
 	videoconf "main/server/service/video/model"
 )
 
-// QueryPublishRecords 查询特定条件的上传记录 入参示例："user_id = ? and file_name = ?","{UserID}","{FileName}"
+// QueryPublishRecords 查询特定条件的上传记录 入参示例："uid = ? and file_name = ?","{UserID}","{FileName}"
 func QueryPublishRecords(query any, args ...any) ([]*videoconf.VideoRecord, error) {
 	tx := initialize.DB.Begin()
 	res := []*videoconf.VideoRecord{}
