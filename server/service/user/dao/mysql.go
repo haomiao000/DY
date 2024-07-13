@@ -31,6 +31,6 @@ func CheckUserLoginInfo(userLoginReq *model.UserLoginRequest) (model.UserLoginIn
 }
 func GetUserByUid(userID int64) (model.User, error) {
 	var user model.User
-	err := initialize.DB.Where("uid = ?", userID).First(&user).Error
+	err := initialize.DB.Where("user_id = ?", userID).First(&user).Error
 	return user, err
 }

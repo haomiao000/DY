@@ -7,6 +7,7 @@ import (
 
 	"main/configs"
 	"main/internal"
+	favoritemodel "main/server/service/favorite/model"
 	"main/server/service/user/model"
 	videomodel "main/server/service/video/model"
 
@@ -50,7 +51,7 @@ func InitMySQL() error {
 		fmt.Printf("[DB Err]\t%v\n", err)
 		return err
 	}
-	if err = DB.AutoMigrate(&videomodel.LikeVideo{}); err != nil {
+	if err = DB.AutoMigrate(&favoritemodel.Favorite{}); err != nil {
 		fmt.Printf("[DB Err]\t%v\n", err)
 		return err
 	}
@@ -70,6 +71,6 @@ func InitServer() error {
 		return err2
 	}
 	// err3 :=
-	RunMessageServer()
+	go RunMessageServer()
 	return nil
 }

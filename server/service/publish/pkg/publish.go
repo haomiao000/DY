@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"fmt"
+	"main/configs"
 	"main/server/common"
 	"main/server/service/publish/model"
 	videoconf "main/server/service/video/model"
@@ -17,9 +18,13 @@ import (
 
 // Publish check token then save upload file to public directory
 func Publish(c *gin.Context) {
-	token := c.PostForm("token")
-
-	if _, exist := pkg.UsersLoginInfo[token]; !exist {
+	userID, exist := c.Get("userID")
+	if !exist {
+		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
+		return
+	}
+	user, err := pkg.GetUser(userID.(int64))
+	if !exist {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return
 	}
@@ -34,7 +39,6 @@ func Publish(c *gin.Context) {
 	}
 
 	filename := filepath.Base(data.Filename)
-	user := pkg.UsersLoginInfo[token]
 	finalName := fmt.Sprintf("%d_%s", user.Id, filename)
 	saveFile := filepath.Join("./assets/public/", finalName)
 	if err := c.SaveUploadedFile(data, saveFile); err != nil {
@@ -46,11 +50,11 @@ func Publish(c *gin.Context) {
 	}
 
 	video := &videoconf.VideoRecord{ // TODO 记录信息不完整，待补充
-		UID:           user.Id,
+		UserID:        user.Id,
 		FileName:      finalName,
 		UpdateTime:    time.Now().UnixMilli(),
-		PlayUrl:       "",
-		CoverUrl:      "",
+		PlayUrl:       configs.VideoURL + finalName,
+		CoverUrl:      configs.VideoURL + finalName,
 		FavoriteCount: 0,
 		CommentCount:  0,
 	}
@@ -71,23 +75,23 @@ func Publish(c *gin.Context) {
 
 // PublishList all users have same publish video list
 func PublishList(c *gin.Context) {
-	uid, exist := c.Get("uid")
+	userID, exist := c.Get("userID")
 	if !exist {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return
 	}
-	user, err := pkg.GetUser(uid.(int64))
+	user, err := pkg.GetUser(userID.(int64))
 	if !exist {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return
 	}
-	videos, err := videopkg.QueryPublishRecords("uid = ?", user.Id)
+	videos, err := videopkg.QueryPublishRecords(videopkg.WithUserID(user.Id))
 	if err != nil {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "get video error"})
 		return
 	}
 	// 查询用户点赞过的视频
-	likeVideosList, err := videopkg.QueryLikeVideos("uid = ?", user.Id)
+	likeVideosList, err := videopkg.QueryLikeVideos(videopkg.WithUserID(user.Id))
 	if err != nil {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "get like video error"})
 		return
@@ -95,7 +99,7 @@ func PublishList(c *gin.Context) {
 	// 用户点赞过的视频记录下来
 	likeVideos := make(map[int64]bool, len(likeVideosList))
 	for _, likeVideo := range likeVideosList {
-		likeVideos[likeVideo.VideoID] = true
+		likeVideos[likeVideo] = true
 	}
 	videoList := []common.Video{}
 	for _, video := range videos {

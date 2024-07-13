@@ -15,12 +15,13 @@ func GetVideoByID(videoID int64) (*videoconf.VideoRecord, error) {
 	v, ok := videoInfo.Load(videoID)
 	if !ok {
 		// 未命中缓存，去数据库中找
-		record, err := QueryPublishRecords("video_id = ?", videoID)
+		record, err := QueryPublishRecords(WithVideoID(videoID))
 		if err != nil || len(record) != 1 {
 			return nil, fmt.Errorf("video not exist, id: %d", videoID)
 		}
 		// 存到缓存中
 		videoInfo.Store(record[0].VideoID, record[0])
+		videoRecord = record[0]
 
 	} else {
 		videoRecord, ok = v.(*videoconf.VideoRecord)
