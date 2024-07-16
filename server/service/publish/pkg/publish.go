@@ -122,7 +122,7 @@ func PublishList(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, model.VideoListResponse{
-		Response: common.Response{
+		BaseResp: &common.Response{
 			StatusCode: 0,
 		},
 		VideoList: testcase.DemoVideos, // TODO 补充逻辑后返回videoList

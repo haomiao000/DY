@@ -20,7 +20,7 @@ func CommentAction(c *gin.Context) {
 	var commentActionRequest model.CommentActionRequest
 	var commentActionResponse model.CommentActionResponse
 	if err := c.ShouldBind(&commentActionRequest);err != nil {
-		c.JSON(http.StatusNotFound , gin.H{"error" : "comment action bind error"})
+		c.JSON(http.StatusNotFound , gin.H{"error" : "comment action req bind error"})
 		return
 	}
 	userID , exists := c.Get("userID") 

@@ -1,15 +1,18 @@
 package pkg
 
 import (
+	"fmt"
 	"main/server/common"
-	"main/server/service/favorite/model"
 	"main/server/service/favorite/dao"
+	"main/server/service/favorite/model"
 	PublishModel "main/server/service/publish/model"
-	
+
 	"main/configs"
-	"main/test/testcase"
+	// "main/test/testcase"
+	UserService "main/server/service/user/pkg"
 	"net/http"
 	"time"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -66,11 +69,36 @@ func FavoriteAction(c *gin.Context) {
 
 // FavoriteList all users have same favorite video list
 func FavoriteList(c *gin.Context) {
-	
-	c.JSON(http.StatusOK, PublishModel.VideoListResponse{
-		Response: common.Response{
-			StatusCode: 0,
-		},
-		VideoList: testcase.DemoVideos,
-	})
+	userID , exists := c.Get("userID") 
+	if !exists {
+		c.JSON(http.StatusUnauthorized , gin.H{"error" : "user not logged in"})
+		return
+	}
+	favoriteVideoList , err := dao.GetFavoriteVideoListByUserID(userID.(int64))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError , gin.H{"error" : "Get favorite list error"})
+		return
+	}
+	var videoListResponse PublishModel.VideoListResponse
+	for _ , o := range favoriteVideoList {
+		auth , err :=  UserService.GetUser(o.UserID)
+		if err != nil {
+			fmt.Println("GetUser  error")
+			continue
+		}
+		videoListResponse.VideoList = append(videoListResponse.VideoList, &common.Video{
+			Id: o.VideoID,
+			Author: *auth,
+			PlayUrl: o.PlayUrl,
+			CoverUrl: o.CoverUrl,
+			FavoriteCount: o.FavoriteCount,
+			CommentCount: o.CommentCount,
+			IsFavorite: true,
+		})
+	}
+	videoListResponse.BaseResp = &common.Response{
+		StatusCode: http.StatusOK,
+		StatusMsg: "get favorite list successful",
+	}
+	c.JSON(http.StatusOK , videoListResponse)
 }

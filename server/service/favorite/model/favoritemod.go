@@ -5,6 +5,12 @@ type FavoriteActionRequest struct {
     VideoID    int64  `json:"video_id" form:"video_id" binding:"required"`
     ActionType int8   `json:"action_type" form:"action_type" binding:"required"`
 }
+// type FavoriteListRequest struct {
+// 	// User id
+// 	UserID int64 `json:"user_id" form:"user_id"`
+// 	// User authentication token
+// 	Token string `json:"token" form:"token"`
+// }
 //<------------------------------- gorm ------------------------------->
 type Favorite struct {
 	UserID     int64 `gorm:"column:user_id; 	type:INT"`
