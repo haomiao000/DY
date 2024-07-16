@@ -9,7 +9,7 @@ import (
 	"main/configs"
 	"main/test/testcase"
 	"net/http"
-
+	"time"
 	"github.com/gin-gonic/gin"
 )
 
@@ -30,7 +30,13 @@ func FavoriteAction(c *gin.Context) {
 			c.JSON(http.StatusOK , gin.H{"message" : "before unlike , without like"})
 			return
 		}else if favoriteActionRequest.ActionType == configs.Like {
-			if err := dao.CreateFavorite(userID.(int64) , favoriteActionRequest.VideoID , favoriteActionRequest.ActionType);err != nil {
+			favorite := &model.Favorite{
+				UserID: userID.(int64),
+				VideoID: favoriteActionRequest.VideoID,
+				ActionType: favoriteActionRequest.ActionType,
+				CreateDate: time.Now().UnixNano(),
+			}
+			if err := dao.CreateFavorite(favorite);err != nil {
 				c.JSON(http.StatusInternalServerError , gin.H{"error" : "create favorite error"})
 				return
 			}
@@ -60,6 +66,7 @@ func FavoriteAction(c *gin.Context) {
 
 // FavoriteList all users have same favorite video list
 func FavoriteList(c *gin.Context) {
+	
 	c.JSON(http.StatusOK, PublishModel.VideoListResponse{
 		Response: common.Response{
 			StatusCode: 0,

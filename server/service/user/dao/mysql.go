@@ -20,17 +20,17 @@ func CreateUser(user *model.User)(error){
 	err := initialize.DB.Create(&user).Error
 	return err;
 }
-func CheckUserLoginInfo(userLoginReq *model.UserLoginRequest)(model.UserLoginInfo , error){
+func CheckUserLoginInfo(userLoginReq *model.UserLoginRequest)(*model.UserLoginInfo , error){
 	var userLoginInfo model.UserLoginInfo
 	// fmt.Println(userLoginReq.Username)
 	// fmt.Println(userLoginReq.Password)
 	// fmt.Println(middleware.Gen_sha256(userLoginReq.Password))
 	err := initialize.DB.Where("username = ? AND password = ?" , userLoginReq.Username , 
 	middleware.Gen_sha256(userLoginReq.Password)).First(&userLoginInfo).Error
-	return userLoginInfo , err
+	return &userLoginInfo , err
 }
-func GetUserByUid(userID int64) (model.User, error){
+func GetUserByUid(userID int64) (*model.User, error){
 	var user model.User
 	err := initialize.DB.Where("uid = ?" , userID).First(&user).Error
-	return user , err
+	return &user , err
 }

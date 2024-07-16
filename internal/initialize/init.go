@@ -9,8 +9,9 @@ import (
     "gorm.io/gorm"
     "main/configs"
     "main/internal"
-    "main/server/service/user/model"
-    
+    UserModel "main/server/service/user/model"
+    FavoriteModel "main/server/service/favorite/model"
+    CommentModel "main/server/service/comment/model"
 )
 
 var DB *gorm.DB
@@ -38,14 +39,22 @@ func InitMySQL() error {
         log.Printf("[DB Err]\t%v\n", err)
         return err
     }
-    if err = DB.AutoMigrate(&model.UserLoginInfo{}); err != nil {
+    if err = DB.AutoMigrate(&UserModel.UserLoginInfo{}); err != nil {
 		fmt.Printf("[DB Err]\t%v\n", err)
          return err
 	}
-    if err = DB.AutoMigrate(&model.User{}); err != nil {
+    if err = DB.AutoMigrate(&UserModel.User{}); err != nil {
 		fmt.Printf("[DB Err]\t%v\n", err)
         return err
 	}
+    if err = DB.AutoMigrate(&FavoriteModel.Favorite{}); err != nil {
+        fmt.Printf("[DB Err]\t%v\n", err)
+        return err       
+    }
+    if err = DB.AutoMigrate(&CommentModel.Comment{}); err != nil {
+        fmt.Printf("[DB Err]\t%v\n", err)
+        return err       
+    }
     log.Println("数据库初始化成功")
     return nil
 }
@@ -61,7 +70,6 @@ func InitServer() error{
         fmt.Println("Init Mysql error")
         return err2
     }
-    // err3 := 
-    RunMessageServer()
+    go RunMessageServer()
     return nil
 }

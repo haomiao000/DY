@@ -10,5 +10,5 @@ type Favorite struct {
 	UserID     int64 `gorm:"column:user_id; 	type:INT"`
 	VideoID    int64 `gorm:"column:video_id;	type:INT"`
 	ActionType int8  `gorm:"column:action_type;	type:tinyint;not null"`
-	CreateDate int64 `gorm:"column;				type:INT;not null"`
+	CreateDate int64 `gorm:"column:create_time;	type:INT;not null"`
 }

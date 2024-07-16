@@ -11,5 +11,14 @@ const(
     Like       = 1
     IsUnLike   = 2
     UnLike     = 2
+
+    AddComment = 1
+    DeleteComment = 2
+    
+    UserSnowflakeNode    = 1
+	NacosSnowflakeNode   = 2
+	CommentSnowFlakeNode = 3
+	VideoSnowFlakeNode   = 4
+	MinioSnowFlakeNode   = 5
 )
 var MySecret = []byte("this is a very complex secret")
