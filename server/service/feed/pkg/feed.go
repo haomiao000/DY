@@ -15,6 +15,7 @@ import (
 // Feed same demo video list for every request
 func Feed(c *gin.Context) {
 	// 展示videoID为1的作品
+	// fmt.Println("----------")
 	videoRecord, err := videopkg.GetVideoByID(1)
 	if err != nil {
 		fmt.Printf("get video by id error: %v", err)
@@ -52,6 +53,9 @@ func Feed(c *gin.Context) {
 	if len(videoID) == 1 {
 		isLike = true
 	}
+	// fmt.Println("-----")
+	fmt.Println(videoRecord.PlayUrl)
+	// fmt.Println("-----")
 	c.JSON(http.StatusOK, model.FeedResponse{
 		Response: common.Response{StatusCode: 0},
 		VideoList: []*common.Video{

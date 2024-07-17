@@ -39,7 +39,7 @@ void executeQuery(MYSQL* mysql, const std::string& query) {
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
-        std::cerr << "Usage: " << argv[0] << " [-1 | -2 | -qa]" << std::endl;
+        std::cerr << "Usage: " << argv[0] << " [-1 | -2 | -3 | -4 | -5 | -qa]" << std::endl;
         return 1;
     }
 
@@ -50,14 +50,29 @@ int main(int argc, char* argv[]) {
     if (param == "-1") {
         query = "SELECT * FROM user_login_info;";
         tableName = "user_login_info";
-    } else if (param == "-2") {
+    }else if (param == "-2") {
         query = "SELECT * FROM user;";
         tableName = "user";
-    } else if (param == "-qa") {
+    }else if (param == "-3") {
+        query = "SELECT * FROM video_records;";
+        tableName = "video_records";
+    }else if (param == "-4") {
+        query = "SELECT * FROM favorite;";
+        tableName = "favorite";
+    }else if (param == "-5") {
+        query = "SELECT * FROM comment;";
+        tableName = "comment";
+    }else if (param == "-qa") {
         query = "SHOW TABLES;";
         tableName = "All Tables";
     } else {
-        std::cerr << "Invalid parameter. Use -1 for user_login_info, -2 for user, or -qa for all tables." << std::endl;
+        std::cerr << "Invalid parameter"<< std::endl;
+        std::cerr << "Use -1 for user_login_info" << std::endl;
+        std::cerr << "Use -2 for user" << std::endl;
+        std::cerr << "Use -3 for video_records" << std::endl;
+        std::cerr << "Use -4 for favorite" << std::endl;
+        std::cerr << "Use -5 for comment" << std::endl;
+        std::cerr << "Use -qa to query all tables." << std::endl;
         return 1;
     }
 

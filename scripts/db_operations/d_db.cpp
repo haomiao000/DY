@@ -53,7 +53,7 @@ void deleteAllTables(MYSQL* conn) {
 
 int main(int argc, char* argv[]) {
     if (argc != 2) {
-        std::cerr << "Usage: " << argv[0] << " [-1 | -2 | -da]" << std::endl;
+        std::cerr << "Usage: " << argv[0] << " [-1 | -2 | -3 | -4 | -5 | -da]" << std::endl;
         return 1;
     }
 
@@ -64,10 +64,22 @@ int main(int argc, char* argv[]) {
         tableName = "user_login_info";
     } else if (param == "-2") {
         tableName = "user";
-    } else if (param == "-da") {
+    } else if (param == "-3") {
+        tableName = "video_records";
+    } else if (param == "-4") {
+        tableName = "favorite";
+    } else if (param == "-5") {
+        tableName = "comment";
+    }else if (param == "-da") {
         tableName = "";
-    } else {
-        std::cerr << "Invalid parameter. Use -1 for user_login_info, -2 for user and -da to delete all tables." << std::endl;
+    }else {
+        std::cerr << "Invalid parameter"<< std::endl;
+        std::cerr << "Use -1 for user_login_info" << std::endl;
+        std::cerr << "Use -2 for user" << std::endl;
+        std::cerr << "Use -3 for video_records" << std::endl;
+        std::cerr << "Use -4 for favorite" << std::endl;
+        std::cerr << "Use -5 for comment" << std::endl;
+        std::cerr << "Use -da to delete all tables." << std::endl;
         return 1;
     }
 

@@ -14,3 +14,7 @@ type Favorite struct {
 	ActionType int8  `gorm:"column:action_type;	type:tinyint;not null"`
 	CreateDate int64 `gorm:"column:create_time;	type:INT;not null"`
 }
+func (Favorite) TableName() string {
+	return "favorite" 
+}
+

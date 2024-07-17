@@ -1,15 +1,17 @@
 package pkg
 
 import (
+	_"fmt"
 	"main/configs"
 	"main/server/common"
 	"main/server/service/comment/dao"
 	"main/server/service/comment/model"
+
 	// "main/test/testcase"
-	"net/http"
-	"time"
-	"strconv"
 	UserServer "main/server/service/user/pkg"
+	"net/http"
+	"strconv"
+	"time"
 
 	"github.com/bwmarrin/snowflake"
 	"github.com/gin-gonic/gin"
@@ -20,6 +22,7 @@ func CommentAction(c *gin.Context) {
 	var commentActionRequest model.CommentActionRequest
 	var commentActionResponse model.CommentActionResponse
 	if err := c.ShouldBind(&commentActionRequest);err != nil {
+		// fmt.Println("bind error")
 		c.JSON(http.StatusNotFound , gin.H{"error" : "comment action req bind error"})
 		return
 	}
@@ -28,6 +31,7 @@ func CommentAction(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized , gin.H{"error" : "user not logged in"})
 		return
 	}
+	// fmt.Println(userID)
 	comment := &model.Comment{
 		CommentID: commentActionRequest.CommentID,
 		UserId:	userID.(int64),
