@@ -2,15 +2,17 @@ package main
 
 import (
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"main/internal/initialize"
+
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
+
 	if err := initialize.InitServer(); err != nil {
-        fmt.Println("Server initialization failed:", err)
-        return
-    }
+		fmt.Println("Server initialization failed:", err)
+		return
+	}
 	r := gin.Default()
 
 	// TODO 数据库初始化

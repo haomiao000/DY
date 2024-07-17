@@ -34,7 +34,7 @@ func initRouter(r *gin.Engine) {
 	}
 	// apply VerifyToken middleware to /favorite routes
 	favoriteRouter := apiRouter.Group("/favorite")
-	
+
 	favoriteRouter.Use(middleware.VerifyToken())
 	{
 		favoriteRouter.GET("/list/", FavoriteService.FavoriteList)

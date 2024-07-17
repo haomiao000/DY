@@ -4,7 +4,7 @@ import (
 	_ "fmt"
 	"main/configs"
 	"main/internal/initialize"
-	"main/server/common"
+	videoModel "main/server/service/video/model"
 	"main/server/service/favorite/model"
 )
 
@@ -29,8 +29,8 @@ func GetFavoriteList(userID int64) ([]*model.Favorite , error) {
 	}
 	return favorites , err
 }
-func GetFavoriteVideoListByUserID(userID int64) ([]*common.VideoRecord , error) {
-	var videos []*common.VideoRecord
+func GetFavoriteVideoListByUserID(userID int64) ([]*videoModel.VideoRecord , error) {
+	var videos []*videoModel.VideoRecord
 	err := initialize.DB.
 		Joins("JOIN favorite ON video_records.video_id = favorite.video_id").
 		Where("favorite.user_id = ? AND favorite.action_type = ?", userID, configs.Like).
