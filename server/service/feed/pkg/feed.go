@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"main/server/common"
 	"main/server/service/feed/model"
-	userpkg "main/server/service/user/pkg"
 	videopkg "main/server/service/video/pkg"
 	"net/http"
 	"time"
@@ -14,11 +13,11 @@ import (
 
 // Feed same demo video list for every request
 func Feed(c *gin.Context) {
-	// 展示videoID为1的作品
+	// 展示所有作品
 	// fmt.Println("----------")
-	videoRecord, err := videopkg.GetVideoByID(1)
+	videoRecords, err := videopkg.GetAllVideo()
 	if err != nil {
-		fmt.Printf("get video by id error: %v", err)
+		fmt.Printf("get video error: %v", err)
 		c.JSON(http.StatusOK, model.FeedResponse{
 			Response:  common.Response{StatusCode: 1},
 			VideoList: nil,
@@ -26,9 +25,10 @@ func Feed(c *gin.Context) {
 		})
 		return
 	}
-	// 查作者信息
-	user, err := userpkg.GetUser(videoRecord.UserID)
-	if err != nil {
+	// 装填videos
+	v, exist := c.Get("userID")
+	userID, _ := v.(int64)
+	if !exist {
 		fmt.Printf("get user error: %v", err)
 		c.JSON(http.StatusOK, model.FeedResponse{
 			Response:  common.Response{StatusCode: 1},
@@ -37,11 +37,9 @@ func Feed(c *gin.Context) {
 		})
 		return
 	}
-	// check一下是否喜欢
-	videoID, err := videopkg.QueryLikeVideos(videopkg.WithUserID(videoRecord.UserID),
-		videopkg.WithVideoID(videoRecord.VideoID))
+	videos, err := videopkg.AssembleVideo(userID, videoRecords)
 	if err != nil {
-		fmt.Printf("query favorite info error: %v", err)
+		fmt.Printf("assemble videos error: %v, videorecords: %+v", err, videoRecords)
 		c.JSON(http.StatusOK, model.FeedResponse{
 			Response:  common.Response{StatusCode: 1},
 			VideoList: nil,
@@ -49,26 +47,17 @@ func Feed(c *gin.Context) {
 		})
 		return
 	}
-	isLike := false
-	if len(videoID) == 1 {
-		isLike = true
+
+	videoList := make([]*common.Video, len(videos))
+	for _, v := range videos {
+		videoList = append(videoList, v)
 	}
+
 	// fmt.Println("-----")
-	fmt.Println(videoRecord.PlayUrl)
 	// fmt.Println("-----")
 	c.JSON(http.StatusOK, model.FeedResponse{
-		Response: common.Response{StatusCode: 0},
-		VideoList: []*common.Video{
-			{
-				Id:            videoRecord.VideoID,
-				Author:        *user,
-				PlayUrl:       videoRecord.PlayUrl,
-				CoverUrl:      videoRecord.CoverUrl,
-				FavoriteCount: videoRecord.FavoriteCount,
-				CommentCount:  videoRecord.CommentCount,
-				IsFavorite:    isLike,
-			},
-		},
-		NextTime: time.Now().UnixNano(),
+		Response:  common.Response{StatusCode: 0},
+		VideoList: videoList,
+		NextTime:  time.Now().UnixNano(),
 	})
 }
