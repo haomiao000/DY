@@ -24,7 +24,7 @@ func Publish(c *gin.Context) {
 		return
 	}
 	user, err := pkg.GetUser(userID.(int64))
-	if !exist {
+	if err != nil {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return
 	}
@@ -81,7 +81,7 @@ func PublishList(c *gin.Context) {
 		return
 	}
 	user, err := pkg.GetUser(userID.(int64))
-	if !exist {
+	if err != nil {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return
 	}
