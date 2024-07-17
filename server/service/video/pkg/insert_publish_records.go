@@ -2,12 +2,12 @@ package pkg
 
 import (
 	"main/internal/initialize"
-	videoconf "main/server/service/video/model"
+	videoModel "main/server/service/video/model"
 	"sync/atomic"
 )
 
 // InsertPublishRecords 插入记录 videoID不需要填，在函数内会填上 同时会将数据保存到缓存中
-func InsertPublishRecords(records []*videoconf.VideoRecord) error {
+func InsertPublishRecords(records []*videoModel.VideoRecord) error {
 	tx := initialize.DB.Begin()
 	for _, record := range records {
 		// 间隙锁的原因，videoID一定连续

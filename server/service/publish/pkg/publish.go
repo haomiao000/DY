@@ -5,7 +5,7 @@ import (
 	"main/configs"
 	"main/server/common"
 	"main/server/service/publish/model"
-	videoconf "main/server/service/video/model"
+	videoModel "main/server/service/video/model"
 	videopkg "main/server/service/video/pkg"
 	"net/http"
 	"path/filepath"
@@ -24,7 +24,7 @@ func Publish(c *gin.Context) {
 		return
 	}
 	user, err := pkg.GetUser(userID.(int64))
-	if !exist {
+	if err != nil {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return
 	}
@@ -49,7 +49,7 @@ func Publish(c *gin.Context) {
 		return
 	}
 
-	video := &videoconf.VideoRecord{ // TODO 记录信息不完整，待补充
+	video := &videoModel.VideoRecord{ // TODO 记录信息不完整，待补充
 		UserID:        user.Id,
 		FileName:      finalName,
 		UpdateTime:    time.Now().UnixMilli(),
@@ -58,7 +58,7 @@ func Publish(c *gin.Context) {
 		FavoriteCount: 0,
 		CommentCount:  0,
 	}
-	if err = videopkg.InsertPublishRecords([]*videoconf.VideoRecord{video}); err != nil {
+	if err = videopkg.InsertPublishRecords([]*videoModel.VideoRecord{video}); err != nil {
 		fmt.Printf("%v uploaded error: %v", finalName, err)
 		c.JSON(http.StatusOK, common.Response{
 			StatusCode: 0,
@@ -81,7 +81,7 @@ func PublishList(c *gin.Context) {
 		return
 	}
 	user, err := pkg.GetUser(userID.(int64))
-	if !exist {
+	if err != nil {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return
 	}
@@ -101,15 +101,15 @@ func PublishList(c *gin.Context) {
 	for _, likeVideo := range likeVideosList {
 		likeVideos[likeVideo] = true
 	}
-	videoList := []common.Video{}
+	videoList := []*common.Video{}
 	for _, video := range videos {
-		videoRecord := &videoconf.VideoRecord{}
+		videoRecord := &videoModel.VideoRecord{}
 		videoRecord, err = videopkg.GetVideoByID(video.VideoID)
 		if err != nil {
 			fmt.Printf("get video by id error: %v", err)
 			return
 		}
-		videoList = append(videoList, common.Video{
+		videoList = append(videoList, &common.Video{
 			Id:            videoRecord.VideoID,
 			Author:        *user,
 			PlayUrl:       videoRecord.PlayUrl,
@@ -121,7 +121,7 @@ func PublishList(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, model.VideoListResponse{
-		Response: common.Response{
+		BaseResp: &common.Response{
 			StatusCode: 0,
 		},
 		VideoList: videoList, // TODO 补充逻辑后返回videoList

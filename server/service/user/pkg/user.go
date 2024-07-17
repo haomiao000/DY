@@ -70,7 +70,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	var userLoginInfo model.UserLoginInfo
+	var userLoginInfo *model.UserLoginInfo
 	var err error
 	if userLoginInfo , err = dao.CheckUserLoginInfo(&userLoginReq) ; err != nil{
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid credentials"})
@@ -96,7 +96,7 @@ func Login(c *gin.Context) {
 	c.JSON(http.StatusOK, userLoginResp)
 }
 func GetUser(userID int64) (*common.User , error){
-	var user model.User
+	var user *model.User
 	var err error
 	if user , err = dao.GetUserByUid(userID); err != nil{
 		return nil, fmt.Errorf("bind user error maybe userID is wrong: %v", err)

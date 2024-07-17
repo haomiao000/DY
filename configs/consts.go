@@ -12,6 +12,15 @@ const (
 	IsUnLike = 2
 	UnLike   = 2
 
+	AddComment    = 1
+	DeleteComment = 2
+
+	UserSnowflakeNode    = 1
+	NacosSnowflakeNode   = 2
+	CommentSnowFlakeNode = 3
+	VideoSnowFlakeNode   = 4
+	MinioSnowFlakeNode   = 5
+
 	VideoURL = "http://192.168.1.33/assets/public/"
 )
 

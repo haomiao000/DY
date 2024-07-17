@@ -54,7 +54,7 @@ func Feed(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, model.FeedResponse{
 		Response: common.Response{StatusCode: 0},
-		VideoList: []common.Video{
+		VideoList: []*common.Video{
 			{
 				Id:            videoRecord.VideoID,
 				Author:        *user,
@@ -65,6 +65,6 @@ func Feed(c *gin.Context) {
 				IsFavorite:    isLike,
 			},
 		},
-		NextTime: time.Now().Unix(),
+		NextTime: time.Now().UnixNano(),
 	})
 }

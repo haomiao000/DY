@@ -1,7 +1,7 @@
 package testcase
 import "main/server/common"
 
-var DemoVideos = []common.Video{
+var DemoVideos = []*common.Video{
 	{
 		Id:            1,
 		Author:        DemoUser,
@@ -13,10 +13,10 @@ var DemoVideos = []common.Video{
 	},
 }
 
-var DemoComments = []common.Comment{
+var DemoComments = []*common.Comment{
 	{
 		Id:         1,
-		User:       DemoUser,
+		User:       &DemoUser,
 		Content:    "Test Comment",
 		CreateDate: "05-01",
 	},

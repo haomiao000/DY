@@ -2,7 +2,7 @@ package pkg
 
 import (
 	"fmt"
-	videoconf "main/server/service/video/model"
+	videoModel "main/server/service/video/model"
 	"sync"
 )
 
@@ -10,8 +10,8 @@ var videoInfo sync.Map
 var videoCount int64 = 0
 
 // GetVideoByID 根据videoID查询视频
-func GetVideoByID(videoID int64) (*videoconf.VideoRecord, error) {
-	videoRecord := &videoconf.VideoRecord{}
+func GetVideoByID(videoID int64) (*videoModel.VideoRecord, error) {
+	videoRecord := &videoModel.VideoRecord{}
 	v, ok := videoInfo.Load(videoID)
 	if !ok {
 		// 未命中缓存，去数据库中找
@@ -24,7 +24,7 @@ func GetVideoByID(videoID int64) (*videoconf.VideoRecord, error) {
 		videoRecord = record[0]
 
 	} else {
-		videoRecord, ok = v.(*videoconf.VideoRecord)
+		videoRecord, ok = v.(*videoModel.VideoRecord)
 		if !ok {
 			return nil, fmt.Errorf("video not exist, id: %d", videoID)
 		}
