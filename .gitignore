@@ -12,4 +12,6 @@ database.log
 
 tmp
 
+assets/public
+
 .air.conf

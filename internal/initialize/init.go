@@ -7,9 +7,11 @@ import (
 
 	"main/configs"
 	"main/internal"
-	favoritemodel "main/server/service/favorite/model"
-	"main/server/service/user/model"
-	videomodel "main/server/service/video/model"
+	
+	userModel "main/server/service/user/model"
+	videoModel "main/server/service/video/model"
+    favoriteModel "main/server/service/favorite/model"
+    commentModel "main/server/service/comment/model"
 
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
@@ -34,24 +36,29 @@ func InitMySQL() error {
 	var err error
 	// 构建 DSN
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", configs.DBUser, configs.DBPassword, configs.DBIP, configs.DBPort, configs.DBName)
+	
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Printf("[DB Err]\t%v\n", err)
 		return err
 	}
-	if err = DB.AutoMigrate(&model.UserLoginInfo{}); err != nil {
+	if err = DB.AutoMigrate(&userModel.UserLoginInfo{}); err != nil {
 		fmt.Printf("[DB Err]\t%v\n", err)
 		return err
 	}
-	if err = DB.AutoMigrate(&model.User{}); err != nil {
+	if err = DB.AutoMigrate(&userModel.User{}); err != nil {
 		fmt.Printf("[DB Err]\t%v\n", err)
 		return err
 	}
-	if err = DB.AutoMigrate(&videomodel.VideoRecord{}); err != nil {
+	if err = DB.AutoMigrate(&videoModel.VideoRecord{}); err != nil {
 		fmt.Printf("[DB Err]\t%v\n", err)
 		return err
 	}
-	if err = DB.AutoMigrate(&favoritemodel.Favorite{}); err != nil {
+	if err = DB.AutoMigrate(&favoriteModel.Favorite{}); err != nil {
+		fmt.Printf("[DB Err]\t%v\n", err)
+		return err
+	}
+    if err = DB.AutoMigrate(&commentModel.Comment{}); err != nil {
 		fmt.Printf("[DB Err]\t%v\n", err)
 		return err
 	}

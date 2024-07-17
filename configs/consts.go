@@ -2,7 +2,7 @@ package configs
 
 const (
 	DBUser     = "root"
-	DBPassword = "LZXlzx251866"
+	DBPassword = "11111111"
 	DBIP       = "127.0.0.1"
 	DBPort     = "3306"
 	DBName     = "DY"
@@ -21,7 +21,7 @@ const (
 	VideoSnowFlakeNode   = 4
 	MinioSnowFlakeNode   = 5
 
-	VideoURL = "http://192.168.1.33/assets/public/"
+	VideoURL = "http://localhost:8080/assets/public/"
 )
 
 var MySecret = []byte("this is a very complex secret")
