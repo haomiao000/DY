@@ -2,28 +2,29 @@ package pkg
 
 import (
 	"fmt"
+	"main/configs"
 	"main/server/common"
 	"main/server/service/publish/model"
-	db "main/server/service/mysql"
-	"main/test/testcase"
+	videoconf "main/server/service/video/model"
+	videopkg "main/server/service/video/pkg"
 	"net/http"
 	"path/filepath"
-	"sync"
-	"sync/atomic"
 	"time"
 
-	"github.com/gin-gonic/gin"
 	"main/server/service/user/pkg"
-)
 
-var videoInfo sync.Map
-var videoCount int64 = 0
+	"github.com/gin-gonic/gin"
+)
 
 // Publish check token then save upload file to public directory
 func Publish(c *gin.Context) {
-	token := c.PostForm("token")
-
-	if _, exist := pkg.UsersLoginInfo[token]; !exist {
+	userID, exist := c.Get("userID")
+	if !exist {
+		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
+		return
+	}
+	user, err := pkg.GetUser(userID.(int64))
+	if !exist {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return
 	}
@@ -38,7 +39,6 @@ func Publish(c *gin.Context) {
 	}
 
 	filename := filepath.Base(data.Filename)
-	user := pkg.UsersLoginInfo[token]
 	finalName := fmt.Sprintf("%d_%s", user.Id, filename)
 	saveFile := filepath.Join("./assets/public/", finalName)
 	if err := c.SaveUploadedFile(data, saveFile); err != nil {
@@ -49,17 +49,16 @@ func Publish(c *gin.Context) {
 		return
 	}
 
-	video := &common.VideoRecord{ // TODO 记录信息不完整，待补充
-		VideoID:       atomic.AddInt64(&videoCount, 1),
+	video := &videoconf.VideoRecord{ // TODO 记录信息不完整，待补充
 		UserID:        user.Id,
 		FileName:      finalName,
 		UpdateTime:    time.Now().UnixMilli(),
-		PlayUrl:       "",
-		CoverUrl:      "",
+		PlayUrl:       configs.VideoURL + finalName,
+		CoverUrl:      configs.VideoURL + finalName,
 		FavoriteCount: 0,
 		CommentCount:  0,
 	}
-	if err = db.InsertPublishRecords([]*common.VideoRecord{video}); err != nil {
+	if err = videopkg.InsertPublishRecords([]*videoconf.VideoRecord{video}); err != nil {
 		fmt.Printf("%v uploaded error: %v", finalName, err)
 		c.JSON(http.StatusOK, common.Response{
 			StatusCode: 0,
@@ -67,7 +66,6 @@ func Publish(c *gin.Context) {
 		})
 		return
 	}
-	videoInfo.Store(finalName, video)
 
 	c.JSON(http.StatusOK, common.Response{
 		StatusCode: 0,
@@ -77,19 +75,23 @@ func Publish(c *gin.Context) {
 
 // PublishList all users have same publish video list
 func PublishList(c *gin.Context) {
-	token := c.Query("token")
-	user, exist := pkg.UsersLoginInfo[token]
+	userID, exist := c.Get("userID")
 	if !exist {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return
 	}
-	videos, err := db.QueryPublishRecords("user_id = ?", user.Id)
+	user, err := pkg.GetUser(userID.(int64))
+	if !exist {
+		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
+		return
+	}
+	videos, err := videopkg.QueryPublishRecords(videopkg.WithUserID(user.Id))
 	if err != nil {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "get video error"})
 		return
 	}
 	// 查询用户点赞过的视频
-	likeVideosList, err := db.QueryLikeVideos("user_id = ?", user.Id)
+	likeVideosList, err := videopkg.QueryLikeVideos(videopkg.WithUserID(user.Id))
 	if err != nil {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "get like video error"})
 		return
@@ -97,26 +99,23 @@ func PublishList(c *gin.Context) {
 	// 用户点赞过的视频记录下来
 	likeVideos := make(map[int64]bool, len(likeVideosList))
 	for _, likeVideo := range likeVideosList {
-		likeVideos[likeVideo.VideoID] = true
+		likeVideos[likeVideo] = true
 	}
 	videoList := []common.Video{}
 	for _, video := range videos {
-		v, ok := videoInfo.Load(video.FileName)
-		if !ok {
-			fmt.Printf("video not exist, video id: %d", video.VideoID)
-			continue
-		}
-		video, ok := v.(*common.VideoRecord)
-		if !ok {
-			continue
+		videoRecord := &videoconf.VideoRecord{}
+		videoRecord, err = videopkg.GetVideoByID(video.VideoID)
+		if err != nil {
+			fmt.Printf("get video by id error: %v", err)
+			return
 		}
 		videoList = append(videoList, common.Video{
-			Id:            video.VideoID,
-			Author:        user,
-			PlayUrl:       video.PlayUrl,
-			CoverUrl:      video.CoverUrl,
-			FavoriteCount: video.FavoriteCount,
-			CommentCount:  video.CommentCount,
+			Id:            videoRecord.VideoID,
+			Author:        *user,
+			PlayUrl:       videoRecord.PlayUrl,
+			CoverUrl:      videoRecord.CoverUrl,
+			FavoriteCount: videoRecord.FavoriteCount,
+			CommentCount:  videoRecord.CommentCount,
 			IsFavorite:    likeVideos[video.VideoID],
 		})
 	}
@@ -125,6 +124,6 @@ func PublishList(c *gin.Context) {
 		Response: common.Response{
 			StatusCode: 0,
 		},
-		VideoList: testcase.DemoVideos, // TODO 补充逻辑后返回videoList
+		VideoList: videoList, // TODO 补充逻辑后返回videoList
 	})
 }
