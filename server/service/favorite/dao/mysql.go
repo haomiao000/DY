@@ -2,28 +2,35 @@ package dao
 
 import (
 	_ "fmt"
-	"main/configs"
+	"errors"
+	"gorm.io/gorm"
 	"main/internal/initialize"
 	videoModel "main/server/service/video/model"
 	"main/server/service/favorite/model"
 )
 
-func GetFavoriteType(userID int64 , videoID int64) (int8 , error) {
+func GetFavoriteStatus(userID int64, videoID int64) (bool, error) {
 	var favorite model.Favorite
-	err := initialize.DB.Where("user_id = ? AND video_id = ?" , userID , videoID).First(&favorite).Error; 
-	return favorite.ActionType , err
+	err := initialize.DB.Where("user_id = ? AND video_id = ?" , userID, videoID).First(&favorite).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return false, nil
+	} else if err != nil { 
+		return false, err
+	}
+	return true, nil
 }
 func CreateFavorite(favorite *model.Favorite) (error) {
 	err := initialize.DB.Create(favorite).Error
 	return err
 }
-func UpdateFavoriteActionType(userID int64 , videoID int64 , actionType int8) (error) {
-	err := initialize.DB.Model(&model.Favorite{}).Where("user_id = ? AND video_id = ?" , userID , videoID).Update("action_type" , actionType).Error
+
+func DeleteFavorite(userID int64 , videoID int64) (error) {
+	err := initialize.DB.Where("user_id = ? AND video_id = ?" , userID , videoID).Delete(&model.Favorite{}).Error
 	return err
 }
 func GetFavoriteList(userID int64) ([]*model.Favorite , error) {
 	var favorites []*model.Favorite
-	err := initialize.DB.Where("user_id = ? AND action_type = ?" , userID , configs.Like).Find(&favorites).Error
+	err := initialize.DB.Where("user_id = ?" , userID).Find(&favorites).Error
 	if err != nil {
 		return nil , err
 	}
@@ -32,9 +39,9 @@ func GetFavoriteList(userID int64) ([]*model.Favorite , error) {
 func GetFavoriteVideoListByUserID(userID int64) ([]*videoModel.VideoRecord , error) {
 	var videos []*videoModel.VideoRecord
 	err := initialize.DB.
-		Joins("JOIN favorite ON video_records.video_id = favorite.video_id").
-		Where("favorite.user_id = ? AND favorite.action_type = ?", userID, configs.Like).
-		Find(&videos).Error;
+			Joins("JOIN favorite ON video_records.video_id = favorite.video_id").
+			Where("favorite.user_id = ?", userID).
+			Find(&videos).Error;
 	if err != nil {
 		return nil , err
 	}

@@ -27,5 +27,5 @@ var DemoUser = common.User{
 	Name:          "TestUser",
 	FollowCount:   0,
 	FollowerCount: 0,
-	IsFollow:      false,
+	// IsFollow:      false,
 }

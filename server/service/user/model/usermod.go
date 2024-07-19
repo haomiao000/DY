@@ -35,7 +35,7 @@ type User struct {
 	Name          string `gorm:"column:name;		 type:varchar(100);not null"`
 	FollowCount   int64  `gorm:"column:followcount;  type:INT"`
 	FollowerCount int64  `gorm:"column:followercount;type:INT"`
-	IsFollow      bool   `gorm:"column:isfollow;	 type:bool"`
+	// IsFollow      bool   `gorm:"column:isfollow;	 type:bool"`
 }
 
 func (UserLoginInfo) TableName() string {
