@@ -7,9 +7,9 @@ const (
 	DBPort     = "3306"
 	DBName     = "DY"
 
-	IsLike   = 1
+	IsLike   = true
 	Like     = 1
-	IsUnLike = 2
+	IsUnLike = false
 	UnLike   = 2
 
 	AddComment    = 1
@@ -20,6 +20,13 @@ const (
 	CommentSnowFlakeNode = 3
 	VideoSnowFlakeNode   = 4
 	MinioSnowFlakeNode   = 5
+
+	//action
+	Follow = 1 
+	UnFollow = 2
+	//status
+	IsFollow = true
+	NotFollow = false
 
 	VideoURL = "http://localhost:8080/assets/public/"
 )

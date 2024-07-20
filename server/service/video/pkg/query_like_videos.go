@@ -1,7 +1,6 @@
 package pkg
 
 import (
-	"main/configs"
 	"main/internal/initialize"
 	favoriteModel "main/server/service/favorite/model"
 )
@@ -19,9 +18,7 @@ func QueryLikeVideos(args ...string) ([]int64, error) {
 	tx.Commit()
 	res := []int64{}
 	for _, v := range favorite {
-		if v.ActionType == configs.IsLike {
-			res = append(res, v.VideoID)
-		}
+		res = append(res, v.VideoID)
 	}
 	return res, err
 }

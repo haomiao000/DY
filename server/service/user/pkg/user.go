@@ -19,7 +19,7 @@ var UsersLoginInfo = map[string]common.User{
 		Name:          "zhanglei",
 		FollowCount:   10,
 		FollowerCount: 5,
-		IsFollow:      true,
+		// IsFollow:      true,
 	},
 }
 
@@ -50,7 +50,7 @@ func Register(c *gin.Context) {
 		Name:		   userRegisterReq.Username,
 		FollowCount:   0,
 		FollowerCount: 0,
-		IsFollow:      false,
+		// IsFollow:      false,
 	}
 	if err := dao.CreateUser(&user); err!=nil{
 		c.JSON(http.StatusInternalServerError , gin.H{"error": "create user error"})
@@ -107,7 +107,7 @@ func GetUser(userID int64) (*common.User , error){
 		Name:          user.Name,
 		FollowCount:   user.FollowCount,
 		FollowerCount: user.FollowerCount,
-		IsFollow:      user.IsFollow,
+		// IsFollow:      user.IsFollow,
 	}
 	return commonUser , nil
 }

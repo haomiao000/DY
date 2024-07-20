@@ -28,43 +28,39 @@ func FavoriteAction(c *gin.Context) {
 		c.JSON(http.StatusUnauthorized, gin.H{"error": "user not logged in"})
 		return
 	}
-	if favoriteType, err := dao.GetFavoriteType(userID.(int64), favoriteActionRequest.VideoID); err != nil {
-		if favoriteActionRequest.ActionType == configs.UnLike {
-			c.JSON(http.StatusOK, gin.H{"message": "before unlike , without like"})
+	favoriteStatus , err := dao.GetFavoriteStatus(userID.(int64), favoriteActionRequest.VideoID); 
+	if err != nil {
+		c.JSON(http.StatusNotFound, common.Response{StatusCode: 1 , StatusMsg: "get favorite status error"})
+		return
+	}
+	if favoriteStatus == configs.IsLike {
+		if favoriteActionRequest.ActionType == configs.Like {
+			c.JSON(http.StatusOK, common.Response{StatusCode: 0 , StatusMsg: "you like the video you like"})
 			return
-		}else if favoriteActionRequest.ActionType == configs.Like {
+		}else {
 			favorite := &model.Favorite{
 				UserID: userID.(int64),
 				VideoID: favoriteActionRequest.VideoID,
-				ActionType: favoriteActionRequest.ActionType,
 				CreateDate: time.Now().UnixNano(),
 			}
-			if err := dao.CreateFavorite(favorite);err != nil {
-				c.JSON(http.StatusInternalServerError , gin.H{"error" : "create favorite error"})
+			if err := dao.CreateFavorite(favorite); err != nil {
+				c.JSON(http.StatusInternalServerError , common.Response{StatusCode: 1 , StatusMsg: "create favorite error"})
+				return;
+			}
+			c.JSON(http.StatusOK , common.Response{StatusCode: 0, StatusMsg: "create favorite successful"})
+		}
+	}else {
+		if favoriteActionRequest.ActionType == configs.UnLike {
+			c.JSON(http.StatusOK , common.Response{StatusCode: 0 , StatusMsg: "you unlike the video you unlike"})
+			return
+		}else {
+			if err := dao.DeleteFavorite(userID.(int64) , favoriteActionRequest.VideoID); err != nil {
+				c.JSON(http.StatusInternalServerError , common.Response{StatusCode: 1, StatusMsg: "delete favorite error"})
 				return
 			}
-			c.JSON(http.StatusOK, gin.H{"message": "create favorite successful"})
-			return
-		} else {
-			c.JSON(http.StatusNotFound, gin.H{"error": "error actiontype"})
-			return
+			c.JSON(http.StatusOK , common.Response{StatusCode: 0 , StatusMsg: "delete favrite successful"})
 		}
-	} else {
-		if favoriteActionRequest.ActionType == favoriteType {
-			c.JSON(http.StatusOK, gin.H{"message": "same action type"})
-			return
-		} else if favoriteActionRequest.ActionType == configs.Like || favoriteActionRequest.ActionType == configs.UnLike {
-			if err := dao.UpdateFavoriteActionType(userID.(int64), favoriteActionRequest.VideoID, favoriteActionRequest.ActionType); err != nil {
-				c.JSON(http.StatusInternalServerError, gin.H{"error": "update actionType error"})
-				return
-			} else {
-				c.JSON(http.StatusOK, gin.H{"message": "favorite update successful"})
-				return
-			}
-		} else {
-			c.JSON(http.StatusNotFound, gin.H{"error": "error favorite actionType"})
-		}
-	}
+ 	}
 }
 
 // FavoriteList all users have same favorite video list
