@@ -33,6 +33,7 @@ func DeleteRelationInfo(userID int64 , toUserID int64) (error) {
 	err := initialize.DB.Where("user_id = ? AND follower_id = ?" , toUserID , userID).Delete(&model.ConcernsInfo{}).Error
 	return err
 }
+//查询关注列表
 func GetFollowUserList(ownerID int64) ([]*UserModel.User , error) {
 	var userList []*UserModel.User
 	err := initialize.DB.
@@ -42,6 +43,7 @@ func GetFollowUserList(ownerID int64) ([]*UserModel.User , error) {
 	Error
 	return userList , err 
 }
+//查询粉丝列表
 func GetFollowerUserList(ownerID int64) ([]*UserModel.User , error) {
 	var userList []*UserModel.User
 	err := initialize.DB.
