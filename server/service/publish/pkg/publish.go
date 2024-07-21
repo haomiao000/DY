@@ -52,7 +52,7 @@ func Publish(c *gin.Context) {
 		return
 	}
 	// fmt.Println("error 1")
-	video := &videoModel.VideoRecord{ // TODO 记录信息不完整，待补充
+	video := &videoModel.VideoRecord{
 		UserID:        user.Id,
 		FileName:      finalName,
 		UpdateTime:    time.Now().UnixMilli(),

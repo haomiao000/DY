@@ -33,5 +33,6 @@ func AssembleVideo(userID int64, videoRecord []*videoModel.VideoRecord) (map[int
 			IsFavorite:    like[record.VideoID],
 		}
 	}
+	fmt.Printf("res: %+v", res)
 	return res, nil
 }
