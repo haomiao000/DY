@@ -12,12 +12,14 @@ import (
 	videoModel "main/server/service/video/model"
     favoriteModel "main/server/service/favorite/model"
     commentModel "main/server/service/comment/model"
-
+	relationModel "main/server/service/relation/model"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
+
+var logFile *os.File
 
 func InitLog() error {
 	logFile, err := os.OpenFile("database.log", os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0666)
@@ -30,17 +32,38 @@ func InitLog() error {
 }
 
 func InitMySQL() error {
-	logFile, _ := internal.SetLogFile()
+	logFile, _ = internal.SetLogFile()
 	// 设置日志输出到文件
 	log.SetOutput(logFile)
 	var err error
 	// 构建 DSN
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", configs.DBUser, configs.DBPassword, configs.DBIP, configs.DBPort, configs.DBName)
-	
+
 	DB, err = gorm.Open(mysql.Open(dsn), &gorm.Config{})
 	if err != nil {
 		log.Printf("[DB Err]\t%v\n", err)
 		return err
+	}
+
+	if configs.If_Delete_All_Tables_Startup == true {
+		if err := DB.Migrator().DropTable(&userModel.UserLoginInfo{}); err != nil {
+			log.Fatalf("failed to drop table: %v", err)
+		}
+		if err := DB.Migrator().DropTable(&userModel.User{}); err != nil {
+			log.Fatalf("failed to drop table: %v", err)
+		}
+		if err := DB.Migrator().DropTable(&videoModel.VideoRecord{}); err != nil {
+			log.Fatalf("failed to drop table: %v", err)
+		}
+		if err := DB.Migrator().DropTable(&favoriteModel.Favorite{}); err != nil {
+			log.Fatalf("failed to drop table: %v", err)
+		}
+		if err := DB.Migrator().DropTable(&commentModel.Comment{}); err != nil {
+			log.Fatalf("failed to drop table: %v", err)
+		}
+		if err := DB.Migrator().DropTable(&relationModel.ConcernsInfo{}); err != nil {
+			log.Fatalf("failed to drop table: %v", err)
+		}
 	}
 	if err = DB.AutoMigrate(&userModel.UserLoginInfo{}); err != nil {
 		fmt.Printf("[DB Err]\t%v\n", err)
@@ -59,6 +82,10 @@ func InitMySQL() error {
 		return err
 	}
     if err = DB.AutoMigrate(&commentModel.Comment{}); err != nil {
+		fmt.Printf("[DB Err]\t%v\n", err)
+		return err
+	}
+	if err = DB.AutoMigrate(&relationModel.ConcernsInfo{}); err != nil {
 		fmt.Printf("[DB Err]\t%v\n", err)
 		return err
 	}

@@ -13,15 +13,15 @@ import (
 )
 
 
-var UsersLoginInfo = map[string]common.User{
-	"zhangleidouyin": {
-		Id:            1,
-		Name:          "zhanglei",
-		FollowCount:   10,
-		FollowerCount: 5,
-		// IsFollow:      true,
-	},
-}
+// var UsersLoginInfo = map[string]common.User{
+// 	"zhangleidouyin": {
+// 		Id:            1,
+// 		Name:          "zhanglei",
+// 		FollowCount:   10,
+// 		FollowerCount: 5,
+// 		// IsFollow:      true,
+// 	},
+// }
 
 func Register(c *gin.Context) {
 	var userRegisterReq model.UserRegisterRequest
@@ -82,13 +82,13 @@ func Login(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "generate token error"})
 		return
 	}
-	if user , err := GetUser(userID);err != nil{
-		c.JSON(http.StatusNotFound , gin.H{"error":"login , get user error"})
-		return
-	}else{
-		//here use UsersLoginInfo
-		UsersLoginInfo[token] = *user
-	}
+	// if user , err := GetUser(userID);err != nil{
+	// 	c.JSON(http.StatusNotFound , gin.H{"error":"login , get user error"})
+	// 	return
+	// }else{
+	// 	//here use UsersLoginInfo
+	// 	UsersLoginInfo[token] = *user
+	// }
 	var userLoginResp model.UserLoginResponse
 	userLoginResp.UserId = userID
 	userLoginResp.Token = token

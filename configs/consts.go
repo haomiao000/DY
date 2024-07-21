@@ -28,6 +28,8 @@ const (
 	IsFollow = true
 	NotFollow = false
 
+	If_Delete_All_Tables_Startup = true
+
 	VideoURL = "http://localhost:8080/assets/public/"
 )
 

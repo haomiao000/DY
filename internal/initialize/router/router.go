@@ -1,4 +1,4 @@
-package main
+package router
 
 import (
 	"main/middleware"
@@ -13,7 +13,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func initRouter(r *gin.Engine) {
+func InitRouter(r *gin.Engine) {
 	// public directory is used to serve static resources
 	r.Static("/assets/public", "./assets/public/")
 
