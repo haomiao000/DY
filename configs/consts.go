@@ -2,7 +2,7 @@ package configs
 
 const (
 	DBUser     = "root"
-	DBPassword = "11111111"
+	DBPassword = "LZXlzx251866"
 	DBIP       = "127.0.0.1"
 	DBPort     = "3306"
 	DBName     = "DY"
@@ -22,10 +22,10 @@ const (
 	MinioSnowFlakeNode   = 5
 
 	//action
-	Follow = 1 
+	Follow   = 1
 	UnFollow = 2
 	//status
-	IsFollow = true
+	IsFollow  = true
 	NotFollow = false
 
 	If_Delete_All_Tables_Startup = true
