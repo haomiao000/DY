@@ -4,8 +4,8 @@ import (
 	"errors"
 	_ "fmt"
 	"main/internal/initialize"
-	UserModel "main/server/service/user/model"
 	"main/server/service/relation/model"
+	UserModel "main/server/service/user/model"
 
 	"gorm.io/gorm"
 )
@@ -37,8 +37,10 @@ func DeleteRelationInfo(userID int64 , toUserID int64) (error) {
 func GetFollowUserList(ownerID int64) ([]*UserModel.User , error) {
 	var userList []*UserModel.User
 	err := initialize.DB.
-	Joins("JOIN user ON concerns_info.user_id = user.user_id").
-	Where("concernsInfo.follower_id = ?" , ownerID).
+	Table("concerns_info").
+	Joins("JOIN user AS u ON concerns_info.user_id = u.user_id").
+	Where("concerns_info.follower_id = ?", ownerID).
+	Select("u.user_id, u.name, u.followcount, u.followercount").
 	Find(&userList).
 	Error
 	return userList , err 
@@ -47,8 +49,10 @@ func GetFollowUserList(ownerID int64) ([]*UserModel.User , error) {
 func GetFollowerUserList(ownerID int64) ([]*UserModel.User , error) {
 	var userList []*UserModel.User
 	err := initialize.DB.
-	Joins("JOIN user ON concerns_info.follower_id = user.user_id").
-	Where("concernsInfo.user_id = ?" , ownerID).
+	Table("concerns_info").
+	Joins("JOIN user AS u ON concerns_info.follower_id = u.user_id").
+	Where("concerns_info.user_id = ?", ownerID).
+	Select("u.user_id, u.name, u.followcount, u.followercount").
 	Find(&userList).
 	Error
 	return  userList , err

@@ -53,6 +53,10 @@ func CommentAction(c *gin.Context) {
 			c.JSON(http.StatusInternalServerError , gin.H{"error" : "create comment error"})
 			return
 		}
+		if err := dao.UpdateVideoCommentCound(commentActionRequest.VideoID , configs.Plus_comment); err != nil {
+			c.JSON(http.StatusInternalServerError , gin.H{"error" : "update video comment count error"})
+			return
+		}
 		commentActionResponse.BaseResp = &common.Response{
 			StatusCode: http.StatusOK,
 			StatusMsg: "create comment successful",
@@ -67,6 +71,10 @@ func CommentAction(c *gin.Context) {
 	}else if commentActionRequest.ActionType == configs.DeleteComment {
 		if err := dao.DeleteComment(comment.CommentID); err != nil {
 			c.JSON(http.StatusInternalServerError , gin.H{"error" : "delete comment error"})
+			return
+		}
+		if err := dao.UpdateVideoCommentCound(commentActionRequest.VideoID , configs.Minus_comment); err != nil {
+			c.JSON(http.StatusInternalServerError , gin.H{"error" : "update video comment count error"})
 			return
 		}
 		c.JSON(http.StatusOK , gin.H{"message" : "delete comment successful"})

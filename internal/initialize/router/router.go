@@ -20,11 +20,14 @@ func InitRouter(r *gin.Engine) {
 	apiRouter := r.Group("/douyin")
 
 	// basic apis
-	apiRouter.GET("/feed/", FeedService.Feed)
+	
 	apiRouter.GET("/user/", middleware.VerifyToken(), UserService.UserInfo)
 	apiRouter.POST("/user/register/", UserService.Register)
 	apiRouter.POST("/user/login/", UserService.Login)
-
+	apiRouter.Use(middleware.VerifyToken())
+	{
+		apiRouter.GET("/feed/", FeedService.Feed)
+	}
 	// apply VerifyToken middleware to /publish routes
 	publishRouter := apiRouter.Group("/publish")
 	publishRouter.Use(middleware.VerifyToken())

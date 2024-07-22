@@ -46,10 +46,7 @@ func Feed(c *gin.Context) {
 	for _, v := range videos {
 		videoList = append(videoList, v)
 	}
-	fmt.Printf("videolistlen: %d, videolist: %+v", len(videoList), videoList)
-
-	// fmt.Println("-----")
-	// fmt.Println("-----")
+	// fmt.Printf("videolistlen: %d, videolist: %+v", len(videoList), videoList)
 	c.JSON(http.StatusOK, model.FeedResponse{
 		Response:  common.Response{StatusCode: 0},
 		VideoList: videoList,

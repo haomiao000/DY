@@ -18,14 +18,20 @@ func RelationAction(c *gin.Context) {
 		c.JSON(http.StatusNotFound, gin.H{"error": "binding relationAction Request error"})
 		return
 	}
+	userID, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "user not logged in"})
+		return
+	}
 	if relationActionRequest.ActionType != configs.Follow && relationActionRequest.ActionType != configs.UnFollow {
 		c.JSON(http.StatusInternalServerError , common.Response{StatusCode: 1 , StatusMsg: "invalid action type"})
 		return
 	}
-	if relationActionRequest.UserId == relationActionRequest.ToUserId {
+	if userID.(int64) == relationActionRequest.ToUserId {
 		c.JSON(http.StatusInternalServerError , common.Response{StatusCode: 1 , StatusMsg: "user can not followe itself"})
+		return
 	}
-	followStatus , err := dao.FindRelationInfo(relationActionRequest.UserId , relationActionRequest.ToUserId)
+	followStatus , err := dao.FindRelationInfo(userID.(int64) , relationActionRequest.ToUserId)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError , common.Response{StatusCode: 1 , StatusMsg: "relation action occurs ErrRecordNotFound"})
 		return
@@ -35,7 +41,7 @@ func RelationAction(c *gin.Context) {
 			c.JSON(http.StatusOK , common.Response{StatusCode: 0 , StatusMsg: "u have follow the author"})
 			return
 		} else {
-			if err := dao.DeleteRelationInfo(relationActionRequest.UserId , relationActionRequest.ToUserId); err != nil {
+			if err := dao.DeleteRelationInfo(userID.(int64) , relationActionRequest.ToUserId); err != nil {
 				c.JSON(http.StatusInternalServerError , common.Response{StatusCode: 1 , StatusMsg: "delete relation info error"})
 				return
 			}
@@ -46,7 +52,7 @@ func RelationAction(c *gin.Context) {
 			c.JSON(http.StatusOK , common.Response{StatusCode: 0 , StatusMsg: "u have not follow the author"})
 			return
 		}else {
-			if err := dao.CreateRelationInfo(relationActionRequest.UserId , relationActionRequest.ToUserId); err != nil {
+			if err := dao.CreateRelationInfo(userID.(int64) , relationActionRequest.ToUserId); err != nil {
 				c.JSON(http.StatusInternalServerError , common.Response{StatusCode: 1 , StatusMsg: "create relation info error"})
 				return
 			}
@@ -68,6 +74,12 @@ func FollowList(c *gin.Context) {
 		})
 		return
 	}
+	userID, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "user not logged in"})
+		return
+	}
+	mp := *GetFollowMap(userID.(int64) , c)
 	var followList []*common.User
 	if userList , err := dao.GetFollowUserList(relationFollowListRequest.UserID); err != nil {
 		c.JSON(http.StatusInternalServerError , model.UserListResponse{
@@ -85,7 +97,7 @@ func FollowList(c *gin.Context) {
 				Name: o.Name,
 				FollowCount: o.FollowCount,
 				FollowerCount: o.FollowerCount,
-				IsFollow: false,
+				IsFollow: mp[o.UserID],
 			})
 		}
 	}
@@ -105,11 +117,17 @@ func FollowerList(c *gin.Context) {
 			Response: common.Response{
 				StatusCode: 1,
 				StatusMsg: "bind follower user list req error",
-			},	
+			},
 			UserList: nil,
 		})
 		return
 	}
+	userID, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "user not logged in"})
+		return
+	}
+	mp := *GetFollowMap(userID.(int64) , c)
 	var followerList []*common.User 
 	if userList , err := dao.GetFollowerUserList(relationFollowerListRequest.UserID); err != nil {
 		c.JSON(http.StatusInternalServerError , model.UserListResponse{
@@ -127,7 +145,7 @@ func FollowerList(c *gin.Context) {
 				Name: o.Name,
 				FollowCount: o.FollowCount,
 				FollowerCount: o.FollowerCount,
-				IsFollow: false,
+				IsFollow: mp[o.UserID],
 			})
 		}
 	}
@@ -153,6 +171,12 @@ func FriendList(c *gin.Context) {
 		})
 		return
 	}
+	userID, exists := c.Get("userID")
+	if !exists {
+		c.JSON(http.StatusUnauthorized, gin.H{"error": "user not logged in"})
+		return
+	}
+	mp := *GetFollowMap(userID.(int64) , c)
 	var respUser []*common.User
 	if friendList , err := dao.GetMutualFollowers(relationFriendListRequest.UserID); err != nil {
 		c.JSON(http.StatusOK , model.UserListResponse{
@@ -169,7 +193,7 @@ func FriendList(c *gin.Context) {
 				Name: o.Name,
 				FollowCount: o.FollowCount,
 				FollowerCount: o.FollowerCount,
-				IsFollow: false,
+				IsFollow: mp[o.UserID],
 			})
 		}
 	}
@@ -180,11 +204,4 @@ func FriendList(c *gin.Context) {
 		},
 		UserList: respUser,
 	})
-	// c.JSON(http.StatusOK, model.UserListResponse{
-	// 	Response: common.Response{
-	// 		StatusCode: 0,
-	// 	},
-	// 	UserList: []*common.User{&testcase.DemoUser},
-	// })
-	
 }

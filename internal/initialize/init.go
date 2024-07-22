@@ -19,7 +19,7 @@ import (
 
 var DB *gorm.DB
 
-var logFile *os.File
+var LogFile *os.File
 
 func InitLog() error {
 	logFile, err := os.OpenFile("database.log", os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0666)
@@ -32,9 +32,9 @@ func InitLog() error {
 }
 
 func InitMySQL() error {
-	logFile, _ = internal.SetLogFile()
+	LogFile, _ = internal.SetLogFile()
 	// 设置日志输出到文件
-	log.SetOutput(logFile)
+	log.SetOutput(LogFile)
 	var err error
 	// 构建 DSN
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", configs.DBUser, configs.DBPassword, configs.DBIP, configs.DBPort, configs.DBName)
