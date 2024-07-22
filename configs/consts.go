@@ -2,7 +2,7 @@ package configs
 
 const (
 	DBUser     = "root"
-	DBPassword = "LZXlzx251866"
+	DBPassword = "11111111"
 	DBIP       = "127.0.0.1"
 	DBPort     = "3306"
 	DBName     = "DY"
@@ -12,8 +12,14 @@ const (
 	IsUnLike = false
 	UnLike   = 2
 
+	Minus_like = -1
+	Plus_like = 1
+
 	AddComment    = 1
 	DeleteComment = 2
+
+	Minus_comment = -1
+	Plus_comment = 1
 
 	UserSnowflakeNode    = 1
 	NacosSnowflakeNode   = 2
@@ -28,7 +34,7 @@ const (
 	IsFollow  = true
 	NotFollow = false
 
-	If_Delete_All_Tables_Startup = true
+	If_Delete_All_Tables_Startup = false
 
 	VideoURL = "http://localhost:8080/assets/public/"
 )

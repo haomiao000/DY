@@ -27,6 +27,11 @@ func CreateFavorite(favorite *model.Favorite) (error) {
 func DeleteFavorite(userID int64 , videoID int64) (error) {
 	err := initialize.DB.Where("user_id = ? AND video_id = ?" , userID , videoID).Delete(&model.Favorite{}).Error
 	return err
+} 
+func UpdateVideoFavoriteCound(videoID int64 , changenumber int8) (error) {
+	err := initialize.DB.Model(&videoModel.VideoRecord{}).Where("video_id = ?", videoID).
+	UpdateColumn("favorite_count", gorm.Expr("favorite_count + ?", changenumber)).Error
+	return err
 }
 func GetFavoriteList(userID int64) ([]*model.Favorite , error) {
 	var favorites []*model.Favorite

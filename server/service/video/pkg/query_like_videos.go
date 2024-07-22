@@ -22,5 +22,5 @@ func QueryLikeVideos(args ...string) ([]int64, error) {
 	for _, v := range favorite {
 		res = append(res, v.VideoID)
 	}
-	return res, err
+	return res, nil
 }

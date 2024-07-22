@@ -2,7 +2,7 @@ package model
 import "main/server/common"
 // <------------------------------- Request ------------------------------->
 type RelationActionRequest struct {
-	UserId     int64 `json:"user_id" form:"user_id" binding:"required"`
+	Token      string `json:"token" form:"token" binding:"required"`
 	ToUserId   int64 `json:"to_user_id" form:"to_user_id" binding:"required"`
 	ActionType int8  `json:"action_type" form:"action_type" binding:"required"`
 }
@@ -35,12 +35,12 @@ type ConcernsInfo struct {
 	UserID      int64 `gorm:"column:user_id;	type:INT"`
 	FollowerID  int64 `gorm:"column:follower_id;type:INT"`
 }
+func (ConcernsInfo) TableName() string {
+	return "concerns_info" 
+}
 // <------------------------------- Response ------------------------------->
 type UserListResponse struct {
 	common.Response
 	UserList []*common.User `json:"user_list"`
 }
 
-func (ConcernsInfo) TableName() string {
-	return "concerns_info" 
-}

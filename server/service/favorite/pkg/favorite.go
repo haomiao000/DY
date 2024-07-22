@@ -38,6 +38,21 @@ func FavoriteAction(c *gin.Context) {
 			c.JSON(http.StatusOK, common.Response{StatusCode: 0 , StatusMsg: "you like the video you like"})
 			return
 		}else {
+			if err := dao.DeleteFavorite(userID.(int64) , favoriteActionRequest.VideoID); err != nil {
+				c.JSON(http.StatusInternalServerError , common.Response{StatusCode: 1, StatusMsg: "delete favorite error"})
+				return
+			}
+			if err := dao.UpdateVideoFavoriteCound(favoriteActionRequest.VideoID , configs.Minus_like); err != nil {
+				c.JSON(http.StatusInternalServerError , common.Response{StatusCode: 1, StatusMsg: "update video favorite count error"})
+				return
+			}
+			c.JSON(http.StatusOK , common.Response{StatusCode: 0 , StatusMsg: "delete favrite successful"})
+		}
+	}else {
+		if favoriteActionRequest.ActionType == configs.UnLike {
+			c.JSON(http.StatusOK , common.Response{StatusCode: 0 , StatusMsg: "you unlike the video you unlike"})
+			return
+		}else {
 			favorite := &model.Favorite{
 				UserID: userID.(int64),
 				VideoID: favoriteActionRequest.VideoID,
@@ -47,18 +62,11 @@ func FavoriteAction(c *gin.Context) {
 				c.JSON(http.StatusInternalServerError , common.Response{StatusCode: 1 , StatusMsg: "create favorite error"})
 				return;
 			}
-			c.JSON(http.StatusOK , common.Response{StatusCode: 0, StatusMsg: "create favorite successful"})
-		}
-	}else {
-		if favoriteActionRequest.ActionType == configs.UnLike {
-			c.JSON(http.StatusOK , common.Response{StatusCode: 0 , StatusMsg: "you unlike the video you unlike"})
-			return
-		}else {
-			if err := dao.DeleteFavorite(userID.(int64) , favoriteActionRequest.VideoID); err != nil {
-				c.JSON(http.StatusInternalServerError , common.Response{StatusCode: 1, StatusMsg: "delete favorite error"})
+			if err := dao.UpdateVideoFavoriteCound(favoriteActionRequest.VideoID , configs.Plus_like); err != nil {
+				c.JSON(http.StatusInternalServerError , common.Response{StatusCode: 1, StatusMsg: "update video favorite count error"})
 				return
 			}
-			c.JSON(http.StatusOK , common.Response{StatusCode: 0 , StatusMsg: "delete favrite successful"})
+			c.JSON(http.StatusOK , common.Response{StatusCode: 0, StatusMsg: "create favorite successful"})
 		}
  	}
 }

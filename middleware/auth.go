@@ -36,12 +36,9 @@ func ParseToken(tokenString string) (*MyClaims , error){
 	var claims MyClaims
 	token , err := jwt.ParseWithClaims(tokenString , &claims ,  GetKey)
 	if err != nil{
-		// fmt.Println("here is wrong")
 		return nil, fmt.Errorf("failed to parse token: %v", err)
 	}
 	if(claims.ExpiresAt.Before(time.Now())){
-		// fmt.Println(claims.ExpiresAt)
-		// fmt.Println(time.Now())
 		token.Valid = false
 	}
 	if !token.Valid {
@@ -53,23 +50,17 @@ func ParseToken(tokenString string) (*MyClaims , error){
 //token验证中间件
 func VerifyToken() gin.HandlerFunc{
 	return func(c *gin.Context) {
-		// fmt.Println("------ error")
 		token := c.Query("token")
 		if token == "" {
-			// fmt.Println("error token is empty1")
 			token = string(c.PostForm("token"))
-			// fmt.Println("error token is empty2")
 			if token == "" {
-				// fmt.Println("error token is empty3")
 				c.JSON(http.StatusNotFound, gin.H{"error":"token is empty"})
 				c.Abort()
 				return
 			}
-			// fmt.Println(token)
 		}
 		claims , err := ParseToken(token)
 		if err != nil {
-			// fmt.Println("token is Error")
 			c.JSON(http.StatusInternalServerError, gin.H{"error":"token is ERROR"})
 			c.Abort()
 			return
