@@ -2,6 +2,7 @@ package pkg
 
 import (
 	"fmt"
+	"main/middleware"
 	"main/server/common"
 	"main/server/service/feed/model"
 	videopkg "main/server/service/video/pkg"
@@ -13,6 +14,18 @@ import (
 
 // Feed same demo video list for every request
 func Feed(c *gin.Context) {
+	token := c.Query("token")
+	if token == "" {
+		token = string(c.PostForm("token"))
+		if token != "" {
+			claims, err := middleware.ParseToken(token)
+			if err != nil {
+				c.JSON(http.StatusInternalServerError, gin.H{"error": "token is ERROR"})
+				return
+			}
+			c.Set("userID", claims.UserID)
+		}
+	}
 	// 展示所有作品
 	// fmt.Println("----------")
 	videoRecords, err := videopkg.GetAllVideo()
