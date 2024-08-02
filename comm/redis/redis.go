@@ -1,9 +1,10 @@
-package redis
+package main
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"reflect"
 
 	pb "github.com/haomiao000/DY/server/redis_svr/pb/redis_svr"
 	"google.golang.org/grpc"
@@ -116,12 +117,44 @@ func SetWithExpireJson(ctx context.Context, key string, value any, expire int32)
 	return SetWithExpire(ctx, key, string(b), expire)
 }
 
-func Get(ctx context.Context, key string) (string, error) {
+func Get(ctx context.Context, key string) (string, bool, error) {
 	rsp, err := redisCli.Get(ctx, &pb.GetReq{Key: key})
 	if err != nil {
-		return "", err
+		return "", false, err
 	}
-	return rsp.GetVal(), nil
+	return rsp.GetVal(), rsp.GetExist(), nil
+}
+
+// msg是一个pb结构体
+func GetProto(ctx context.Context, key string, msg proto.Message) (bool, error) {
+	val, exist, err := Get(ctx, key)
+	if err != nil {
+		return false, err
+	}
+	if !exist {
+		return false, nil
+	}
+	err = proto.Unmarshal([]byte(val), msg)
+	if err != nil {
+		return false, err
+	}
+	return exist, nil
+}
+
+// msg是一个可以可以json.Marshal的结构体指针
+func GetJson(ctx context.Context, key string, msg any) (bool, error) {
+	val, exist, err := Get(ctx, key)
+	if err != nil {
+		return false, err
+	}
+	if !exist {
+		return false, nil
+	}
+	err = json.Unmarshal([]byte(val), &msg)
+	if err != nil {
+		return false, err
+	}
+	return exist, nil
 }
 
 func BatchGet(ctx context.Context, keys []string) (map[string]string, error) {
@@ -132,6 +165,7 @@ func BatchGet(ctx context.Context, keys []string) (map[string]string, error) {
 	return rsp.GetVals(), nil
 }
 
+// msg是一个pb结构体
 func BatchGetProto(ctx context.Context, keys []string, msg proto.Message) (map[string]proto.Message, error) {
 	m, err := BatchGet(ctx, keys)
 	if err != nil {
@@ -145,7 +179,7 @@ func BatchGetProto(ctx context.Context, keys []string, msg proto.Message) (map[s
 			errStr += fmt.Sprintf("key %s proto unmarshal error: %v |", k, err)
 			continue
 		}
-		msgs[k] = msg
+		msgs[k] = proto.Clone(msg) // 深拷贝
 	}
 	if errStr != "" {
 		return msgs, fmt.Errorf(errStr)
@@ -153,6 +187,7 @@ func BatchGetProto(ctx context.Context, keys []string, msg proto.Message) (map[s
 	return msgs, nil
 }
 
+// msg是一个可以json.Unmarshal的结构体指针
 func BatchGetJson(ctx context.Context, keys []string, msg any) (map[string]any, error) {
 	m, err := BatchGet(ctx, keys)
 	if err != nil {
@@ -161,12 +196,14 @@ func BatchGetJson(ctx context.Context, keys []string, msg any) (map[string]any, 
 	msgs := make(map[string]any, len(keys))
 	errStr := ""
 	for k, v := range m {
-		e := json.Unmarshal([]byte(v), msg)
+		// 深拷贝
+		newMsg := reflect.New(reflect.TypeOf(msg).Elem()).Interface()
+		e := json.Unmarshal([]byte(v), &newMsg)
 		if e != nil {
 			errStr += fmt.Sprintf("key %s json unmarshal error: %v |", k, err)
 			continue
 		}
-		msgs[k] = msg
+		msgs[k] = newMsg
 	}
 	if errStr != "" {
 		return msgs, fmt.Errorf(errStr)
