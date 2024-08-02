@@ -125,7 +125,7 @@ func Get(ctx context.Context, key string) (string, bool, error) {
 	return rsp.GetVal(), rsp.GetExist(), nil
 }
 
-// msg是一个pb结构体
+// msg是一个pb结构体指针
 func GetProto(ctx context.Context, key string, msg proto.Message) (bool, error) {
 	val, exist, err := Get(ctx, key)
 	if err != nil {
@@ -165,7 +165,7 @@ func BatchGet(ctx context.Context, keys []string) (map[string]string, error) {
 	return rsp.GetVals(), nil
 }
 
-// msg是一个pb结构体
+// msg是一个pb结构体指针
 func BatchGetProto(ctx context.Context, keys []string, msg proto.Message) (map[string]proto.Message, error) {
 	m, err := BatchGet(ctx, keys)
 	if err != nil {
