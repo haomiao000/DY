@@ -2,6 +2,8 @@ module github.com/haomiao000/DY/server/redis_svr
 
 go 1.22.4
 
+replace github.com/haomiao000/DY/server/redis_svr => ./
+
 require (
 	github.com/gomodule/redigo v2.0.0+incompatible
 	google.golang.org/grpc v1.65.0

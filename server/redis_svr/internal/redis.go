@@ -45,15 +45,16 @@ func (r *RedisCon) do(cmd string, args ...interface{}) (interface{}, error) {
 	return r.redisCon.Do(cmd, args...)
 }
 
-func Get(key string) (string, error) {
+func Get(key string) (string, bool, error) {
 	res, err := redigo.String(Do("get", key))
 	if err != nil && err != redigo.ErrNil {
-		return "", fmt.Errorf("get value error: %v, key: %s", err, key)
+		return "", false, fmt.Errorf("get value error: %v, key: %s", err, key)
 	}
-	if res == "" {
-		return "", ErrNotExist
+	if err == redigo.ErrNil {
+		return "", false, nil
 	}
-	return res, nil
+
+	return res, true, nil
 }
 
 func Set(key, val string) error {

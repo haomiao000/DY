@@ -15,7 +15,7 @@ import (
 
 func main() {
 	if err := internal.Init(); err != nil {
-		fmt.Println("init error: err", err)
+		fmt.Printf("init error: %v", err)
 		return
 	}
 	lis, err := net.Listen("tcp", "localhost:50051")
@@ -34,7 +34,11 @@ func main() {
 			panic(err)
 		}
 		redisCli := pb.NewRedisSvrClient(con)
-		fmt.Println(redisCli.Get(context.Background(), &pb.GetReq{Key: "1"}))
+		rsp, err := redisCli.Get(context.Background(), &pb.GetReq{Key: "1"})
+		if err != nil {
+			panic(err)
+		}
+		fmt.Printf("rsp: %+v", rsp)
 	}()
 	if err = s.Serve(lis); err != nil {
 		fmt.Println(err)

@@ -8,11 +8,11 @@ import (
 )
 
 func (r *RedisSvrImpl) Get(ctx context.Context, req *pb.GetReq) (*pb.GetRsp, error) {
-	val, err := internal.Get(req.GetKey())
+	val, exist, err := internal.Get(req.GetKey())
 	if err != nil {
 		return nil, err
 	}
-	return &pb.GetRsp{Val: val}, nil
+	return &pb.GetRsp{Val: val, Exist: exist}, nil
 }
 
 func (r *RedisSvrImpl) BatchGet(ctx context.Context, req *pb.BatchGetReq) (*pb.BatchGetRsp, error) {
