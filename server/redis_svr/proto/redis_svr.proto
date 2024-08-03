@@ -17,6 +17,7 @@ message GetReq {
 
 message GetRsp {
     string val = 1;
+    bool exist = 2;
 }
 
 message BatchGetReq {

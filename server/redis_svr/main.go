@@ -12,10 +12,10 @@ import (
 
 func main() {
 	if err := internal.Init(); err != nil {
-		fmt.Println("init error: err", err)
+		fmt.Printf("init error: %v", err)
 		return
 	}
-	lis, err := net.Listen("tcp", ":50051")
+	lis, err := net.Listen("tcp", "localhost:50051")
 
 	if err != nil {
 		fmt.Println(err)
