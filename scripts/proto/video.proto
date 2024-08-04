@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+option go_package = "/rpc_video";
+
+import "base.proto";
+
+service VideoServiceImpl {
+    rpc UpdateVideoFavoriteCount(UpdateVideoFavoriteCountRequest) returns (UpdateVideoFavoriteCountResponse);
+    rpc UpdateVideoCommentCount(UpdateVideoCommentCountRequest) returns (UpdateVideoCommentCountResponse);
+    rpc GetFavoriteVideoListByVideoId(GetFavoriteVideoListByVideoIdRequest) returns (GetFavoriteVideoListByVideoIdResponse);
+
+}
+
+//Request message------------------->
+message UpdateVideoFavoriteCountRequest {
+    int64 video_id = 1;
+    int32 change_number = 2;
+}
+
+message UpdateVideoCommentCountRequest {
+    int64 video_id = 1;
+    int32 change_number = 2;
+}
+
+message GetFavoriteVideoListByVideoIdRequest {
+    repeated int64 video_id = 1;
+}
+
+//Response message------------------->
+
+message UpdateVideoFavoriteCountResponse {
+}
+
+message UpdateVideoCommentCountResponse {
+}
+
+message GetFavoriteVideoListByVideoIdResponse {
+    repeated Video video_list = 1;
+}

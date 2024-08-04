@@ -1,0 +1,54 @@
+syntax = "proto3";
+option go_package = "/rpc_relation";
+
+import "base.proto";
+
+service RelationServiceImpl {
+    rpc RelationAction(RelationActionRequest) returns (RelationActionResponse);
+    rpc GetFollowList(RelationFollowListRequest) returns (RelationFollowListResponse);
+    rpc GetFollowerList(RelationFollowerListRequest) returns (RelationFollowerListResponse);
+    rpc GetFriendList(RelationFriendListRequest) returns (RelationFriendListResponse);
+}
+
+//Request message------------------->
+message RelationActionRequest {
+    int64 user_id = 1;
+    int64 to_user_id = 2;
+    int32 action_type = 3; 
+}
+
+message RelationFollowListRequest {
+    int64 viewer_id = 1;
+    int64 owner_id = 2;
+}
+
+message RelationFollowerListRequest {
+    int64 viewer_id = 1;
+    int64 owner_id = 2;
+}
+
+message RelationFriendListRequest {
+    int64 viewer_id = 1;
+    int64 owner_id = 2;
+}
+
+//Response message------------------->
+
+message RelationActionResponse {
+    Response base_resp = 1;
+}
+
+message RelationFollowListResponse {
+    Response base_resp = 1;
+    repeated User user_list = 2;
+}
+
+message RelationFollowerListResponse {
+    Response base_resp = 1;
+    repeated User user_list = 2;
+}
+
+message RelationFriendListResponse {
+    Response base_resp = 1;
+    repeated User user_list = 2;
+}

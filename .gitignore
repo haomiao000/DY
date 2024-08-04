@@ -15,3 +15,7 @@ tmp
 assets/public
 
 .air.conf
+
+server/service/api/api
+
+server/service/user/user
