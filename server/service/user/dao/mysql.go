@@ -1,36 +1,106 @@
 package dao
 
 import (
-	_ "fmt"
-	"main/internal/initialize"
-	"main/middleware"
-	"main/server/service/user/model"
+	gorm "gorm.io/gorm"
+	model "github.com/haomiao000/DY/server/service/user/model"
+	rpc_user "github.com/haomiao000/DY/server/grpc_gen/rpc_user"
+	middleware "github.com/haomiao000/DY/server/common/middleware"
+	configs "github.com/haomiao000/DY/server/common/configs"
+	"errors"
+	"fmt"
 )
+type MysqlManager struct {
+	userDB *gorm.DB
+	userLoginDB *gorm.DB
+}
 
-func FindByUsername(username string) error {
-	var userRegisterInfo model.UserLoginInfo
-	err := initialize.DB.Where("username = ?", username).First(&userRegisterInfo).Error
-	return err
+func (u MysqlManager) CreateUserLoginInfo(userLoginInfo *model.UserLoginInfo) error {
+	var temp model.UserLoginInfo
+	err := u.userLoginDB.Where("username = ?", userLoginInfo.Username).First(&temp).Error
+	if err != gorm.ErrRecordNotFound && err != nil {
+		fmt.Printf("mysql select failed,%s\n", err)
+		return err
+	}
+	if temp.Username != "" {
+		err = errors.New(configs.MysqlAlreadyExists)
+		return err
+	}
+	err = u.userLoginDB.Create(&userLoginInfo).Error
+	if err != nil {
+		fmt.Printf("mysql insert failed,%s\n", err)
+		return err
+	}
+	return nil
 }
-func CreateUserLoginInfo(userLoginInfo *model.UserLoginInfo) error {
-	err := initialize.DB.Create(&userLoginInfo).Error
-	return err
+
+func (u MysqlManager) CreateUser(user *model.User) error {
+	err := u.userDB.Create(&user).Error
+	if err != nil {
+		fmt.Printf("mysql insert failed,%s\n", err)
+		return err
+	}
+	return nil
 }
-func CreateUser(user *model.User) error {
-	err := initialize.DB.Create(&user).Error
-	return err
-}
-func CheckUserLoginInfo(userLoginReq *model.UserLoginRequest)(*model.UserLoginInfo , error){
+
+func (u MysqlManager) CheckUserLoginInfo(userLoginReq *rpc_user.UserLoginRequest)(*model.UserLoginInfo , error) {
 	var userLoginInfo model.UserLoginInfo
-	// fmt.Println(userLoginReq.Username)
-	// fmt.Println(userLoginReq.Password)
-	// fmt.Println(middleware.Gen_sha256(userLoginReq.Password))
-	err := initialize.DB.Where("username = ? AND password = ?" , userLoginReq.Username , 
+	err := u.userLoginDB.Where("username = ? AND password = ?" , userLoginReq.Username , 
 	middleware.Gen_sha256(userLoginReq.Password)).First(&userLoginInfo).Error
-	return &userLoginInfo , err
+	if err == gorm.ErrRecordNotFound {
+		fmt.Printf("username or password is error ,%s\n", err)
+		return nil , err
+	}
+	if err != nil {
+		fmt.Printf("mysql select failed,%s\n", err)
+		return nil , err
+	}
+	return &userLoginInfo , nil
 }
-func GetUserByUid(userID int64) (*model.User, error){
+
+func (u MysqlManager) GetUserByUid(userID int64) (*model.User, error) {
 	var user model.User
-	err := initialize.DB.Where("user_id = ?" , userID).First(&user).Error
-	return &user , err
+	err := u.userDB.Where("user_id = ?" , userID).First(&user).Error
+	if err == gorm.ErrRecordNotFound {
+		fmt.Printf("user id is not exist in db,%s\n", err)
+		return nil , err
+	}
+	if err != nil {
+		fmt.Printf("mysql select failed,%s\n", err)
+		return nil , err
+	}
+	return &user , nil
+}
+
+func (u MysqlManager) GetUserListByUserId(userID []int64) ([]*model.User , error) {
+	var users []*model.User
+	// Query the database for the given user IDs
+	err := u.userDB.Where("user_id IN ?", userID).Find(&users).Error
+	if err == gorm.ErrRecordNotFound {
+		fmt.Printf("user is not exist in db,%s\n", err)
+		return nil , err
+	}
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
+}
+
+func NewMysqlManager(db *gorm.DB) *MysqlManager {
+	m := db.Migrator()
+	if !m.HasTable(&model.UserLoginInfo{}) {
+		err := m.CreateTable(&model.UserLoginInfo{})
+		if err != nil {
+			fmt.Printf("create mysql table failed,%s\n", err)
+		}
+	}
+	if !m.HasTable(&model.User{}) {
+		err := m.CreateTable(&model.User{})
+		if err != nil {
+			fmt.Printf("create mysql table failed,%s\n", err)
+		}
+	}
+	return &MysqlManager{
+		userDB: db,
+		userLoginDB: db,
+	}
 }

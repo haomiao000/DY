@@ -1,9 +1,10 @@
-module github.com/haomiao000/DY/comm/redis
+module github.com/haomiao000/DY/server/grpc_gen
 
-go 1.22.5
+go 1.22.3
+
+// replace github.com/haomiao000/DY/server/grpc_gen => ./
 
 require (
-	github.com/haomiao000/DY/server/redis_svr v0.0.0-20240803163844-fefb17191702
 	google.golang.org/grpc v1.65.0
 	google.golang.org/protobuf v1.34.2
 )

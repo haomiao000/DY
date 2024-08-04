@@ -15,3 +15,13 @@ tmp
 assets/public
 
 .air.conf
+
+server/service/api/api
+
+server/service/user/user
+
+server/service/video/video
+
+server/service/relation/relation
+
+server/service/interact/interact

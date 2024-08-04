@@ -1,10 +1,10 @@
 package testcase
-import "main/server/common"
+import common "main/server/service/api/model"
 
 var DemoVideos = []*common.Video{
 	{
 		Id:            1,
-		Author:        DemoUser,
+		Author:        &DemoUser,
 		PlayUrl:       "https://www.w3schools.com/html/movie.mp4",
 		CoverUrl:      "https://cdn.pixabay.com/photo/2016/03/27/18/10/bear-1283347_1280.jpg",
 		FavoriteCount: 0,
