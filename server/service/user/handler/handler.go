@@ -3,11 +3,11 @@ package handler
 import (
 	"context"
 	"errors"
-	configs "main/server/common/configs"
-	middleware "main/server/common/middleware"
-	rpc_base "main/server/grpc_gen/rpc_base"
-	rpc_user "main/server/grpc_gen/rpc_user"
-	model "main/server/service/user/model"
+	configs "github.com/haomiao000/DY/server/common/configs"
+	middleware "github.com/haomiao000/DY/server/common/middleware"
+	rpc_base "github.com/haomiao000/DY/server/grpc_gen/rpc_base"
+	rpc_user "github.com/haomiao000/DY/server/grpc_gen/rpc_user"
+	model "github.com/haomiao000/DY/server/service/user/model"
 	http "net/http"
 
 	snowflake "github.com/bwmarrin/snowflake"

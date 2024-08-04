@@ -1,13 +1,13 @@
 package main 
 
 import (
-	initialize "main/server/service/relation/initialize"
-	handler "main/server/service/relation/handler"
-	dao "main/server/service/relation/dao"
+	initialize "github.com/haomiao000/DY/server/service/relation/initialize"
+	handler "github.com/haomiao000/DY/server/service/relation/handler"
+	dao "github.com/haomiao000/DY/server/service/relation/dao"
 	grpc "google.golang.org/grpc"
-	configs "main/server/service/relation/configs"
-	rpc_relation "main/server/grpc_gen/rpc_relation"
-	pkg "main/server/service/relation/pkg"
+	configs "github.com/haomiao000/DY/server/service/relation/configs"
+	rpc_relation "github.com/haomiao000/DY/server/grpc_gen/rpc_relation"
+	pkg "github.com/haomiao000/DY/server/service/relation/pkg"
 	"net"
 	"fmt"
 )

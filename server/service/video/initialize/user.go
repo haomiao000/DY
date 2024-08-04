@@ -2,8 +2,8 @@ package initialize
 
 
 import (
-	user "main/server/grpc_gen/rpc_user"
-	configs "main/server/service/video/configs"
+	user "github.com/haomiao000/DY/server/grpc_gen/rpc_user"
+	configs "github.com/haomiao000/DY/server/service/video/configs"
 	grpc "google.golang.org/grpc"
 )
 

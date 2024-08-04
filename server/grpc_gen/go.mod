@@ -1,11 +1,10 @@
-module github.com/haomiao000/DY/server/redis_svr
+module github.com/haomiao000/DY/server/grpc_gen
 
-go 1.22.4
+go 1.22.3
 
-replace github.com/haomiao000/DY/server/redis_svr => ./
+replace github.com/haomiao000/DY/server/grpc_gen => ./
 
 require (
-	github.com/gomodule/redigo v2.0.0+incompatible
 	google.golang.org/grpc v1.65.0
 	google.golang.org/protobuf v1.34.2
 )

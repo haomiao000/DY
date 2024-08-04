@@ -1,12 +1,12 @@
 package main
 
 import (
-	rpc_video "main/server/grpc_gen/rpc_video"
-	configs "main/server/service/video/configs"
-	dao "main/server/service/video/dao"
-	handler "main/server/service/video/handler"
-	initialize "main/server/service/video/initialize"
-	pkg "main/server/service/video/pkg"
+	rpc_video "github.com/haomiao000/DY/server/grpc_gen/rpc_video"
+	configs "github.com/haomiao000/DY/server/service/video/configs"
+	dao "github.com/haomiao000/DY/server/service/video/dao"
+	handler "github.com/haomiao000/DY/server/service/video/handler"
+	initialize "github.com/haomiao000/DY/server/service/video/initialize"
+	pkg "github.com/haomiao000/DY/server/service/video/pkg"
 
 	grpc "google.golang.org/grpc"
 

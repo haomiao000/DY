@@ -3,11 +3,11 @@ package handler
 import (
 	"context"
 	"errors"
-	rpc_interact "main/server/grpc_gen/rpc_interact"
-	rpc_relation "main/server/grpc_gen/rpc_relation"
-	rpc_user "main/server/grpc_gen/rpc_user"
-	configs "main/server/service/api/configs"
-	model "main/server/service/api/model"
+	rpc_interact "github.com/haomiao000/DY/server/grpc_gen/rpc_interact"
+	rpc_relation "github.com/haomiao000/DY/server/grpc_gen/rpc_relation"
+	rpc_user "github.com/haomiao000/DY/server/grpc_gen/rpc_user"
+	configs "github.com/haomiao000/DY/server/service/api/configs"
+	model "github.com/haomiao000/DY/server/service/api/model"
 	http "net/http"
 
 	gin "github.com/gin-gonic/gin"

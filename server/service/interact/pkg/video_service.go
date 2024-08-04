@@ -1,8 +1,8 @@
 package pkg
 
 import (
-	rpc_video "main/server/grpc_gen/rpc_video"
-	rpc_base "main/server/grpc_gen/rpc_base"
+	rpc_video "github.com/haomiao000/DY/server/grpc_gen/rpc_video"
+	rpc_base "github.com/haomiao000/DY/server/grpc_gen/rpc_base"
 	"context"
 	"fmt"
 )

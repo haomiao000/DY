@@ -1,8 +1,8 @@
 package pkg
 
 import (
-	rpc_user "main/server/grpc_gen/rpc_user"
-	rpc_base "main/server/grpc_gen/rpc_base"
+	rpc_user "github.com/haomiao000/DY/server/grpc_gen/rpc_user"
+	rpc_base "github.com/haomiao000/DY/server/grpc_gen/rpc_base"
 	"context"
 	"fmt"
 )

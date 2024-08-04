@@ -1,9 +1,9 @@
 package main
 
 import (
-	rpc "main/server/service/api/initialize/rpc"
-	initialize "main/server/service/api/initialize"
-	router "main/server/service/api/biz/router"
+	rpc "github.com/haomiao000/DY/server/service/api/initialize/rpc"
+	initialize "github.com/haomiao000/DY/server/service/api/initialize"
+	router "github.com/haomiao000/DY/server/service/api/biz/router"
 	gin "github.com/gin-gonic/gin"
 )
 

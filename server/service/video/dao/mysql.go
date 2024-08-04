@@ -2,8 +2,8 @@ package dao
 
 import (
 	"fmt"
-	rpc_video "main/server/grpc_gen/rpc_video"
-	model "main/server/service/video/model"
+	rpc_video "github.com/haomiao000/DY/server/grpc_gen/rpc_video"
+	model "github.com/haomiao000/DY/server/service/video/model"
 	gorm "gorm.io/gorm"
 )
 type MysqlManager struct {

@@ -1,8 +1,8 @@
 package rpc
 
 import (
-	interact "main/server/grpc_gen/rpc_interact"
-	"main/server/service/api/configs"
+	interact "github.com/haomiao000/DY/server/grpc_gen/rpc_interact"
+	"github.com/haomiao000/DY/server/service/api/configs"
 	"google.golang.org/grpc"
 )
 

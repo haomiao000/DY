@@ -1,7 +1,7 @@
 package pkg
 
 import (
-	videoModel "main/server/service/video/model"
+	videoModel "github.com/haomiao000/DY/server/service/video/model"
 )
 
 // GetAllVideo 从数据库中读取所有视频

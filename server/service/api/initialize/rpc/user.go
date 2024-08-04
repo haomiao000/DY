@@ -1,8 +1,8 @@
 package rpc
 
 import (
-	user "main/server/grpc_gen/rpc_user"
-	"main/server/service/api/configs"
+	user "github.com/haomiao000/DY/server/grpc_gen/rpc_user"
+	"github.com/haomiao000/DY/server/service/api/configs"
 	"google.golang.org/grpc"
 )
 

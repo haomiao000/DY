@@ -1,12 +1,12 @@
 package main
 
 import (
-	initialize "main/server/service/user/initialize"
-	handler "main/server/service/user/handler"
-	dao "main/server/service/user/dao"
+	initialize "github.com/haomiao000/DY/server/service/user/initialize"
+	handler "github.com/haomiao000/DY/server/service/user/handler"
+	dao "github.com/haomiao000/DY/server/service/user/dao"
 	grpc "google.golang.org/grpc"
-	rpc_user "main/server/grpc_gen/rpc_user"
-	configs "main/server/service/user/configs"
+	rpc_user "github.com/haomiao000/DY/server/grpc_gen/rpc_user"
+	configs "github.com/haomiao000/DY/server/service/user/configs"
 	"net"
 	"fmt"
 )

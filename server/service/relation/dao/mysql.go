@@ -1,8 +1,8 @@
 package dao
 
 import (
-	model "main/server/service/relation/model"
-	rpc_relation "main/server/grpc_gen/rpc_relation"
+	model "github.com/haomiao000/DY/server/service/relation/model"
+	rpc_relation "github.com/haomiao000/DY/server/grpc_gen/rpc_relation"
 	gorm "gorm.io/gorm"
 	"fmt"
 )

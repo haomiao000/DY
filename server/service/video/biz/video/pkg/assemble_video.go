@@ -2,9 +2,9 @@ package pkg
 
 import (
 	// "fmt"
-	"main/server/common"
-	userpkg "main/server/service/user/pkg"
-	videoModel "main/server/service/video/model"
+	common "github.com/haomiao000/DY/server/common"
+	userpkg "github.com/haomiao000/DY/server/service/user/pkg"
+	videoModel "github.com/haomiao000/DY/server/service/video/model"
 )
 
 func AssembleVideo(userID int64, videoRecord []*videoModel.VideoRecord) (map[int64]*common.Video, error) {

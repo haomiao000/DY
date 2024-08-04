@@ -1,12 +1,12 @@
 package main
 import (
-	initialize "main/server/service/interact/initialize"
-	pkg "main/server/service/interact/pkg"
-	handler "main/server/service/interact/handler"
-	rpc_interact "main/server/grpc_gen/rpc_interact"
-	dao "main/server/service/interact/dao"
+	initialize "github.com/haomiao000/DY/server/service/interact/initialize"
+	pkg "github.com/haomiao000/DY/server/service/interact/pkg"
+	handler "github.com/haomiao000/DY/server/service/interact/handler"
+	rpc_interact "github.com/haomiao000/DY/server/grpc_gen/rpc_interact"
+	dao "github.com/haomiao000/DY/server/service/interact/dao"
 	grpc "google.golang.org/grpc"
-	configs "main/server/service/interact/configs"
+	configs "github.com/haomiao000/DY/server/service/interact/configs"
 	"net"
 	"fmt"
 )

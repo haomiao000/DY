@@ -3,7 +3,7 @@ package initialize
 import (
 	gorm "gorm.io/gorm"
 	logger "gorm.io/gorm/logger"
-	configs "main/server/service/user/configs"
+	configs "github.com/haomiao000/DY/server/service/interact/configs"
 	logrus "gorm.io/plugin/opentelemetry/logging/logrus"
 	mysql "gorm.io/driver/mysql"
 	schema "gorm.io/gorm/schema"
@@ -11,7 +11,7 @@ import (
 	"time"
 )
 func InitDB() *gorm.DB {
-	dsn := fmt.Sprintf(configs.MySqlDSN, configs.UserDBUser, configs.UserDBPassword, configs.UserDBIP, configs.UserDBPort, configs.UserDBName)
+	dsn := fmt.Sprintf(configs.MySqlDSN, configs.InteractDBUser, configs.InteractDBPassword, configs.InteractDBIP, configs.InteractDBPort, configs.InteractDBName)
 	newLogger := logger.New(
 		logrus.NewWriter(), // io writer
 		logger.Config{

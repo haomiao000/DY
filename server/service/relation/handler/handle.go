@@ -1,9 +1,9 @@
 package handler
 
 import (
-	configs "main/server/common/configs"
-	rpc_base "main/server/grpc_gen/rpc_base"
-	rpc_relation "main/server/grpc_gen/rpc_relation"
+	configs "github.com/haomiao000/DY/server/common/configs"
+	rpc_base "github.com/haomiao000/DY/server/grpc_gen/rpc_base"
+	rpc_relation "github.com/haomiao000/DY/server/grpc_gen/rpc_relation"
 
 	"context"
 	http "net/http"

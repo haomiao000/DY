@@ -1,8 +1,8 @@
 package configs
 import(
-	rpc_user "main/server/grpc_gen/rpc_user"
-	rpc_interact "main/server/grpc_gen/rpc_interact"
-	rpc_relation "main/server/grpc_gen/rpc_relation"
+	rpc_user "github.com/haomiao000/DY/server/grpc_gen/rpc_user"
+	rpc_interact "github.com/haomiao000/DY/server/grpc_gen/rpc_interact"
+	rpc_relation "github.com/haomiao000/DY/server/grpc_gen/rpc_relation"
 )
 
 var (

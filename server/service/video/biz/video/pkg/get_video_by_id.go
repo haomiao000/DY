@@ -2,7 +2,7 @@ package pkg
 
 import (
 	"fmt"
-	videoModel "main/server/service/video/model"
+	videoModel "github.com/haomiao000/DY/server/service/video/model"
 	"sync"
 )
 

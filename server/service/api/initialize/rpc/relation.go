@@ -1,8 +1,8 @@
 package rpc
 
 import (
-	relation "main/server/grpc_gen/rpc_relation"
-	"main/server/service/api/configs"
+	relation "github.com/haomiao000/DY/server/grpc_gen/rpc_relation"
+	"github.com/haomiao000/DY/server/service/api/configs"
 	"google.golang.org/grpc"
 )
 

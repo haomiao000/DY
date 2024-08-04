@@ -3,9 +3,9 @@ package handler
 import (
 	"context"
 	"fmt"
-	rpc_base "main/server/grpc_gen/rpc_base"
-	rpc_video "main/server/grpc_gen/rpc_video"
-	model "main/server/service/video/model"
+	rpc_base "github.com/haomiao000/DY/server/grpc_gen/rpc_base"
+	rpc_video "github.com/haomiao000/DY/server/grpc_gen/rpc_video"
+	model "github.com/haomiao000/DY/server/service/video/model"
 )
 
 type MysqlManager interface {

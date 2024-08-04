@@ -7,7 +7,7 @@
 package rpc_video
 
 import (
-	rpc_base "main/server/grpc_gen/rpc_base"
+	rpc_base "github.com/haomiao000/DY/server/grpc_gen/rpc_base"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"

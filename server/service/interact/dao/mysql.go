@@ -1,8 +1,8 @@
 package dao
 
 import (
-	rpc_interact "main/server/grpc_gen/rpc_interact"
-	model "main/server/service/interact/model"
+	rpc_interact "github.com/haomiao000/DY/server/grpc_gen/rpc_interact"
+	model "github.com/haomiao000/DY/server/service/interact/model"
 	gorm "gorm.io/gorm"
 	"fmt"
 )

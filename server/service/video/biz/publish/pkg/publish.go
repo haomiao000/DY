@@ -2,16 +2,16 @@ package pkg
 
 import (
 	"fmt"
-	"main/configs"
-	"main/server/common"
+	"github.com/haomiao000/DY/configs"
+	"github.com/haomiao000/DY/server/common"
 	"main/server/service/publish/model"
-	videoModel "main/server/service/video/model"
-	videopkg "main/server/service/video/pkg"
+	videoModel "github.com/haomiao000/DY/server/service/video/model"
+	videopkg "github.com/haomiao000/DY/server/service/video/pkg"
 	"net/http"
 	"path/filepath"
 	"time"
 
-	"main/server/service/user/pkg"
+	"github.com/haomiao000/DY/server/service/user/pkg"
 
 	"github.com/gin-gonic/gin"
 )

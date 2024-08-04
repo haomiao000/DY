@@ -2,10 +2,10 @@ package dao
 
 import (
 	gorm "gorm.io/gorm"
-	model "main/server/service/user/model"
-	rpc_user "main/server/grpc_gen/rpc_user"
-	middleware "main/server/common/middleware"
-	configs "main/server/common/configs"
+	model "github.com/haomiao000/DY/server/service/user/model"
+	rpc_user "github.com/haomiao000/DY/server/grpc_gen/rpc_user"
+	middleware "github.com/haomiao000/DY/server/common/middleware"
+	configs "github.com/haomiao000/DY/server/common/configs"
 	"errors"
 	"fmt"
 )

@@ -2,8 +2,8 @@ package initialize
 
 
 import (
-	video "main/server/grpc_gen/rpc_video"
-	configs "main/server/service/interact/configs"
+	video "github.com/haomiao000/DY/server/grpc_gen/rpc_video"
+	configs "github.com/haomiao000/DY/server/service/interact/configs"
 	grpc "google.golang.org/grpc"
 )
 

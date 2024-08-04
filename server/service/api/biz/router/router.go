@@ -1,9 +1,9 @@
 package router
 
 import (
-	middleware "main/server/common/middleware"
+	middleware "github.com/haomiao000/DY/server/common/middleware"
 	gin "github.com/gin-gonic/gin"
-	handler "main/server/service/api/biz/handler"
+	handler "github.com/haomiao000/DY/server/service/api/biz/handler"
 )
 
 func InitRouter(r *gin.Engine) {

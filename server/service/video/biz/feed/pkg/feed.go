@@ -2,10 +2,10 @@ package pkg
 
 import (
 	"fmt"
-	"main/middleware"
-	"main/server/common"
-	"main/server/service/feed/model"
-	videopkg "main/server/service/video/pkg"
+	"github.com/haomiao000/DY/middleware"
+	"github.com/haomiao000/DY/server/common"
+	"github.com/haomiao000/DY/server/service/feed/model"
+	videopkg "github.com/haomiao000/DY/server/service/video/pkg"
 	"net/http"
 	"time"
 

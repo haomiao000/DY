@@ -1,8 +1,8 @@
 package pkg
 
 import (
-	"main/internal/initialize"
-	videoModel "main/server/service/video/model"
+	"github.com/haomiao000/DY/internal/initialize"
+	videoModel "github.com/haomiao000/DY/server/service/video/model"
 
 	"gorm.io/gorm"
 )

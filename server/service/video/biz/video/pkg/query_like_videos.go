@@ -1,8 +1,8 @@
 package pkg
 
 import (
-	"main/internal/initialize"
-	favoriteModel "main/server/service/favorite/model"
+	"github.com/haomiao000/DY/internal/initialize"
+	favoriteModel "github.com/haomiao000/DY/server/service/favorite/model"
 
 	"gorm.io/gorm"
 )

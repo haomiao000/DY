@@ -3,7 +3,7 @@ package initialize
 import (
 	gorm "gorm.io/gorm"
 	logger "gorm.io/gorm/logger"
-	configs "main/server/service/user/configs"
+	configs "github.com/haomiao000/DY/server/service/user/configs"
 	logrus "gorm.io/plugin/opentelemetry/logging/logrus"
 	mysql "gorm.io/driver/mysql"
 	schema "gorm.io/gorm/schema"

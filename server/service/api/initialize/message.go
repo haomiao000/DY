@@ -6,7 +6,7 @@ import (
 	"io"
 	"net"
 	"sync"
-	model "main/server/service/api/model"
+	model "github.com/haomiao000/DY/server/service/api/model"
 )
 
 // chatConnMap 是一个并发安全的映射，用于存储用户之间的连接。

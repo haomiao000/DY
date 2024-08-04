@@ -9,7 +9,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v4"
 
-	"main/server/common/configs"
+	"github.com/haomiao000/DY/server/common/configs"
 )
 
 func GetKey(_ *jwt.Token)(interface{} , error){

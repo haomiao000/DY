@@ -3,11 +3,11 @@ package handler
 import (
 	"context"
 	"errors"
-	configs "main/server/common/configs"
-	rpc_base "main/server/grpc_gen/rpc_base"
-	rpc_interact "main/server/grpc_gen/rpc_interact"
-	rpc_video "main/server/grpc_gen/rpc_video"
-	model "main/server/service/interact/model"
+	configs "github.com/haomiao000/DY/server/common/configs"
+	rpc_base "github.com/haomiao000/DY/server/grpc_gen/rpc_base"
+	rpc_interact "github.com/haomiao000/DY/server/grpc_gen/rpc_interact"
+	rpc_video "github.com/haomiao000/DY/server/grpc_gen/rpc_video"
+	model "github.com/haomiao000/DY/server/service/interact/model"
 
 	http "net/http"
 	"strconv"
