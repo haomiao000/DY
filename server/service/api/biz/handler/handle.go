@@ -3,9 +3,8 @@ package handler
 import (
 	"context"
 	"errors"
-	_ "fmt"
 	rpc_interact "main/server/grpc_gen/rpc_interact"
-	"main/server/grpc_gen/rpc_relation"
+	rpc_relation "main/server/grpc_gen/rpc_relation"
 	rpc_user "main/server/grpc_gen/rpc_user"
 	configs "main/server/service/api/configs"
 	model "main/server/service/api/model"
@@ -196,17 +195,19 @@ func CommentAction(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, resp)
 		return
 	}
-	resp.Comment = &model.Comment{
-		Id: res.Comment.Id,
-		User: &model.User{
-			Id: res.Comment.User.Id,
-			Name: res.Comment.User.Name,
-			FollowCount: res.Comment.User.FollowCount,
-			FollowerCount: res.Comment.User.FollowerCount,
-			IsFollow: res.Comment.User.IsFollow,
-		},
-		Content: res.Comment.Content,
-		CreateDate: res.Comment.CreateDate,
+	if res.Comment != nil {
+		resp.Comment = &model.Comment{
+			Id: res.Comment.Id,
+			User: &model.User{
+				Id: res.Comment.User.Id,
+				Name: res.Comment.User.Name,
+				FollowCount: res.Comment.User.FollowCount,
+				FollowerCount: res.Comment.User.FollowerCount,
+				IsFollow: res.Comment.User.IsFollow,
+			},
+			Content: res.Comment.Content,
+			CreateDate: res.Comment.CreateDate,
+		}
 	}
 	c.JSON(http.StatusOK , resp)
 }

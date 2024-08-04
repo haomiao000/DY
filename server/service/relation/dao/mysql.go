@@ -62,13 +62,14 @@ func (m *MysqlManager) GetFollowUserIdList(userID int64) ([]int64 , error) {
 func (m *MysqlManager) GetFollowerUserIdList(userID int64) ([]int64 , error) {
 	var userIDs []int64
 	err := m.concernDB.Model(&model.ConcernsInfo{}).
-		Where("follow_id = ?", userID).
-		Pluck("user_id", &userIDs).Error
+		Where("user_id = ?", userID).
+		Pluck("follower_id", &userIDs).Error
 	if err == gorm.ErrRecordNotFound {
 		fmt.Println("user follower user is empty")
 		return nil , nil
 	}
 	if err != nil {
+		fmt.Println(err)
 		return nil, err
 	}
 	return userIDs, nil

@@ -52,6 +52,11 @@ func (s *InteractServiceImpl) FavoriteAction(ctx context.Context, req *rpc_inter
 		}
 		return resp , err
 	}
+	if req.ActionType != configs.Like && req.ActionType != configs.UnLike {
+		resp.StatusCode = http.StatusNotFound
+		resp.StatusMsg = "Invalid Action Type"
+		return resp , errors.New("invalid action type")
+	}
 	if favoriteStatus == configs.IsLike {
 		if req.ActionType == configs.Like {
 			resp = &rpc_interact.FavoriteActionResponse{
