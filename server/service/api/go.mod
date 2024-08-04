@@ -2,9 +2,9 @@ module github.com/haomiao000/DY/server/service/api
 
 go 1.22.3
 
-replace github.com/haomiao000/DY/server/grpc_gen => ../../grpc_gen
+// replace github.com/haomiao000/DY/server/grpc_gen => ../../grpc_gen
 
-replace github.com/haomiao000/DY/server/common => ../../common
+// replace github.com/haomiao000/DY/server/common => ../../common
 
 require (
 	github.com/gin-gonic/gin v1.10.0

@@ -2,11 +2,11 @@ module github.com/haomiao000/DY/server/service/video
 
 go 1.22.3
 
-replace github.com/haomiao000/DY/server/grpc_gen => ../../grpc_gen
+// replace github.com/haomiao000/DY/server/grpc_gen => ../../grpc_gen
 
-replace github.com/haomiao000/DY/server/common => ../../common
+// replace github.com/haomiao000/DY/server/common => ../../common
 
-replace github.com/haomiao000/DY => ../../../..
+// replace github.com/haomiao000/DY => ../../../..
 
 require (
 	github.com/go-sql-driver/mysql v1.7.0 // indirect

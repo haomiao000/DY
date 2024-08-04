@@ -2,9 +2,9 @@ module github.com/haomiao000/DY/server/service/relation
 
 go 1.22.3
 
-replace github.com/haomiao000/DY/server/grpc_gen => ../../grpc_gen
+// replace github.com/haomiao000/DY/server/grpc_gen => ../../grpc_gen
 
-replace github.com/haomiao000/DY/server/common => ../../common
+// replace github.com/haomiao000/DY/server/common => ../../common
 
 require (
 	github.com/haomiao000/DY/server/common v0.0.0-00010101000000-000000000000
