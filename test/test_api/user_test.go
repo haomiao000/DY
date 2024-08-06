@@ -12,7 +12,7 @@ package test_api
 // 	"os/exec"
 //     "github.com/gin-gonic/gin"
 //     "github.com/stretchr/testify/assert"
-//     "main/server/service/api/api_set/router"
+//     "main/server/service/api/api_server/router"
 // 	"fmt"
 // )
 

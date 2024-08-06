@@ -5,8 +5,8 @@ import (
 	"net"
 
 	rpc_relation "github.com/haomiao000/DY/internal/grpc_gen/rpc_relation"
-	api_get "github.com/haomiao000/DY/server/base_serv/relation/api_get"
-	api_set "github.com/haomiao000/DY/server/base_serv/relation/api_set"
+	api_client "github.com/haomiao000/DY/server/base_serv/relation/api_client"
+	api_server "github.com/haomiao000/DY/server/base_serv/relation/api_server"
 	configs "github.com/haomiao000/DY/server/base_serv/relation/configs"
 	dao "github.com/haomiao000/DY/server/base_serv/relation/dao"
 	initialize "github.com/haomiao000/DY/server/base_serv/relation/initialize"
@@ -17,9 +17,9 @@ func main() {
 	db := initialize.InitDB()
 	userServ := initialize.InitUser()
 	grpcServer := grpc.NewServer()
-	impl := &api_set.RelationServiceImpl{
+	impl := &api_server.RelationServiceImpl{
 		MysqlManager: dao.NewMysqlManager(db),
-		UserManager:  api_get.NewUserClient(userServ),
+		UserManager:  api_client.NewUserClient(userServ),
 	}
 	rpc_relation.RegisterRelationServiceImplServer(grpcServer, impl)
 

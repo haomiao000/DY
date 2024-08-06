@@ -5,7 +5,7 @@ import (
 	"net"
 
 	rpc_user "github.com/haomiao000/DY/internal/grpc_gen/rpc_user"
-	api_set "github.com/haomiao000/DY/server/base_serv/user/api_set"
+	api_server "github.com/haomiao000/DY/server/base_serv/user/api_server"
 	configs "github.com/haomiao000/DY/server/base_serv/user/configs"
 	dao "github.com/haomiao000/DY/server/base_serv/user/dao"
 	initialize "github.com/haomiao000/DY/server/base_serv/user/initialize"
@@ -15,7 +15,7 @@ import (
 func main() {
 	db := initialize.InitDB()
 	grpcServer := grpc.NewServer()
-	impl := &api_set.UserServiceImpl{
+	impl := &api_server.UserServiceImpl{
 		MysqlManager: dao.NewMysqlManager(db),
 	}
 	rpc_user.RegisterUserServiceImplServer(grpcServer, impl)

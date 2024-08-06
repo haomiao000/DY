@@ -5,8 +5,8 @@ import (
 	"net"
 
 	rpc_interact "github.com/haomiao000/DY/internal/grpc_gen/rpc_interact"
-	api_get "github.com/haomiao000/DY/server/base_serv/interact/api_get"
-	api_set "github.com/haomiao000/DY/server/base_serv/interact/api_set"
+	api_client "github.com/haomiao000/DY/server/base_serv/interact/api_client"
+	api_server "github.com/haomiao000/DY/server/base_serv/interact/api_server"
 	configs "github.com/haomiao000/DY/server/base_serv/interact/configs"
 	dao "github.com/haomiao000/DY/server/base_serv/interact/dao"
 	initialize "github.com/haomiao000/DY/server/base_serv/interact/initialize"
@@ -18,11 +18,11 @@ func main() {
 	userServ := initialize.InitUser()
 	videoServ := initialize.InitVideo()
 	grpcServer := grpc.NewServer()
-	impl := &api_set.InteractServiceImpl{
+	impl := &api_server.InteractServiceImpl{
 		FavoriteMysqlManager: dao.NewMysqlManager(db),
 		CommentMysqlManager:  dao.NewMysqlManager(db),
-		UserManager:          api_get.NewUserClient(userServ),
-		VideoManager:         api_get.NewVideoClient(videoServ),
+		UserManager:          api_client.NewUserClient(userServ),
+		VideoManager:         api_client.NewVideoClient(videoServ),
 	}
 	rpc_interact.RegisterInteractServiceImplServer(grpcServer, impl)
 
