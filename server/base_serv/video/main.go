@@ -2,8 +2,8 @@ package main
 
 import (
 	rpc_video "github.com/haomiao000/DY/internal/grpc_gen/rpc_video"
-	api_get "github.com/haomiao000/DY/server/base_serv/video/api_get"
-	api_set "github.com/haomiao000/DY/server/base_serv/video/api_set"
+	api_client "github.com/haomiao000/DY/server/base_serv/video/api_client"
+	api_server "github.com/haomiao000/DY/server/base_serv/video/api_server"
 	configs "github.com/haomiao000/DY/server/base_serv/video/configs"
 	dao "github.com/haomiao000/DY/server/base_serv/video/dao"
 	initialize "github.com/haomiao000/DY/server/base_serv/video/initialize"
@@ -18,9 +18,9 @@ func main() {
 	db := initialize.InitDB()
 	userServ := initialize.InitUser()
 	grpcServer := grpc.NewServer()
-	impl := &api_set.VideoServiceImpl{
+	impl := &api_server.VideoServiceImpl{
 		MysqlManager: dao.NewMysqlManager(db),
-		UserManager:  api_get.NewUserClient(userServ),
+		UserManager:  api_client.NewUserClient(userServ),
 	}
 	rpc_video.RegisterVideoServiceImplServer(grpcServer, impl)
 

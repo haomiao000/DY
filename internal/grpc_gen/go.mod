@@ -2,8 +2,6 @@ module github.com/haomiao000/DY/internal/grpc_gen
 
 go 1.22.3
 
-replace github.com/haomiao000/DY/internal/grpc_gen => ./
-
 require (
 	google.golang.org/grpc v1.65.0
 	google.golang.org/protobuf v1.34.2
