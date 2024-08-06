@@ -16,14 +16,16 @@ assets/public
 
 .air.conf
 
-server/service/api/api
+.vscode
 
-server/service/user/user
+server/gateway_serv/gateway/assets
 
-server/service/video/video
+server/gateway_serv/gateway/gateway
 
-server/service/relation/relation
+server/base_serv/user/user
 
-server/service/interact/interact
+server/base_serv/relation/relation
 
-server/service/api/assets
+server/base_serv/interact/interact
+
+server/base_serv/video/video
