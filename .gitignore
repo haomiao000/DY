@@ -15,3 +15,18 @@ tmp
 assets/public
 
 .air.conf
+
+.vscode
+
+server/gateway_serv/gateway/assets
+
+server/gateway_serv/gateway/gateway
+
+server/base_serv/user/user
+
+server/base_serv/relation/relation
+
+server/base_serv/interact/interact
+
+server/base_serv/video/video
+

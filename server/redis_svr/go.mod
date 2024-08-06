@@ -2,11 +2,9 @@ module github.com/haomiao000/DY/server/redis_svr
 
 go 1.22
 
-replace github.com/haomiao000/DY/comm/discovery => ../../comm/discovery
 
 require (
-	github.com/gomodule/redigo v2.0.0+incompatible
-	github.com/haomiao000/DY/comm/discovery v0.0.0-00010101000000-000000000000
+	github.com/gomodule/redigo v1.9.2
 	google.golang.org/grpc v1.65.0
 	google.golang.org/protobuf v1.34.2
 	gopkg.in/yaml.v2 v2.4.0
