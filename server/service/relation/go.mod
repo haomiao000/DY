@@ -2,13 +2,9 @@ module github.com/haomiao000/DY/server/service/relation
 
 go 1.22.3
 
-// replace github.com/haomiao000/DY/server/grpc_gen => ../../grpc_gen
-
-// replace github.com/haomiao000/DY/server/common => ../../common
-
 require (
-	github.com/haomiao000/DY/server/common v0.0.0-00010101000000-000000000000
-	github.com/haomiao000/DY/server/grpc_gen v0.0.0-00010101000000-000000000000
+	github.com/haomiao000/DY/server/common v0.0.0-20240804124722-55dd33c3d8e2
+	github.com/haomiao000/DY/server/grpc_gen v0.0.0-20240804124722-55dd33c3d8e2
 	google.golang.org/grpc v1.65.0
 	gorm.io/driver/mysql v1.5.7
 	gorm.io/gorm v1.25.11
