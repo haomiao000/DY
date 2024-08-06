@@ -25,3 +25,5 @@ server/service/video/video
 server/service/relation/relation
 
 server/service/interact/interact
+
+server/service/api/assets

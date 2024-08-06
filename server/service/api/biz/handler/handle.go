@@ -358,6 +358,7 @@ func FriendList(c *gin.Context) {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
+	
 	userID, exists := c.Get("userID")
 	if !exists {
 		c.String(http.StatusNotFound, errors.New("api context get user_id failed").Error())
