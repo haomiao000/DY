@@ -40,3 +40,51 @@ func (r *RedisSvrImpl) SetIfNotExist(ctx context.Context, req *pb.SetIfNotExistR
 	}
 	return &pb.SetIfNotExistRsp{Ok: ok}, nil
 }
+
+func (r *RedisSvrImpl) LPush(ctx context.Context , req *pb.LPushRequest) (*pb.ListResponse , error) {
+	err := internal.LPush(req.Key , int(req.ExpireTime) , req.Values...)
+	if err != nil {
+		return nil , err
+	}
+	return &pb.ListResponse{} , nil
+}
+
+func (r *RedisSvrImpl) RPush(ctx context.Context , req *pb.RPushRequest) (*pb.ListResponse , error) {
+	err := internal.RPush(req.Key , int(req.ExpireTime) , req.Values...)
+	if err != nil {
+		return nil , err
+	}
+	return &pb.ListResponse{} , nil
+}
+
+func (r *RedisSvrImpl) LPop(ctx context.Context , req *pb.LPopRequest) (*pb.PopResponse , error) {
+	err := internal.LPop(req.Key)
+	if err != nil {
+		return nil , err
+	}
+	return &pb.PopResponse{} , nil
+}
+
+func (r *RedisSvrImpl) RPop(ctx context.Context , req *pb.RPopRequest) (*pb.PopResponse , error) {
+	err := internal.RPop(req.Key)
+	if err != nil {
+		return nil , err
+	}
+	return &pb.PopResponse{} , nil
+}
+
+func (r *RedisSvrImpl) SAdd(ctx context.Context , req *pb.SAddRequest) (*pb.SAddResponse , error) {
+	err := internal.SAdd(req.Key , int(req.Expire) , req.Values...)
+	if err != nil {
+		return nil , err
+	}
+	return &pb.SAddResponse{} , nil
+}
+
+func (r *RedisSvrImpl) SRem(ctx context.Context , req *pb.SRemRequest) (*pb.SRemResponse , error) {
+	err := internal.SRem(req.Key , req.Value)
+	if err != nil {
+		return nil , err
+	}
+	return &pb.SRemResponse{} , nil
+}

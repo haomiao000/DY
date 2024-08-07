@@ -14,10 +14,13 @@ import (
 
 func main() {
 	db := initialize.InitDB()
+	rdb := initialize.InitRedis()
 	grpcServer := grpc.NewServer()
 	impl := &api_server.UserServiceImpl{
 		MysqlManager: dao.NewMysqlManager(db),
+		RedisManager: dao.NewRedisSvrClient(rdb),	
 	}
+	err := impl.RedisManager.
 	rpc_user.RegisterUserServiceImplServer(grpcServer, impl)
 
 	listener, err := net.Listen("tcp", configs.UserServerAddr)

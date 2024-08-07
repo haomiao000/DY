@@ -78,6 +78,14 @@ func Set(key, val string) error {
 	return nil
 }
 
+func SetExpire(key string , expire int) error {
+	_ , err := Do("EXPIRE", key, expire)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // SetWithExpire 设置带过期时间的 key
 func SetWithExpire(key, val string, expire int) error {
 	ret, err := redigo.String(Do("setex", key, expire, val)) // 执行 SETEX 命令
@@ -125,12 +133,108 @@ func BatchSet(kv map[string]string) error {
 
 // SetIfNotExist 仅在 key 不存在时设置值
 func SetIfNotExist(key, val string) (bool, error) {
-	ok, err := redigo.Bool(Do("EVAL", entity.GetAndSetLua, 1, key, val)) // 执行 Lua 脚本实现的 SETNX 命令
+	ok, err := redigo.Bool(Do("EVAL", entity.GetAndSetLua, 1, key, val)) 
 	if err != nil && err != redigo.ErrNil {
 		return false, err
 	}
-	if !ok { // key 已存在
+	if !ok {
 		return false, nil
 	}
 	return true, nil
+}
+
+func LPush(key string, expire int, values ...string) error {
+    args := redigo.Args{}.Add(key).AddFlat(values)
+    _, err := redigo.Int(Do("LPUSH", args...))
+    if err != nil {
+        return err
+    }
+    err = SetExpire(key, expire)
+    if err != nil {
+        return err
+    }
+    return nil
+}
+
+func RPush(key string, expire int, values ...string) (error) {
+	args := redigo.Args{}.Add(key).AddFlat(values)
+	_, err := redigo.Int(Do("RPUSH", args...))
+	if err != nil {
+		return err
+	}
+	err = SetExpire(key , expire)
+    if err != nil {
+        return err
+    }
+	return nil
+}
+
+func LPop(key string) (error) {
+	_, err := redigo.String(Do("LPOP", key))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func RPop(key string) (error) {
+	_ ,err := redigo.String(Do("RPOP", key))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func LRange(key string, start, stop int) ([]string, error) {
+	values, err := redigo.Strings(Do("LRANGE", key, start, stop))
+	if err != nil {
+		return nil, err
+	}
+	return values, nil
+}
+
+func SAdd(key string, expire int, members ...string) error {
+	args := redigo.Args{}.Add(key).AddFlat(members)
+	_, err := redigo.Int(Do("SADD", args...))
+	if err != nil {
+		return err
+	}
+	err = SetExpire(key, expire)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func SRem(key string, members ...string) (error) {
+	args := redigo.Args{}.Add(key).AddFlat(members)
+	_, err := redigo.Int(Do("SREM", args...))
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func SIsMember(key, member string) (bool, error) {
+	isMember, err := redigo.Bool(Do("SISMEMBER", key, member))
+	if err != nil {
+		return false, err
+	}
+	return isMember, nil
+}
+
+func SMembers(key string) ([]string, error) {
+	members, err := redigo.Strings(Do("SMEMBERS", key))
+	if err != nil {
+		return nil, err
+	}
+	return members, nil
+}
+
+func SCard(key string) (int, error) {
+	count, err := redigo.Int(Do("SCARD", key))
+	if err != nil {
+		return 0, err
+	}
+	return count, nil
 }
