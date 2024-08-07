@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 
+
 	rpc_user "github.com/haomiao000/DY/internal/grpc_gen/rpc_user"
 	api_server "github.com/haomiao000/DY/server/base_serv/user/api_server"
 	configs "github.com/haomiao000/DY/server/base_serv/user/configs"
@@ -20,7 +21,6 @@ func main() {
 		MysqlManager: dao.NewMysqlManager(db),
 		RedisManager: dao.NewRedisSvrClient(rdb),	
 	}
-	err := impl.RedisManager.
 	rpc_user.RegisterUserServiceImplServer(grpcServer, impl)
 
 	listener, err := net.Listen("tcp", configs.UserServerAddr)

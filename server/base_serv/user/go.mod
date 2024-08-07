@@ -2,10 +2,15 @@ module github.com/haomiao000/DY/server/base_serv/user
 
 go 1.22.3
 
+replace github.com/haomiao000/DY/server/redis_svr => ../../redis_svr
+
+replace github.com/haomiao000/DY/server/common => ../../common
+
 require (
 	github.com/bwmarrin/snowflake v0.3.0
 	github.com/haomiao000/DY/internal/grpc_gen v0.0.0-20240806055354-ce5fa6dc9190
 	github.com/haomiao000/DY/server/common v0.0.0-20240806035240-e80eb15df292
+	github.com/haomiao000/DY/server/redis_svr v0.0.0-00010101000000-000000000000
 	google.golang.org/grpc v1.65.0
 	gorm.io/driver/mysql v1.5.7
 	gorm.io/gorm v1.25.11

@@ -1,15 +1,15 @@
 package dao
 
 import (
-	redigo "github.com/gomodule/redigo/redis"
+	redis "github.com/haomiao000/DY/server/redis_svr/pb/redis_svr"
 )
 
 type RedisManager struct {
-	redisClient *redigo.Conn
+	redisClient redis.RedisSvrClient
 }
 
 
 
-func NewRedisSvrClient(rdb *redigo.Conn) *RedisManager {
+func NewRedisSvrClient(rdb redis.RedisSvrClient) *RedisManager {
 	return &RedisManager{redisClient: rdb}
 }

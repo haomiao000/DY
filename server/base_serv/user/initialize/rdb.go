@@ -7,12 +7,12 @@ import (
 	redis "github.com/haomiao000/DY/server/redis_svr/pb/redis_svr"
 )
 
-func InitRedis() *redis.RedisSvrClient {
+func InitRedis() redis.RedisSvrClient {
 	con, err := grpc.Dial(configs.RedisIP+configs.RedisPort, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		panic(err)
 	}
-	return pb.NewRedisSvrClient(con)
+	return redis.NewRedisSvrClient(con)
 }
 
 // func InitRedis() *redigo.Conn {

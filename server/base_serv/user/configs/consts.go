@@ -7,6 +7,7 @@ var (
     UserDBPort     = 3306
     UserDBName     = "DY"
 
-	
+	RedisIP        = "127.0.0.1"
+    RedisPort      = ":50051"
 	UserServerAddr = "127.0.0.1:8081"
 )
