@@ -149,10 +149,12 @@ func LPush(key string, expire int, values ...string) error {
     if err != nil {
         return err
     }
-    err = SetExpire(key, expire)
-    if err != nil {
-        return err
-    }
+	if expire != 0 {
+		err = SetExpire(key, expire)
+		if err != nil {
+			return err
+		}
+	}
     return nil
 }
 
@@ -162,10 +164,12 @@ func RPush(key string, expire int, values ...string) (error) {
 	if err != nil {
 		return err
 	}
-	err = SetExpire(key , expire)
-    if err != nil {
-        return err
-    }
+	if expire != 0 {
+		err = SetExpire(key , expire)
+		if err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -199,9 +203,11 @@ func SAdd(key string, expire int, members ...string) error {
 	if err != nil {
 		return err
 	}
-	err = SetExpire(key, expire)
-	if err != nil {
-		return err
+	if expire != 0 {
+		err = SetExpire(key, expire)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

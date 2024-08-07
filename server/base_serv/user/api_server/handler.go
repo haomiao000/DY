@@ -23,7 +23,7 @@ type MysqlManager interface {
 	GetUserListByUserId(userID []int64) ([]*model.User, error)
 }
 type RedisManager interface {
-
+	SetUserLoginInfo(ctx context.Context , key string , val string) error
 }
 type UserServiceImpl struct {
 	rpc_user.UnimplementedUserServiceImplServer
