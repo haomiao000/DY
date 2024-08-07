@@ -22,9 +22,13 @@ type MysqlManager interface {
 	GetUserByUid(userID int64) (*model.User, error)
 	GetUserListByUserId(userID []int64) ([]*model.User, error)
 }
+type RedisManager interface {
+
+}
 type UserServiceImpl struct {
 	rpc_user.UnimplementedUserServiceImplServer
 	MysqlManager MysqlManager
+	RedisManager RedisManager
 }
 
 func (s *UserServiceImpl) Register(ctx context.Context, req *rpc_user.UserRegisterRequest) (*rpc_user.UserRegisterResponse, error) {

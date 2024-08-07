@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 
+
 	rpc_user "github.com/haomiao000/DY/internal/grpc_gen/rpc_user"
 	api_server "github.com/haomiao000/DY/server/base_serv/user/api_server"
 	configs "github.com/haomiao000/DY/server/base_serv/user/configs"
@@ -14,9 +15,11 @@ import (
 
 func main() {
 	db := initialize.InitDB()
+	rdb := initialize.InitRedis()
 	grpcServer := grpc.NewServer()
 	impl := &api_server.UserServiceImpl{
 		MysqlManager: dao.NewMysqlManager(db),
+		RedisManager: dao.NewRedisSvrClient(rdb),	
 	}
 	rpc_user.RegisterUserServiceImplServer(grpcServer, impl)
 
