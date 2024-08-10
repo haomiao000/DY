@@ -39,6 +39,19 @@ const (
 	MysqlAlreadyExists = "mysql_already_exists"
 
 	VideoURL = "http://localhost:8080/assets/public/"
+
+	LoginInfoRedisHead = "LoginInfo:" // + username
+	
+	UserRedisHead = "User:" // + user_id
+
+	FavoriteOwnerHead = "FavoriteOwner:"// + user_id
+
+	VideoCommentHead = "CommentVideoID:" // + video_id
+
+	SingleCommentHead = "SingleComment:" // + comment_id
+
+	UserFollowHead = "UserFollow:" // + user_id
+	UserFollowerHead = "UserFollower:" // + user_id
 )
 
 var MySecret = []byte("this is a very complex secret")

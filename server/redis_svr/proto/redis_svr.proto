@@ -9,6 +9,7 @@ service redis_svr {
     rpc SetWithExpire (SetWithExpireReq) returns (SetWithExpireRsp);
     rpc BatchSet (BatchSetReq) returns (BatchSetRsp);
     rpc SetIfNotExist (SetIfNotExistReq) returns (SetIfNotExistRsp);
+    rpc Delete (DeleteReq) returns (DeleteRsp);
     //List----------------------------------<
     rpc LPush(LPushRequest) returns (ListResponse);
     rpc RPush(RPushRequest) returns (ListResponse);
@@ -114,7 +115,7 @@ message LRangeResponse {
 
 message SAddRequest {
     string key = 1;
-    repeated string values = 2;
+    string value = 2;
     int32 expire = 3; 
 }
 
@@ -152,4 +153,12 @@ message SCardRequest {
 
 message SCardResponse {
     int32 count = 1;
+}
+
+message DeleteReq {
+    string key = 1;
+}
+
+message DeleteRsp {
+    bool exist = 1;
 }

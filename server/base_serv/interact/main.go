@@ -11,10 +11,12 @@ import (
 	dao "github.com/haomiao000/DY/server/base_serv/interact/dao"
 	initialize "github.com/haomiao000/DY/server/base_serv/interact/initialize"
 	grpc "google.golang.org/grpc"
+	// redis "github.com/haomiao000/DY/comm/redis"
 )
 
 func main() {
 	db := initialize.InitDB()
+	// redis.Init()
 	userServ := initialize.InitUser()
 	videoServ := initialize.InitVideo()
 	grpcServer := grpc.NewServer()

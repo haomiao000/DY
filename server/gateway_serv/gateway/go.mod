@@ -1,11 +1,20 @@
 module github.com/haomiao000/DY/server/gateway_serv/gateway
 
-go 1.22.3
+go 1.22.5
+
+toolchain go1.22.6
+
+replace github.com/haomiao000/DY/server/redis_svr => ../../redis_svr
+
+replace github.com/haomiao000/DY/server/common => ../../common
+
+replace github.com/haomiao000/DY/comm/redis => ../../../comm/redis
 
 require (
 	github.com/gin-gonic/gin v1.10.0
-	github.com/haomiao000/DY/internal/grpc_gen v0.0.0-20240806055354-ce5fa6dc9190
-	github.com/haomiao000/DY/server/common v0.0.0-20240806035240-e80eb15df292
+	github.com/haomiao000/DY/comm/redis v0.0.0-00010101000000-000000000000
+	github.com/haomiao000/DY/internal/grpc_gen v0.0.0-20240807131301-3036cdff1630
+	github.com/haomiao000/DY/server/common v0.0.0-00010101000000-000000000000
 	google.golang.org/grpc v1.65.0
 )
 
@@ -21,6 +30,7 @@ require (
 	github.com/go-playground/validator/v10 v10.20.0 // indirect
 	github.com/goccy/go-json v0.10.2 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
+	github.com/haomiao000/DY/server/redis_svr v0.0.0-00010101000000-000000000000 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.7 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect

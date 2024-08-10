@@ -1,4 +1,4 @@
-package main
+package redis
 
 import (
 	"context"
@@ -125,6 +125,13 @@ func Get(ctx context.Context, key string) (string, bool, error) {
 	return rsp.GetVal(), rsp.GetExist(), nil
 }
 
+func Delete(ctx context.Context , key string) (bool , error) {
+	rsp , err := redisCli.Delete(ctx , &pb.DeleteReq{Key: key})
+	if err != nil {
+		return false , err
+	}
+	return rsp.GetExist() , nil
+}
 // msg是一个pb结构体指针
 func GetProto(ctx context.Context, key string, msg proto.Message) (bool, error) {
 	val, exist, err := Get(ctx, key)
@@ -210,3 +217,53 @@ func BatchGetJson(ctx context.Context, keys []string, msg any) (map[string]any, 
 	}
 	return msgs, nil
 }
+
+func SAdd(ctx context.Context , key string , val string) error {
+	_ , err := redisCli.SAdd(ctx , &pb.SAddRequest{Key: key , Value: val})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func SAddJson(ctx context.Context , key string , value any) error{
+	b, err := json.Marshal(value)
+	if err != nil {
+		return err
+	}
+	return SAdd(ctx , key , string(b))
+}
+
+func SISMember(ctx context.Context , key string , val string) (bool , error) {
+	m , err := redisCli.SISMember(ctx , &pb.SISMemberRequest{Key: key , Value: val})
+	if err != nil {
+		return false , err
+	}
+	if !m.Exists {
+		return false , nil
+	}
+	return true , nil
+}
+
+func SMembers(ctx context.Context , key string) ([]string , error) {
+	m , err := redisCli.SMembers(ctx , &pb.SMembersRequest{Key: key})
+	if err != nil {
+		return nil , err
+	}
+	return m.Values , nil
+}
+
+func SRem(ctx context.Context , key string , val string) (error) {
+	_ , err := redisCli.SRem(ctx , &pb.SRemRequest{Key: key , Value: val})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+// func BatchGetJsonList(ctx context.Context , key string, msg any) (error) {
+// 	m , err := redisCli.SMembers(ctx , &pb.SMembersRequest{Key:key,})
+// 	if err != nil {
+// 		return err
+// 	}
+// 	err = json.Unmarshal([]byte(m.Values), &msg)
+// }

@@ -66,6 +66,17 @@ func Get(key string) (string, bool, error) {
 	return res, true, nil
 }
 
+func Delete(key string) (bool , error) {
+	count, err := redigo.Int(Do("DEL", key))
+	if err != nil {
+        return false , fmt.Errorf("delete key: error: %v", err)
+    }
+    if count == 0 {
+        return false , nil // 如果 count 为 0，表示 key 不存在
+    }
+    return true , nil
+}
+
 // Set 设置指定 key 的值
 func Set(key, val string) error {
 	ret, err := redigo.String(Do("set", key, val)) // 执行 SET 命令
@@ -189,16 +200,19 @@ func RPop(key string) (error) {
 	return nil
 }
 
-func LRange(key string, start, stop int) ([]string, error) {
+func LRange(key string, start, stop int) ([]string , error) {
 	values, err := redigo.Strings(Do("LRANGE", key, start, stop))
-	if err != nil {
-		return nil, err
+	if err != nil && err != redigo.ErrNil{
+		return nil,  err
 	}
-	return values, nil
+	if err == redigo.ErrNil {
+		return nil , nil
+	}
+	return values,  nil
 }
 
-func SAdd(key string, expire int, members ...string) error {
-	args := redigo.Args{}.Add(key).AddFlat(members)
+func SAdd(key string, expire int, member string) error {
+	args := redigo.Args{}.Add(key).Add(member)
 	_, err := redigo.Int(Do("SADD", args...))
 	if err != nil {
 		return err
@@ -212,13 +226,13 @@ func SAdd(key string, expire int, members ...string) error {
 	return nil
 }
 
-func SRem(key string, members ...string) (error) {
-	args := redigo.Args{}.Add(key).AddFlat(members)
-	_, err := redigo.Int(Do("SREM", args...))
+func SRem(key string, member string) (int, error) {
+	args := redigo.Args{}.Add(key).Add(member)
+	count, err := redigo.Int(Do("SREM", args...))
 	if err != nil {
-		return err
+		return 0, err
 	}
-	return nil
+	return count, nil
 }
 
 func SIsMember(key, member string) (bool, error) {
@@ -231,16 +245,22 @@ func SIsMember(key, member string) (bool, error) {
 
 func SMembers(key string) ([]string, error) {
 	members, err := redigo.Strings(Do("SMEMBERS", key))
-	if err != nil {
+	if err != nil && err != redigo.ErrNil{
 		return nil, err
 	}
-	return members, nil
+	if err == redigo.ErrNil {
+		return nil, nil
+	}
+	return members , nil
 }
 
 func SCard(key string) (int, error) {
 	count, err := redigo.Int(Do("SCARD", key))
-	if err != nil {
+	if err != nil && err != redigo.ErrNil{
 		return 0, err
+	}
+	if err == redigo.ErrNil {
+		return 0 , nil
 	}
 	return count, nil
 }

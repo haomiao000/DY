@@ -25,6 +25,7 @@ const (
 	RedisSvr_SetWithExpire_FullMethodName = "/redis_svr/SetWithExpire"
 	RedisSvr_BatchSet_FullMethodName      = "/redis_svr/BatchSet"
 	RedisSvr_SetIfNotExist_FullMethodName = "/redis_svr/SetIfNotExist"
+	RedisSvr_Delete_FullMethodName        = "/redis_svr/Delete"
 	RedisSvr_LPush_FullMethodName         = "/redis_svr/LPush"
 	RedisSvr_RPush_FullMethodName         = "/redis_svr/RPush"
 	RedisSvr_LPop_FullMethodName          = "/redis_svr/LPop"
@@ -47,6 +48,7 @@ type RedisSvrClient interface {
 	SetWithExpire(ctx context.Context, in *SetWithExpireReq, opts ...grpc.CallOption) (*SetWithExpireRsp, error)
 	BatchSet(ctx context.Context, in *BatchSetReq, opts ...grpc.CallOption) (*BatchSetRsp, error)
 	SetIfNotExist(ctx context.Context, in *SetIfNotExistReq, opts ...grpc.CallOption) (*SetIfNotExistRsp, error)
+	Delete(ctx context.Context, in *DeleteReq, opts ...grpc.CallOption) (*DeleteRsp, error)
 	// List----------------------------------<
 	LPush(ctx context.Context, in *LPushRequest, opts ...grpc.CallOption) (*ListResponse, error)
 	RPush(ctx context.Context, in *RPushRequest, opts ...grpc.CallOption) (*ListResponse, error)
@@ -123,6 +125,16 @@ func (c *redisSvrClient) SetIfNotExist(ctx context.Context, in *SetIfNotExistReq
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(SetIfNotExistRsp)
 	err := c.cc.Invoke(ctx, RedisSvr_SetIfNotExist_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *redisSvrClient) Delete(ctx context.Context, in *DeleteReq, opts ...grpc.CallOption) (*DeleteRsp, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteRsp)
+	err := c.cc.Invoke(ctx, RedisSvr_Delete_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -239,6 +251,7 @@ type RedisSvrServer interface {
 	SetWithExpire(context.Context, *SetWithExpireReq) (*SetWithExpireRsp, error)
 	BatchSet(context.Context, *BatchSetReq) (*BatchSetRsp, error)
 	SetIfNotExist(context.Context, *SetIfNotExistReq) (*SetIfNotExistRsp, error)
+	Delete(context.Context, *DeleteReq) (*DeleteRsp, error)
 	// List----------------------------------<
 	LPush(context.Context, *LPushRequest) (*ListResponse, error)
 	RPush(context.Context, *RPushRequest) (*ListResponse, error)
@@ -275,6 +288,9 @@ func (UnimplementedRedisSvrServer) BatchSet(context.Context, *BatchSetReq) (*Bat
 }
 func (UnimplementedRedisSvrServer) SetIfNotExist(context.Context, *SetIfNotExistReq) (*SetIfNotExistRsp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetIfNotExist not implemented")
+}
+func (UnimplementedRedisSvrServer) Delete(context.Context, *DeleteReq) (*DeleteRsp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
 func (UnimplementedRedisSvrServer) LPush(context.Context, *LPushRequest) (*ListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method LPush not implemented")
@@ -423,6 +439,24 @@ func _RedisSvr_SetIfNotExist_Handler(srv interface{}, ctx context.Context, dec f
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(RedisSvrServer).SetIfNotExist(ctx, req.(*SetIfNotExistReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RedisSvr_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RedisSvrServer).Delete(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RedisSvr_Delete_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RedisSvrServer).Delete(ctx, req.(*DeleteReq))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -637,6 +671,10 @@ var RedisSvr_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SetIfNotExist",
 			Handler:    _RedisSvr_SetIfNotExist_Handler,
+		},
+		{
+			MethodName: "Delete",
+			Handler:    _RedisSvr_Delete_Handler,
 		},
 		{
 			MethodName: "LPush",

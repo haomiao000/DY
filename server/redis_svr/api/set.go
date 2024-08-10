@@ -2,6 +2,7 @@ package api
 
 import (
 	"context"
+	"errors"
 
 	"github.com/haomiao000/DY/server/redis_svr/internal"
 	pb "github.com/haomiao000/DY/server/redis_svr/pb/redis_svr"
@@ -23,6 +24,13 @@ func (r *RedisSvrImpl) BatchSet(ctx context.Context, req *pb.BatchSetReq) (*pb.B
 	return &pb.BatchSetRsp{}, nil
 }
 
+func (r *RedisSvrImpl) Delete(ctx context.Context , req *pb.DeleteReq) (*pb.DeleteRsp , error) {
+	exist , err := internal.Delete(req.GetKey())
+	if err != nil {
+		return nil , err
+	}
+	return &pb.DeleteRsp{Exist: exist} , nil
+}
 // SetWithExpire 带过期时间的set
 func (r *RedisSvrImpl) SetWithExpire(ctx context.Context, req *pb.SetWithExpireReq) (*pb.SetWithExpireRsp, error) {
 	err := internal.SetWithExpire(req.GetKey(), req.GetVal(), int(req.GetExpire()))
@@ -74,17 +82,20 @@ func (r *RedisSvrImpl) RPop(ctx context.Context , req *pb.RPopRequest) (*pb.PopR
 }
 
 func (r *RedisSvrImpl) SAdd(ctx context.Context , req *pb.SAddRequest) (*pb.SAddResponse , error) {
-	err := internal.SAdd(req.Key , int(req.Expire) , req.Values...)
+	err := internal.SAdd(req.Key , int(req.Expire) , req.Value)
 	if err != nil {
 		return nil , err
 	}
 	return &pb.SAddResponse{} , nil
 }
 
-func (r *RedisSvrImpl) SRem(ctx context.Context , req *pb.SRemRequest) (*pb.SRemResponse , error) {
-	err := internal.SRem(req.Key , req.Value)
+func (r *RedisSvrImpl) SRem(ctx context.Context, req *pb.SRemRequest) (*pb.SRemResponse, error) {
+	count, err := internal.SRem(req.Key, req.Value)
 	if err != nil {
-		return nil , err
+		return nil, err
 	}
-	return &pb.SRemResponse{} , nil
+	if count == 0 {
+		return &pb.SRemResponse{}, errors.New("item not exist in redis")
+	}
+	return &pb.SRemResponse{}, nil
 }
