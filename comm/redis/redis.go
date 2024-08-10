@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
-	"github.com/haomiao000/DY/comm/discovery"
+
 	pb "github.com/haomiao000/DY/server/redis_svr/pb/redis_svr"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
@@ -15,8 +15,7 @@ import (
 var redisCli pb.RedisSvrClient
 
 func init() {
-	con, err := grpc.NewClient("etcd://redis_svr", grpc.WithResolvers(discovery.GetResolver()),
-	grpc.WithTransportCredentials(insecure.NewCredentials()))
+	con, err := grpc.NewClient("localhost:50051", grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		panic(err)
 	}
