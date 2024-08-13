@@ -15,13 +15,15 @@ import (
 
 var redisCli pb.RedisSvrClient
 
-func init() {
-	con, err := grpc.NewClient("etcd://redis_svr", grpc.WithResolvers(discovery.GetResolver()),
+// 初始化 gRPC 客户端连接
+func Init() error {
+	con, err := grpc.NewClient("etcd:///redis_svr", grpc.WithResolvers(discovery.GetResolver()),
 		grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		panic(err)
+		return err
 	}
 	redisCli = pb.NewRedisSvrClient(con)
+	return nil
 }
 
 func Set(ctx context.Context, key, value string) error {
