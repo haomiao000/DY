@@ -20,26 +20,23 @@ var (
 	interval int64
 )
 
-func init() {
+var r *EtcdResolver
+
+func Init() error {
 	dialTimeout = 5
 	readTimeout = 5
 	writeTimeout = 5
 
 	interval = 5
-
-}
-
-var r *EtcdResolver
-
-func init() {
 	etcdClient, err := etcd.New(etcd.Config{
 		Endpoints:   endPoints,
 		DialTimeout: time.Duration(dialTimeout) * time.Second,
 	})
 	if err != nil {
-		panic(err)
+		return err
 	}
 	r = &EtcdResolver{cli: etcdClient}
+	return nil
 }
 
 func GetResolver() *EtcdResolver {

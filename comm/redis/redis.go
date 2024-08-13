@@ -16,13 +16,14 @@ import (
 var redisCli pb.RedisSvrClient
 
 // 初始化 gRPC 客户端连接
-func init() {
-	con, err := grpc.NewClient("etcd://redis_svr", grpc.WithResolvers(discovery.GetResolver()),
+func Init() error {
+	con, err := grpc.NewClient("etcd:///redis_svr", grpc.WithResolvers(discovery.GetResolver()),
 		grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
-		panic(err)
+		return err
 	}
 	redisCli = pb.NewRedisSvrClient(con)
+	return nil
 }
 
 // 设置 Redis 中的键值对
