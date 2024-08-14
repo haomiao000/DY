@@ -17,7 +17,10 @@ func main() {
 		fmt.Printf("init error: %v", err)
 		return
 	}
-
+	err := discovery.Init()
+	if err != nil {
+		fmt.Println("discovery init error")
+	}
 	lis, err := net.Listen("tcp", fmt.Sprintf("0.0.0.0:%d", config.GetPort()))
 	if err != nil {
 		fmt.Println(err)

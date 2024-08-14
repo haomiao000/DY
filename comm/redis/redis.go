@@ -20,25 +20,23 @@ func Init() error {
 	con, err := grpc.NewClient("etcd:///redis_svr", grpc.WithResolvers(discovery.GetResolver()),
 		grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
+		fmt.Println("error in redis init")
 		return err
 	}
 	redisCli = pb.NewRedisSvrClient(con)
 	return nil
 }
 
-// 设置 Redis 中的键值对
 func Set(ctx context.Context, key, value string) error {
 	_, err := redisCli.Set(ctx, &pb.SetReq{Key: key, Val: value})
 	return err
 }
 
-// 批量设置 Redis 中的键值对
 func BatchSet(ctx context.Context, keys map[string]string) error {
 	_, err := redisCli.BatchSet(ctx, &pb.BatchSetReq{Kv: keys})
 	return err
 }
 
-// 设置 Protobuf 序列化后的值
 func SetProto(ctx context.Context, key string, value proto.Message) error {
 	b, err := proto.Marshal(value)
 	if err != nil {
@@ -47,7 +45,6 @@ func SetProto(ctx context.Context, key string, value proto.Message) error {
 	return Set(ctx, key, string(b))
 }
 
-// 设置 JSON 序列化后的值
 func SetJson(ctx context.Context, key string, value any) error {
 	b, err := json.Marshal(value)
 	if err != nil {
@@ -56,7 +53,6 @@ func SetJson(ctx context.Context, key string, value any) error {
 	return Set(ctx, key, string(b))
 }
 
-// 如果键不存在则设置键值对
 func SetIfNotExist(ctx context.Context, key, value string) (bool, error) {
 	rsp, err := redisCli.SetIfNotExist(ctx, &pb.SetIfNotExistReq{Key: key, Val: value})
 	if err != nil {
@@ -65,13 +61,11 @@ func SetIfNotExist(ctx context.Context, key, value string) (bool, error) {
 	return rsp.GetOk(), nil
 }
 
-// 设置带过期时间的键值对
 func SetWithExpire(ctx context.Context, key, value string, expire int32) error {
 	_, err := redisCli.SetWithExpire(ctx, &pb.SetWithExpireReq{Key: key, Val: value, Expire: expire})
 	return err
 }
 
-// 批量设置 Protobuf 序列化后的值
 func BatchSetProto(ctx context.Context, kv map[string]proto.Message) error {
 	m := make(map[string]string, len(kv))
 	for k, v := range kv {
@@ -84,7 +78,6 @@ func BatchSetProto(ctx context.Context, kv map[string]proto.Message) error {
 	return BatchSet(ctx, m)
 }
 
-// 批量设置 JSON 序列化后的值
 func BatchSetJson(ctx context.Context, kv map[string]any) error {
 	m := make(map[string]string, len(kv))
 	for k, v := range kv {
@@ -97,7 +90,6 @@ func BatchSetJson(ctx context.Context, kv map[string]any) error {
 	return BatchSet(ctx, m)
 }
 
-// 如果键不存在则设置 Protobuf 序列化后的值
 func SetIfNotExistProto(ctx context.Context, key string, value proto.Message) (bool, error) {
 	b, err := proto.Marshal(value)
 	if err != nil {
@@ -106,7 +98,6 @@ func SetIfNotExistProto(ctx context.Context, key string, value proto.Message) (b
 	return SetIfNotExist(ctx, key, string(b))
 }
 
-// 如果键不存在则设置 JSON 序列化后的值
 func SetIfNotExistJson(ctx context.Context, key string, value any) (bool, error) {
 	b, err := json.Marshal(value)
 	if err != nil {
@@ -115,7 +106,6 @@ func SetIfNotExistJson(ctx context.Context, key string, value any) (bool, error)
 	return SetIfNotExist(ctx, key, string(b))
 }
 
-// 设置带过期时间的 Protobuf 序列化后的值
 func SetWithExpireProto(ctx context.Context, key string, value proto.Message, expire int32) error {
 	b, err := proto.Marshal(value)
 	if err != nil {
@@ -124,7 +114,6 @@ func SetWithExpireProto(ctx context.Context, key string, value proto.Message, ex
 	return SetWithExpire(ctx, key, string(b), expire)
 }
 
-// 设置带过期时间的 JSON 序列化后的值
 func SetWithExpireJson(ctx context.Context, key string, value any, expire int32) error {
 	b, err := json.Marshal(value)
 	if err != nil {
@@ -133,7 +122,6 @@ func SetWithExpireJson(ctx context.Context, key string, value any, expire int32)
 	return SetWithExpire(ctx, key, string(b), expire)
 }
 
-// 获取 Redis 中的键值对
 func Get(ctx context.Context, key string) (string, bool, error) {
 	rsp, err := redisCli.Get(ctx, &pb.GetReq{Key: key})
 	if err != nil {
@@ -142,7 +130,14 @@ func Get(ctx context.Context, key string) (string, bool, error) {
 	return rsp.GetVal(), rsp.GetExist(), nil
 }
 
-// 获取并反序列化 Protobuf 值
+func Delete(ctx context.Context , key string) (bool , error) {
+	rsp , err := redisCli.Delete(ctx , &pb.DeleteReq{Key: key})
+	if err != nil {
+		return false , err
+	}
+	return rsp.GetExist() , nil
+}
+// msg是一个pb结构体指针
 func GetProto(ctx context.Context, key string, msg proto.Message) (bool, error) {
 	val, exist, err := Get(ctx, key)
 	if err != nil {
@@ -158,7 +153,7 @@ func GetProto(ctx context.Context, key string, msg proto.Message) (bool, error) 
 	return exist, nil
 }
 
-// 获取并反序列化 JSON 值
+// msg是一个可以可以json.Marshal的结构体指针
 func GetJson(ctx context.Context, key string, msg any) (bool, error) {
 	val, exist, err := Get(ctx, key)
 	if err != nil {
@@ -174,7 +169,6 @@ func GetJson(ctx context.Context, key string, msg any) (bool, error) {
 	return exist, nil
 }
 
-// 批量获取 Redis 中的键值对
 func BatchGet(ctx context.Context, keys []string) (map[string]string, error) {
 	rsp, err := redisCli.BatchGet(ctx, &pb.BatchGetReq{Keys: keys})
 	if err != nil {
@@ -183,7 +177,7 @@ func BatchGet(ctx context.Context, keys []string) (map[string]string, error) {
 	return rsp.GetVals(), nil
 }
 
-// 批量获取并反序列化 Protobuf 值
+// msg是一个pb结构体指针
 func BatchGetProto(ctx context.Context, keys []string, msg proto.Message) (map[string]proto.Message, error) {
 	m, err := BatchGet(ctx, keys)
 	if err != nil {
@@ -205,7 +199,7 @@ func BatchGetProto(ctx context.Context, keys []string, msg proto.Message) (map[s
 	return msgs, nil
 }
 
-// 批量获取并反序列化 JSON 值
+// msg是一个可以json.Unmarshal的结构体指针
 func BatchGetJson(ctx context.Context, keys []string, msg any) (map[string]any, error) {
 	m, err := BatchGet(ctx, keys)
 	if err != nil {
@@ -228,3 +222,53 @@ func BatchGetJson(ctx context.Context, keys []string, msg any) (map[string]any, 
 	}
 	return msgs, nil
 }
+
+func SAdd(ctx context.Context , key string , val string) error {
+	_ , err := redisCli.SAdd(ctx , &pb.SAddRequest{Key: key , Value: val})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func SAddJson(ctx context.Context , key string , value any) error{
+	b, err := json.Marshal(value)
+	if err != nil {
+		return err
+	}
+	return SAdd(ctx , key , string(b))
+}
+
+func SISMember(ctx context.Context , key string , val string) (bool , error) {
+	m , err := redisCli.SISMember(ctx , &pb.SISMemberRequest{Key: key , Value: val})
+	if err != nil {
+		return false , err
+	}
+	if !m.Exists {
+		return false , nil
+	}
+	return true , nil
+}
+
+func SMembers(ctx context.Context , key string) ([]string , error) {
+	m , err := redisCli.SMembers(ctx , &pb.SMembersRequest{Key: key})
+	if err != nil {
+		return nil , err
+	}
+	return m.Values , nil
+}
+
+func SRem(ctx context.Context , key string , val string) (error) {
+	_ , err := redisCli.SRem(ctx , &pb.SRemRequest{Key: key , Value: val})
+	if err != nil {
+		return err
+	}
+	return nil
+}
+// func BatchGetJsonList(ctx context.Context , key string, msg any) (error) {
+// 	m , err := redisCli.SMembers(ctx , &pb.SMembersRequest{Key:key,})
+// 	if err != nil {
+// 		return err
+// 	}
+// 	err = json.Unmarshal([]byte(m.Values), &msg)
+// }

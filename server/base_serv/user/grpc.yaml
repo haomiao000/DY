@@ -1,0 +1,4 @@
+server:
+  service:
+    name: user #replace me
+    address: 127.0.0.1:8001 #replace me

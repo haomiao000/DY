@@ -19,20 +19,17 @@ import (
 
 // Publish check token then save upload file to public directory
 func Publish(c *gin.Context) {
-	// fmt.Println("----------------")
 	userID, exist := c.Get("userID")
 	if !exist {
 		fmt.Println("get userID error")
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return
 	}
-	// fmt.Println("error 1")
 	user, err := pkg.GetUser(userID.(int64))
 	if err != nil {
 		c.JSON(http.StatusOK, common.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 		return
 	}
-	// fmt.Println("error 1")
 	data, err := c.FormFile("data")
 	if err != nil {
 		c.JSON(http.StatusOK, common.Response{
@@ -41,7 +38,6 @@ func Publish(c *gin.Context) {
 		})
 		return
 	}
-	// fmt.Println("error 1")
 	filename := filepath.Base(data.Filename)
 	finalName := fmt.Sprintf("%d_%s", user.Id, filename)
 	saveFile := filepath.Join("./assets/public/", finalName)

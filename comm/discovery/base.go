@@ -33,6 +33,7 @@ func Init() error {
 		DialTimeout: time.Duration(dialTimeout) * time.Second,
 	})
 	if err != nil {
+		fmt.Println("error in discovery init")
 		return err
 	}
 	r = &EtcdResolver{cli: etcdClient}

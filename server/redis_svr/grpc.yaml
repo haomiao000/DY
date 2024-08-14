@@ -1,4 +1,4 @@
 server:
   service:
-    name: redis_svr #replace me
-    address: 43.138.235.2:50050 #replace me
+    name:  redis_svr #replace me
+    address: 127.0.0.1:5001 #replace me

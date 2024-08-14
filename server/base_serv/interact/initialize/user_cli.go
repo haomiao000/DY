@@ -2,12 +2,14 @@ package initialize
 
 import (
 	user "github.com/haomiao000/DY/internal/grpc_gen/rpc_user"
-	configs "github.com/haomiao000/DY/server/base_serv/interact/configs"
+	insecure "google.golang.org/grpc/credentials/insecure"
+	discovery "github.com/haomiao000/DY/comm/discovery"
 	grpc "google.golang.org/grpc"
 )
 
 func InitUser() user.UserServiceImplClient {
-	conn, err := grpc.Dial(configs.UserServerAddr, grpc.WithInsecure())
+	conn, err := grpc.NewClient("etcd:///user", grpc.WithResolvers(discovery.GetResolver()),
+	grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		panic(err)
 	}

@@ -1,14 +1,16 @@
 package api_server
 
 import (
+	"context"
+	"errors"
+	"fmt"
+	http "net/http"
+	"strconv"
+
+	redis "github.com/haomiao000/DY/comm/redis"
 	rpc_base "github.com/haomiao000/DY/internal/grpc_gen/rpc_base"
 	rpc_relation "github.com/haomiao000/DY/internal/grpc_gen/rpc_relation"
 	configs "github.com/haomiao000/DY/server/common/configs"
-
-	"context"
-	http "net/http"
-
-	"errors"
 )
 
 type MysqlManager interface {
@@ -44,13 +46,16 @@ func (s *RelationServiceImpl) RelationAction(ctx context.Context, req *rpc_relat
 		}
 		return resp, errors.New("user can not followe itself")
 	}
-	followStatus, err := s.MysqlManager.GetRelationStatus(req)
-	if err != nil {
-		resp.BaseResp = &rpc_base.Response{
-			StatusCode: http.StatusInternalServerError,
-			StatusMsg:  "Error Get Relation Status",
+	followStatus, err := redis.SISMember(ctx , configs.UserFollowHead + strconv.FormatInt(req.UserId, 10) , strconv.FormatInt(req.ToUserId, 10))
+	if err != nil || !followStatus {
+		followStatus, err = s.MysqlManager.GetRelationStatus(req)
+		if err != nil {
+			resp.BaseResp = &rpc_base.Response{
+				StatusCode: http.StatusInternalServerError,
+				StatusMsg:  "Error Get Relation Status",
+			}
+			return resp, err
 		}
-		return resp, err
 	}
 	if followStatus == configs.IsFollow {
 		if req.ActionType == configs.Follow {
@@ -60,7 +65,23 @@ func (s *RelationServiceImpl) RelationAction(ctx context.Context, req *rpc_relat
 			}
 			return resp, nil
 		} else {
-			err := s.MysqlManager.DeleteRelationInfo(req.UserId, req.ToUserId)
+			err := redis.SRem(ctx , configs.UserFollowHead + strconv.FormatInt(req.UserId, 10) , strconv.FormatInt(req.ToUserId, 10))
+			if err != nil {
+				resp.BaseResp = &rpc_base.Response{
+					StatusCode: http.StatusInternalServerError,
+					StatusMsg:  "Error Delete Relation",
+				}
+				return resp, err
+			}
+			err = redis.SRem(ctx , configs.UserFollowerHead + strconv.FormatInt(req.ToUserId, 10) , strconv.FormatInt(req.UserId, 10))
+			if err != nil {
+				resp.BaseResp = &rpc_base.Response{
+					StatusCode: http.StatusInternalServerError,
+					StatusMsg:  "Error Delete Relation",
+				}
+				return resp, err
+			}
+			err = s.MysqlManager.DeleteRelationInfo(req.UserId, req.ToUserId)
 			if err != nil {
 				resp.BaseResp = &rpc_base.Response{
 					StatusCode: http.StatusInternalServerError,
@@ -90,6 +111,22 @@ func (s *RelationServiceImpl) RelationAction(ctx context.Context, req *rpc_relat
 				}
 				return resp, err
 			}
+			err = redis.SAdd(ctx , configs.UserFollowHead + strconv.FormatInt(req.UserId, 10) , strconv.FormatInt(req.ToUserId, 10))
+			if err != nil {
+				resp.BaseResp = &rpc_base.Response{
+					StatusCode: http.StatusInternalServerError,
+					StatusMsg:  "Error Create Relation",
+				}
+				return resp, err
+			}
+			err = redis.SAdd(ctx , configs.UserFollowerHead + strconv.FormatInt(req.ToUserId, 10) , strconv.FormatInt(req.UserId, 10))
+			if err != nil {
+				resp.BaseResp = &rpc_base.Response{
+					StatusCode: http.StatusInternalServerError,
+					StatusMsg:  "Error Create Relation",
+				}
+				return resp, err
+			}
 			resp.BaseResp = &rpc_base.Response{
 				StatusCode: http.StatusOK,
 				StatusMsg:  "Successful Follow",
@@ -100,7 +137,7 @@ func (s *RelationServiceImpl) RelationAction(ctx context.Context, req *rpc_relat
 }
 func (s *RelationServiceImpl) GetFollowList(ctx context.Context, req *rpc_relation.RelationFollowListRequest) (*rpc_relation.RelationFollowListResponse, error) {
 	var resp = new(rpc_relation.RelationFollowListResponse)
-	mp, err := s.GetFollowMap(req.ViewerId)
+	mp, err := s.GetFollowMap(ctx , req.ViewerId)
 	if err != nil {
 		resp.BaseResp = &rpc_base.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -108,13 +145,30 @@ func (s *RelationServiceImpl) GetFollowList(ctx context.Context, req *rpc_relati
 		}
 		return resp, err
 	}
-	followUserIdList, err := s.MysqlManager.GetFollowUserIdList(req.OwnerId)
+	var followUserIdList []int64
+	followUserIdListStr , err := redis.SMembers(ctx , configs.UserFollowHead + strconv.FormatInt(req.OwnerId, 10)) 
 	if err != nil {
-		resp.BaseResp = &rpc_base.Response{
-			StatusCode: http.StatusInternalServerError,
-			StatusMsg:  "Error Get Follow User Id List",
+		followUserIdList, err = s.MysqlManager.GetFollowUserIdList(req.OwnerId)
+		if err != nil {
+			resp.BaseResp = &rpc_base.Response{
+				StatusCode: http.StatusInternalServerError,
+				StatusMsg:  "Error Get Follow User Id List",
+			}
+			return resp, err
 		}
-		return resp, err
+	}else {
+		followUserIdList = make([]int64, len(followUserIdListStr))
+		for i, str := range followUserIdListStr {
+			user_id, err := strconv.ParseInt(str, 10, 64)
+			if err != nil {
+				resp.BaseResp = &rpc_base.Response{
+					StatusCode: http.StatusInternalServerError,
+					StatusMsg:  "Error Get Follow User Id List",
+				}
+				return resp, err
+			}
+			followUserIdList[i] = user_id
+		}
 	}
 	followUserList, err := s.UserManager.GetUserList(ctx, followUserIdList)
 	if err != nil {
@@ -141,7 +195,7 @@ func (s *RelationServiceImpl) GetFollowList(ctx context.Context, req *rpc_relati
 }
 func (s *RelationServiceImpl) GetFollowerList(ctx context.Context, req *rpc_relation.RelationFollowerListRequest) (*rpc_relation.RelationFollowerListResponse, error) {
 	var resp = new(rpc_relation.RelationFollowerListResponse)
-	mp, err := s.GetFollowMap(req.ViewerId)
+	mp, err := s.GetFollowMap(ctx , req.ViewerId)
 	if err != nil {
 		resp.BaseResp = &rpc_base.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -149,14 +203,34 @@ func (s *RelationServiceImpl) GetFollowerList(ctx context.Context, req *rpc_rela
 		}
 		return resp, err
 	}
-	followerUserIdList, err := s.MysqlManager.GetFollowerUserIdList(req.OwnerId)
+	fmt.Println("---?--")
+	var followerUserIdList []int64
+	followerUserIdListStr , err := redis.SMembers(ctx , configs.UserFollowerHead + strconv.FormatInt(req.OwnerId, 10)) 
+	fmt.Println(followerUserIdListStr)
 	if err != nil {
-		resp.BaseResp = &rpc_base.Response{
-			StatusCode: http.StatusInternalServerError,
-			StatusMsg:  "Error Get Follower User Id List",
+		followerUserIdList, err = s.MysqlManager.GetFollowerUserIdList(req.OwnerId)
+		if err != nil {
+			resp.BaseResp = &rpc_base.Response{
+				StatusCode: http.StatusInternalServerError,
+				StatusMsg:  "Error Get Follower User Id List",
+			}
+			return resp, err
 		}
-		return resp, err
+	}else {
+		followerUserIdList = make([]int64, len(followerUserIdListStr))
+		for i, str := range followerUserIdListStr {
+			user_id, err := strconv.ParseInt(str, 10, 64)
+			if err != nil {
+				resp.BaseResp = &rpc_base.Response{
+					StatusCode: http.StatusInternalServerError,
+					StatusMsg:  "Error Get Follow User Id List",
+				}
+				return resp, err
+			}
+			followerUserIdList[i] = user_id
+		}
 	}
+	fmt.Println("-----")
 	followerUserList, err := s.UserManager.GetUserList(ctx, followerUserIdList)
 	if err != nil {
 		resp.BaseResp = &rpc_base.Response{
@@ -182,7 +256,7 @@ func (s *RelationServiceImpl) GetFollowerList(ctx context.Context, req *rpc_rela
 }
 func (s *RelationServiceImpl) GetFriendList(ctx context.Context, req *rpc_relation.RelationFriendListRequest) (*rpc_relation.RelationFriendListResponse, error) {
 	var resp = new(rpc_relation.RelationFriendListResponse)
-	mp, err := s.GetFollowMap(req.ViewerId)
+	mp, err := s.GetFollowMap(ctx , req.ViewerId)
 	if err != nil {
 		resp.BaseResp = &rpc_base.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -190,6 +264,7 @@ func (s *RelationServiceImpl) GetFriendList(ctx context.Context, req *rpc_relati
 		}
 		return resp, err
 	}
+	//这里没法做啊。。
 	friendUserIdList, err := s.MysqlManager.GetMutualFollowersIdList(req.OwnerId)
 	if err != nil {
 		resp.BaseResp = &rpc_base.Response{

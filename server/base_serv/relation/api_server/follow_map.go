@@ -1,13 +1,32 @@
 package api_server
 
-import "fmt"
+import (
+	"context"
+	"errors"
+	"fmt"
+	"strconv"
 
-func (s *RelationServiceImpl) GetFollowMap(userID int64) (*map[int64]bool, error) {
+	redis "github.com/haomiao000/DY/comm/redis"
+)
+func (s *RelationServiceImpl) GetFollowMap(ctx context.Context , userID int64) (*map[int64]bool, error) {
 	var mp map[int64]bool
-	userIdList, err := s.MysqlManager.GetFollowUserIdList(userID)
+	var userIdList []int64
+	userIdListStr , err := redis.SMembers(ctx , strconv.FormatInt(userID, 10))
 	if err != nil {
-		fmt.Println("get follow user id list error")
-		return nil, err
+		userIdList, err = s.MysqlManager.GetFollowUserIdList(userID)
+		if err != nil {
+			fmt.Println("get follow user id list error")
+			return nil, err
+		}
+	}else {
+		userIdList = make([]int64, len(userIdListStr))
+		for i , str := range userIdListStr {
+			userId, err := strconv.ParseInt(str, 10, 64)
+			if err != nil {
+				return nil , errors.New("failed to parse user ID")
+			}
+			userIdList[i] = userId
+		}
 	}
 	mp = make(map[int64]bool)
 	for _, o := range userIdList {
