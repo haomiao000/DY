@@ -20,6 +20,7 @@ func Init() error {
 	con, err := grpc.NewClient("etcd:///redis_svr", grpc.WithResolvers(discovery.GetResolver()),
 		grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
+		fmt.Println("error in redis init")
 		return err
 	}
 	redisCli = pb.NewRedisSvrClient(con)

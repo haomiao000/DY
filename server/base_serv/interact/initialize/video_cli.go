@@ -2,12 +2,14 @@ package initialize
 
 import (
 	video "github.com/haomiao000/DY/internal/grpc_gen/rpc_video"
-	configs "github.com/haomiao000/DY/server/base_serv/interact/configs"
 	grpc "google.golang.org/grpc"
+	insecure "google.golang.org/grpc/credentials/insecure"
+	discovery "github.com/haomiao000/DY/comm/discovery"
 )
 
 func InitVideo() video.VideoServiceImplClient {
-	conn, err := grpc.Dial(configs.VideoServerAddr, grpc.WithInsecure())
+	conn, err := grpc.NewClient("etcd:///video", grpc.WithResolvers(discovery.GetResolver()),
+	grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		panic(err)
 	}

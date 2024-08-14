@@ -3,7 +3,6 @@ package api_server
 import (
 	"context"
 	"errors"
-	"fmt"
 	http "net/http"
 
 	rpc_interact "github.com/haomiao000/DY/internal/grpc_gen/rpc_interact"
@@ -23,8 +22,6 @@ func Register(c *gin.Context) {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-	fmt.Println(userRegisterReq.Username)
-	fmt.Println(userRegisterReq.Password)
 	res, err := configs.GlobalUserClient.Register(context.Background(), &rpc_user.UserRegisterRequest{
 		Username: userRegisterReq.Username,
 		Password: userRegisterReq.Password,
