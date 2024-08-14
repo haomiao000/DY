@@ -4,13 +4,13 @@ go 1.22.5
 
 toolchain go1.22.6
 
-replace github.com/haomiao000/DY/server/redis_svr => ../../redis_svr
+// replace github.com/haomiao000/DY/server/redis_svr => ../../redis_svr
 
-replace github.com/haomiao000/DY/server/common => ../../common
+// replace github.com/haomiao000/DY/server/common => ../../common
 
-replace github.com/haomiao000/DY/comm/redis => ../../../comm/redis
+// replace github.com/haomiao000/DY/comm/redis => ../../../comm/redis
 
-replace github.com/haomiao000/DY/comm/discovery => ../../../comm/discovery
+// replace github.com/haomiao000/DY/comm/discovery => ../../../comm/discovery
 
 require (
 	github.com/gin-gonic/gin v1.10.0

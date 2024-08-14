@@ -2,11 +2,11 @@ module github.com/haomiao000/DY/server/base_serv/video
 
 go 1.22.3
 
-replace github.com/haomiao000/DY/server/redis_svr => ../../redis_svr
+// replace github.com/haomiao000/DY/server/redis_svr => ../../redis_svr
 
-replace github.com/haomiao000/DY/server/common => ../../common
+// replace github.com/haomiao000/DY/server/common => ../../common
 
-replace github.com/haomiao000/DY/comm/redis => ../../../comm/redis
+// replace github.com/haomiao000/DY/comm/redis => ../../../comm/redis
 
 require (
 	github.com/coreos/go-semver v0.3.1 // indirect
