@@ -5,24 +5,33 @@ import (
 	"errors"
 	http "net/http"
 
+	gin "github.com/gin-gonic/gin"
 	rpc_interact "github.com/haomiao000/DY/internal/grpc_gen/rpc_interact"
 	rpc_relation "github.com/haomiao000/DY/internal/grpc_gen/rpc_relation"
 	rpc_user "github.com/haomiao000/DY/internal/grpc_gen/rpc_user"
 	configs "github.com/haomiao000/DY/server/gateway_serv/gateway/configs"
 	model "github.com/haomiao000/DY/server/gateway_serv/gateway/model"
-
-	gin "github.com/gin-gonic/gin"
+	trace "github.com/haomiao000/DY/server/gateway_serv/trace"
 )
 
 // Register .
 // @router /douyin/user/register/ [POST]
 func Register(c *gin.Context) {
+	ctx := context.Background()
+	shutdown , err := trace.SetUpTracer(ctx , configs.JaegerEndpoint , configs.RegisterTraceServiceName)
+	if err != nil {
+		panic(err)
+	}
+	defer func() {
+		_ = shutdown(ctx)
+	}()
+	ctx , span := createRegisterParentSpan(ctx)
 	var userRegisterReq model.UserRegisterRequest
 	if err := c.ShouldBind(&userRegisterReq); err != nil {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-	res, err := configs.GlobalUserClient.Register(context.Background(), &rpc_user.UserRegisterRequest{
+	res, err := configs.GlobalUserClient.Register(ctx, &rpc_user.UserRegisterRequest{
 		Username: userRegisterReq.Username,
 		Password: userRegisterReq.Password,
 	})
@@ -35,6 +44,7 @@ func Register(c *gin.Context) {
 		c.JSON(http.StatusInternalServerError, resp)
 		return
 	}
+	defer span.End()
 	c.JSON(http.StatusOK, resp)
 }
 

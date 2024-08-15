@@ -4,31 +4,40 @@ go 1.22.5
 
 toolchain go1.22.6
 
-// replace github.com/haomiao000/DY/server/redis_svr => ../../redis_svr
+replace github.com/haomiao000/DY/server/redis_svr => ../../redis_svr
 
-// replace github.com/haomiao000/DY/server/common => ../../common
+replace github.com/haomiao000/DY/server/common => ../../common
 
-// replace github.com/haomiao000/DY/comm/redis => ../../../comm/redis
+replace github.com/haomiao000/DY/comm/redis => ../../../comm/redis
 
-// replace github.com/haomiao000/DY/comm/discovery => ../../../comm/discovery
+replace github.com/haomiao000/DY/comm/discovery => ../../../comm/discovery
+
+replace github.com/haomiao000/DY/server/gateway_serv/trace => ../trace
 
 require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/haomiao000/DY/comm/discovery v0.0.0-20240807131301-3036cdff1630
 	github.com/haomiao000/DY/internal/grpc_gen v0.0.0-20240813153545-6b79adae2ec9
 	github.com/haomiao000/DY/server/common v0.0.0-00010101000000-000000000000
+	github.com/haomiao000/DY/server/gateway_serv/trace v0.0.0-00010101000000-000000000000
+	go.opentelemetry.io/contrib/instrumentation/google.golang.org/grpc/otelgrpc v0.53.0
+	go.opentelemetry.io/otel v1.28.0
+	go.opentelemetry.io/otel/trace v1.28.0
 	google.golang.org/grpc v1.65.0
 )
 
 require (
 	github.com/bytedance/sonic v1.11.6 // indirect
 	github.com/bytedance/sonic/loader v0.1.1 // indirect
+	github.com/cenkalti/backoff/v4 v4.3.0 // indirect
 	github.com/cloudwego/base64x v0.1.4 // indirect
 	github.com/cloudwego/iasm v0.2.0 // indirect
 	github.com/coreos/go-semver v0.3.1 // indirect
 	github.com/coreos/go-systemd/v22 v22.5.0 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.3 // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect
+	github.com/go-logr/logr v1.4.2 // indirect
+	github.com/go-logr/stdr v1.2.2 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
 	github.com/go-playground/validator/v10 v10.20.0 // indirect
@@ -36,6 +45,8 @@ require (
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang-jwt/jwt/v4 v4.5.0 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
+	github.com/google/uuid v1.6.0 // indirect
+	github.com/grpc-ecosystem/grpc-gateway/v2 v2.20.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.7 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
@@ -48,6 +59,11 @@ require (
 	go.etcd.io/etcd/api/v3 v3.5.15 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.15 // indirect
 	go.etcd.io/etcd/client/v3 v3.5.15 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace v1.28.0 // indirect
+	go.opentelemetry.io/otel/exporters/otlp/otlptrace/otlptracehttp v1.28.0 // indirect
+	go.opentelemetry.io/otel/metric v1.28.0 // indirect
+	go.opentelemetry.io/otel/sdk v1.28.0 // indirect
+	go.opentelemetry.io/proto/otlp v1.3.1 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/arch v0.8.0 // indirect

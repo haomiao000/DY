@@ -2,7 +2,7 @@ module github.com/haomiao000/DY/comm/redis
 
 go 1.22
 
-// replace github.com/haomiao000/DY/server/redis_svr => ../../server/redis_svr
+replace github.com/haomiao000/DY/server/redis_svr => ../../server/redis_svr
 
 require (
 	github.com/haomiao000/DY/comm/discovery v0.0.0-20240807131301-3036cdff1630

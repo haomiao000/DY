@@ -31,6 +31,7 @@ type UserServiceImpl struct {
 }
 
 func (s *UserServiceImpl) Register(ctx context.Context, req *rpc_user.UserRegisterRequest) (*rpc_user.UserRegisterResponse, error) {
+	ctx , sp := TransmitSpan(ctx)
 	resp := new(rpc_user.UserRegisterResponse)
 	sf, err := snowflake.NewNode(configs.UserSnowflakeNode)
 	if err != nil {
@@ -97,6 +98,7 @@ func (s *UserServiceImpl) Register(ctx context.Context, req *rpc_user.UserRegist
 		StatusCode: http.StatusOK,
 		StatusMsg:  "Successful Register User",
 	}
+	sp.End()	
 	return resp, nil
 }
 func (s *UserServiceImpl) Login(ctx context.Context, req *rpc_user.UserLoginRequest) (*rpc_user.UserLoginResponse, error) {

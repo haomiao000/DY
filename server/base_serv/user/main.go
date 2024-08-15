@@ -12,6 +12,10 @@ import (
 	discovery "github.com/haomiao000/DY/comm/discovery"
 	redis "github.com/haomiao000/DY/comm/redis"
 )
+const (
+    // 服务名 服务唯一标示，服务指标聚合过滤依据。
+    grpcServerName = "Register"
+)
 
 func main() {
 	db := initialize.InitDB()

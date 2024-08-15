@@ -12,5 +12,6 @@ var (
 	GlobalRelationClient rpc_relation.RelationServiceImplClient
 )
 var (
-	
+	JaegerEndpoint 				= "127.0.0.1:4318" 
+	RegisterTraceServiceName    = "Register"
 )
