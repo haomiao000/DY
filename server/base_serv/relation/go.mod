@@ -10,10 +10,17 @@ replace github.com/haomiao000/DY/server/common => ../../common
 
 replace github.com/haomiao000/DY/comm/redis => ../../../comm/redis
 
+replace github.com/haomiao000/DY/comm/trace => ../../../comm/trace
+
+replace github.com/haomiao000/DY/internal/interceptor => ../../../internal/interceptor
+
 require (
-	github.com/haomiao000/DY/comm/discovery v0.0.0-20240813153545-6b79adae2ec9
+	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
+	github.com/haomiao000/DY/comm/discovery v0.0.0-20240814034019-ac08d07fcd0c
 	github.com/haomiao000/DY/comm/redis v0.0.0-00010101000000-000000000000
-	github.com/haomiao000/DY/internal/grpc_gen v0.0.0-20240813153545-6b79adae2ec9
+	github.com/haomiao000/DY/comm/trace v0.0.0-00010101000000-000000000000
+	github.com/haomiao000/DY/internal/grpc_gen v0.0.0-20240814034019-ac08d07fcd0c
+	github.com/haomiao000/DY/internal/interceptor v0.0.0-00010101000000-000000000000
 	github.com/haomiao000/DY/server/common v0.0.0-00010101000000-000000000000
 	google.golang.org/grpc v1.65.0
 	gopkg.in/yaml.v2 v2.4.0
@@ -31,12 +38,17 @@ require (
 	github.com/haomiao000/DY/server/redis_svr v0.0.0-00010101000000-000000000000 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
+	github.com/opentracing/opentracing-go v1.2.0 // indirect
+	github.com/pkg/errors v0.9.1 // indirect
 	github.com/sirupsen/logrus v1.9.2 // indirect
+	github.com/uber/jaeger-client-go v2.30.0+incompatible // indirect
+	github.com/uber/jaeger-lib v2.4.1+incompatible // indirect
 	go.etcd.io/etcd/api/v3 v3.5.15 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.15 // indirect
 	go.etcd.io/etcd/client/v3 v3.5.15 // indirect
 	go.opentelemetry.io/otel v1.16.0 // indirect
 	go.opentelemetry.io/otel/trace v1.16.0 // indirect
+	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
 	golang.org/x/net v0.27.0 // indirect

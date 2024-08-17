@@ -13,6 +13,9 @@ import (
 	grpc "google.golang.org/grpc"
 	discovery "github.com/haomiao000/DY/comm/discovery"
 	redis "github.com/haomiao000/DY/comm/redis"
+	trace "github.com/haomiao000/DY/comm/trace"
+	interceptor "github.com/haomiao000/DY/internal/interceptor"
+	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 )
 
 func main() {
@@ -21,7 +24,13 @@ func main() {
 	redis.Init()
 	userServ := initialize.InitUser()
 	videoServ := initialize.InitVideo()
-	grpcServer := grpc.NewServer()
+	tracer, closer := trace.NewTracer("interact")
+	defer closer.Close()
+	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(
+		grpcMiddleware.ChainUnaryServer(
+			interceptor.ServerInterceptor(tracer),
+		),
+	))
 	impl := &api_server.InteractServiceImpl{
 		FavoriteMysqlManager: dao.NewMysqlManager(db),
 		CommentMysqlManager:  dao.NewMysqlManager(db),

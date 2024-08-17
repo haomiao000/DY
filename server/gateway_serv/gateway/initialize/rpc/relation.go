@@ -6,11 +6,24 @@ import (
 	grpc "google.golang.org/grpc"
 	discovery "github.com/haomiao000/DY/comm/discovery"
 	insecure "google.golang.org/grpc/credentials/insecure"
+	trace "github.com/haomiao000/DY/comm/trace"
+	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	interceptor "github.com/haomiao000/DY/internal/interceptor"
 )
 
 func initRelation() {
-	conn, err := grpc.NewClient("etcd:///relation", grpc.WithResolvers(discovery.GetResolver()),
-	grpc.WithTransportCredentials(insecure.NewCredentials()))
+	tracer , closer := trace.NewTracer("relation")
+	defer closer.Close()
+	conn, err := grpc.NewClient(
+		"etcd:///relation", 
+		grpc.WithResolvers(discovery.GetResolver()),
+		grpc.WithUnaryInterceptor(
+			grpcMiddleware.ChainUnaryClient(
+				interceptor.ClientInterceptor(tracer),
+			),
+		),
+		grpc.WithTransportCredentials(insecure.NewCredentials()),
+	)
 	if err != nil {
 		panic(err)
 	}

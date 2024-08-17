@@ -11,12 +11,11 @@ func InitRouter(r *gin.Engine) {
 	r.Static("/assets/public", "./assets/public/")
 
 	apiRouter := r.Group("/douyin")
-
+	apiRouter.Use(middleware.Jaeger())
 	// basic apis
-
-	apiRouter.GET("/user/", middleware.VerifyToken(), handler.UserInfo)
-	apiRouter.POST("/user/register/", handler.Register)
-	apiRouter.POST("/user/login/", handler.Login)
+		apiRouter.GET("/user/", middleware.VerifyToken(), handler.UserInfo)
+		apiRouter.POST("/user/register/", handler.Register)
+		apiRouter.POST("/user/login/", handler.Login)
 	// apiRouter.Use(middleware.VerifyToken())
 	// {
 	// 	apiRouter.GET("/feed/", FeedService.Feed)
