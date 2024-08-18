@@ -12,14 +12,23 @@ import (
 	redis "github.com/haomiao000/DY/comm/redis"
 	"fmt"
 	"net"
+	trace "github.com/haomiao000/DY/comm/trace"
+	interceptor "github.com/haomiao000/DY/internal/interceptor"
+	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 )
 
 func main() {
 	db := initialize.InitDB()
 	discovery.Init()
 	redis.Init()
+	tracer, closer := trace.NewTracer("video")
+	defer closer.Close()
 	userServ := initialize.InitUser()
-	grpcServer := grpc.NewServer()
+	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(
+		grpcMiddleware.ChainUnaryServer(
+			interceptor.ServerInterceptor(tracer),
+		),
+	))
 	impl := &api_server.VideoServiceImpl{
 		MysqlManager: dao.NewMysqlManager(db),
 		UserManager:  api_client.NewUserClient(userServ),

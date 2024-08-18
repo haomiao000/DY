@@ -13,6 +13,9 @@ import (
 	grpc "google.golang.org/grpc"
 	discovery "github.com/haomiao000/DY/comm/discovery"
 	redis "github.com/haomiao000/DY/comm/redis"
+	trace "github.com/haomiao000/DY/comm/trace"
+	interceptor "github.com/haomiao000/DY/internal/interceptor"
+	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 )
 
 func main() {
@@ -20,7 +23,13 @@ func main() {
 	discovery.Init()
 	redis.Init()
 	userServ := initialize.InitUser()
-	grpcServer := grpc.NewServer()
+	tracer, closer := trace.NewTracer("relation")
+	defer closer.Close()
+	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(
+		grpcMiddleware.ChainUnaryServer(
+			interceptor.ServerInterceptor(tracer),
+		),
+	))
 	impl := &api_server.RelationServiceImpl{
 		MysqlManager: dao.NewMysqlManager(db),
 		UserManager:  api_client.NewUserClient(userServ),

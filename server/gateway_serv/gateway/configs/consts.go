@@ -12,5 +12,16 @@ var (
 	GlobalRelationClient rpc_relation.RelationServiceImplClient
 )
 var (
-	
+	JaegerEndpoint 				= "127.0.0.1:4318" 
+	RegisterTraceServiceName    = "Register"
+	LoginTraceServiceName 		= "Login"
+	UserInfoTraceServiceName 	= "UserInfo"
+	FavoriteActionTraceServiceName = "FavoriteAction"
+	FavoriteListTraceServiceName   = "FavoriteList"
+	CommentActionTraceServiceName  = "CommentAction"
+	CommentListTraceServiceName	   = "CommentList"
+	RelationActionTraceServiceName = "RelationAction"
+	FollowListTraceServiceName	   = "FollowList"
+	FollowerListTraceServiceName   = "FollowerList"
+	FriendListTraceServiceName	   = "FriendList"
 )

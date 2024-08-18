@@ -5,24 +5,25 @@ import (
 	"errors"
 	http "net/http"
 
+	gin "github.com/gin-gonic/gin"
 	rpc_interact "github.com/haomiao000/DY/internal/grpc_gen/rpc_interact"
 	rpc_relation "github.com/haomiao000/DY/internal/grpc_gen/rpc_relation"
 	rpc_user "github.com/haomiao000/DY/internal/grpc_gen/rpc_user"
 	configs "github.com/haomiao000/DY/server/gateway_serv/gateway/configs"
 	model "github.com/haomiao000/DY/server/gateway_serv/gateway/model"
-
-	gin "github.com/gin-gonic/gin"
 )
 
 // Register .
 // @router /douyin/user/register/ [POST]
 func Register(c *gin.Context) {
+	o, _ := c.Get("ctx")
+	ctx := o.(context.Context)
 	var userRegisterReq model.UserRegisterRequest
 	if err := c.ShouldBind(&userRegisterReq); err != nil {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-	res, err := configs.GlobalUserClient.Register(context.Background(), &rpc_user.UserRegisterRequest{
+	res, err := configs.GlobalUserClient.Register(ctx, &rpc_user.UserRegisterRequest{
 		Username: userRegisterReq.Username,
 		Password: userRegisterReq.Password,
 	})
@@ -41,12 +42,14 @@ func Register(c *gin.Context) {
 // Login .
 // @router /douyin/user/login/ [POST]
 func Login(c *gin.Context) {
+	o, _ := c.Get("ctx")
+	ctx := o.(context.Context)
 	var userLoginReq model.UserLoginRequest
 	if err := c.ShouldBind(&userLoginReq); err != nil {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-	res, err := configs.GlobalUserClient.Login(context.Background(), &rpc_user.UserLoginRequest{
+	res, err := configs.GlobalUserClient.Login(ctx, &rpc_user.UserLoginRequest{
 		Username: userLoginReq.Username,
 		Password: userLoginReq.Password,
 	})
@@ -67,6 +70,8 @@ func Login(c *gin.Context) {
 // GetUserInfo .
 // @router /douyin/user/ [GET]
 func UserInfo(c *gin.Context) {
+	o, _ := c.Get("ctx")
+	ctx := o.(context.Context)
 	var userInfoRequest model.UserInfoRequest
 	if err := c.ShouldBind(&userInfoRequest); err != nil {
 		c.String(http.StatusBadRequest, err.Error())
@@ -77,7 +82,7 @@ func UserInfo(c *gin.Context) {
 		c.String(http.StatusNotFound, errors.New("api context get user_id failed").Error())
 		return
 	}
-	res, err := configs.GlobalUserClient.GetUser(context.Background(), &rpc_user.UserInfoRequest{
+	res, err := configs.GlobalUserClient.GetUser(ctx, &rpc_user.UserInfoRequest{
 		UserId:   userID.(int64),
 		ViewerId: userInfoRequest.UserID,
 	})
@@ -103,6 +108,8 @@ func UserInfo(c *gin.Context) {
 // FavoriteAction .
 // @router /douyin/favorite/action/ [POST]
 func FavoriteAction(c *gin.Context) {
+	o, _ := c.Get("ctx")
+	ctx := o.(context.Context)
 	var favoriteActionRequest model.FavoriteActionRequest
 	if err := c.ShouldBind(&favoriteActionRequest); err != nil {
 		c.String(http.StatusBadRequest, err.Error())
@@ -113,7 +120,7 @@ func FavoriteAction(c *gin.Context) {
 		c.String(http.StatusNotFound, errors.New("api context get user_id failed").Error())
 		return
 	}
-	res, err := configs.GlobalInteractClient.FavoriteAction(context.Background(), &rpc_interact.FavoriteActionRequest{
+	res, err := configs.GlobalInteractClient.FavoriteAction(ctx, &rpc_interact.FavoriteActionRequest{
 		UserId:     userID.(int64),
 		VideoId:    favoriteActionRequest.VideoID,
 		ActionType: int32(favoriteActionRequest.ActionType),
@@ -131,6 +138,8 @@ func FavoriteAction(c *gin.Context) {
 // FavoriteList .
 // @router /douyin/favorite/list/ [GET]
 func FavoriteList(c *gin.Context) {
+	o, _ := c.Get("ctx")
+	ctx := o.(context.Context)
 	var favoriteListRequest model.FavoriteListRequest
 	if err := c.ShouldBind(&favoriteListRequest); err != nil {
 		c.String(http.StatusBadRequest, err.Error())
@@ -141,7 +150,7 @@ func FavoriteList(c *gin.Context) {
 		c.String(http.StatusNotFound, errors.New("api context get user_id failed").Error())
 		return
 	}
-	res, err := configs.GlobalInteractClient.GetFavoriteVideoList(context.Background(), &rpc_interact.FavoriteListRequest{
+	res, err := configs.GlobalInteractClient.GetFavoriteVideoList(ctx, &rpc_interact.FavoriteListRequest{
 		OwnerId:  favoriteListRequest.UserID,
 		ViewerId: userID.(int64),
 	})
@@ -175,6 +184,8 @@ func FavoriteList(c *gin.Context) {
 // CommentAction .
 // @router /douyin/comment/action/ [POST]
 func CommentAction(c *gin.Context) {
+	o, _ := c.Get("ctx")
+	ctx := o.(context.Context)
 	var commentActionRequest model.CommentActionRequest
 	if err := c.ShouldBind(&commentActionRequest); err != nil {
 		c.String(http.StatusBadRequest, err.Error())
@@ -185,7 +196,7 @@ func CommentAction(c *gin.Context) {
 		c.String(http.StatusNotFound, errors.New("api context get user_id failed").Error())
 		return
 	}
-	res, err := configs.GlobalInteractClient.CommentAction(context.Background(), &rpc_interact.CommentActionRequest{
+	res, err := configs.GlobalInteractClient.CommentAction(ctx, &rpc_interact.CommentActionRequest{
 		UserId:      userID.(int64),
 		VideoId:     commentActionRequest.VideoID,
 		ActionType:  int32(commentActionRequest.ActionType),
@@ -221,12 +232,14 @@ func CommentAction(c *gin.Context) {
 // CommentList .
 // @router /douyin/comment/list/ [GET]
 func CommentList(c *gin.Context) {
+	o, _ := c.Get("ctx")
+	ctx := o.(context.Context)
 	var commentListRequest model.CommentListRequest
 	if err := c.ShouldBind(&commentListRequest); err != nil {
 		c.String(http.StatusBadRequest, err.Error())
 		return
 	}
-	res, err := configs.GlobalInteractClient.GetCommentList(context.Background(), &rpc_interact.CommentListRequest{
+	res, err := configs.GlobalInteractClient.GetCommentList(ctx, &rpc_interact.CommentListRequest{
 		VideoId: commentListRequest.VideoID,
 	})
 	var resp = new(model.CommentListResponse)
@@ -258,6 +271,8 @@ func CommentList(c *gin.Context) {
 // Action .
 // @router /douyin/relation/action/ [POST]
 func RelationAction(c *gin.Context) {
+	o, _ := c.Get("ctx")
+	ctx := o.(context.Context)
 	var relationActionRequest model.RelationActionRequest
 	if err := c.ShouldBind(&relationActionRequest); err != nil {
 		c.String(http.StatusBadRequest, err.Error())
@@ -268,7 +283,7 @@ func RelationAction(c *gin.Context) {
 		c.String(http.StatusNotFound, errors.New("api context get user_id failed").Error())
 		return
 	}
-	res, err := configs.GlobalRelationClient.RelationAction(context.Background(), &rpc_relation.RelationActionRequest{
+	res, err := configs.GlobalRelationClient.RelationAction(ctx, &rpc_relation.RelationActionRequest{
 		UserId:     userID.(int64),
 		ToUserId:   relationActionRequest.ToUserId,
 		ActionType: int32(relationActionRequest.ActionType),
@@ -288,6 +303,8 @@ func RelationAction(c *gin.Context) {
 // FollowList .
 // @router /douyin/relation/follow/list/ [GET]
 func FollowList(c *gin.Context) {
+	o, _ := c.Get("ctx")
+	ctx := o.(context.Context)
 	var relationFollowListRequest model.RelationFollowListRequest
 	if err := c.ShouldBind(&relationFollowListRequest); err != nil {
 		c.String(http.StatusBadRequest, err.Error())
@@ -298,7 +315,7 @@ func FollowList(c *gin.Context) {
 		c.String(http.StatusNotFound, errors.New("api context get user_id failed").Error())
 		return
 	}
-	res, err := configs.GlobalRelationClient.GetFollowList(context.Background(), &rpc_relation.RelationFollowListRequest{
+	res, err := configs.GlobalRelationClient.GetFollowList(ctx, &rpc_relation.RelationFollowListRequest{
 		ViewerId: userID.(int64),
 		OwnerId:  relationFollowListRequest.UserID,
 	})
@@ -326,6 +343,8 @@ func FollowList(c *gin.Context) {
 // FollowerList .
 // @router /douyin/relation/follower/list/ [GET]
 func FollowerList(c *gin.Context) {
+	o, _ := c.Get("ctx")
+	ctx := o.(context.Context)
 	var relationFollowerListRequest model.RelationFollowerListRequest
 	if err := c.ShouldBind(&relationFollowerListRequest); err != nil {
 		c.String(http.StatusBadRequest, err.Error())
@@ -336,7 +355,7 @@ func FollowerList(c *gin.Context) {
 		c.String(http.StatusNotFound, errors.New("api context get user_id failed").Error())
 		return
 	}
-	res, err := configs.GlobalRelationClient.GetFollowerList(context.Background(), &rpc_relation.RelationFollowerListRequest{
+	res, err := configs.GlobalRelationClient.GetFollowerList(ctx, &rpc_relation.RelationFollowerListRequest{
 		ViewerId: userID.(int64),
 		OwnerId:  relationFollowerListRequest.UserID,
 	})
@@ -364,6 +383,8 @@ func FollowerList(c *gin.Context) {
 // FriendList .
 // @router /douyin/relation/friend/list/ [GET]
 func FriendList(c *gin.Context) {
+	o, _ := c.Get("ctx")
+	ctx := o.(context.Context)
 	var relationFriendListRequest model.RelationFriendListRequest
 	if err := c.ShouldBind(&relationFriendListRequest); err != nil {
 		c.String(http.StatusBadRequest, err.Error())
@@ -375,7 +396,7 @@ func FriendList(c *gin.Context) {
 		c.String(http.StatusNotFound, errors.New("api context get user_id failed").Error())
 		return
 	}
-	res, err := configs.GlobalRelationClient.GetFriendList(context.Background(), &rpc_relation.RelationFriendListRequest{
+	res, err := configs.GlobalRelationClient.GetFriendList(ctx, &rpc_relation.RelationFriendListRequest{
 		ViewerId: userID.(int64),
 		OwnerId:  relationFriendListRequest.UserID,
 	})
