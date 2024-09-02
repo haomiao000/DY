@@ -2,12 +2,10 @@ module github.com/haomiao000/DY/comm/redis
 
 go 1.22
 
-replace github.com/haomiao000/DY/server/redis_svr => ../../server/redis_svr
-
 require (
-	github.com/haomiao000/DY/comm/discovery v0.0.0-20240807131301-3036cdff1630
-	github.com/haomiao000/DY/server/redis_svr v0.0.0-00010101000000-000000000000
-	google.golang.org/grpc v1.65.0
+	github.com/haomiao000/DY/comm/discovery v0.0.0-20240818011323-b7d41be54328
+	github.com/haomiao000/DY/server/redis_svr v0.0.0-20240902085405-2b835a786799
+	google.golang.org/grpc v1.66.0
 	google.golang.org/protobuf v1.34.2
 )
 
