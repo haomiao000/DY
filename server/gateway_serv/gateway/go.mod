@@ -2,29 +2,15 @@ module github.com/haomiao000/DY/server/gateway_serv/gateway
 
 go 1.22.5
 
-toolchain go1.22.6
-
-replace github.com/haomiao000/DY/server/redis_svr => ../../redis_svr
-
-replace github.com/haomiao000/DY/server/common => ../../common
-
-replace github.com/haomiao000/DY/comm/redis => ../../../comm/redis
-
-replace github.com/haomiao000/DY/comm/discovery => ../../../comm/discovery
-
-replace github.com/haomiao000/DY/comm/trace => ../../../comm/trace
-
-replace github.com/haomiao000/DY/internal/interceptor => ../../../internal/interceptor
-
 require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
-	github.com/haomiao000/DY/comm/discovery v0.0.0-00010101000000-000000000000
-	github.com/haomiao000/DY/comm/trace v0.0.0-00010101000000-000000000000
-	github.com/haomiao000/DY/internal/grpc_gen v0.0.0-20240814034019-ac08d07fcd0c
-	github.com/haomiao000/DY/internal/interceptor v0.0.0-00010101000000-000000000000
-	github.com/haomiao000/DY/server/common v0.0.0-00010101000000-000000000000
-	google.golang.org/grpc v1.65.0
+	github.com/haomiao000/DY/comm/discovery v0.0.0-20240902085937-d840a8f564a5
+	github.com/haomiao000/DY/comm/trace v0.0.0-20240902085937-d840a8f564a5
+	github.com/haomiao000/DY/internal/grpc_gen v0.0.0-20240902085937-d840a8f564a5
+	github.com/haomiao000/DY/internal/interceptor v0.0.0-20240902085937-d840a8f564a5
+	github.com/haomiao000/DY/server/common v0.0.0-20240902085937-d840a8f564a5
+	google.golang.org/grpc v1.66.0
 )
 
 require (
@@ -67,8 +53,8 @@ require (
 	golang.org/x/net v0.26.0 // indirect
 	golang.org/x/sys v0.21.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20240528184218-531527333157 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240701130421-f6361c86f094 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20240604185151-ef581f913117 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20240604185151-ef581f913117 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
