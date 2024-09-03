@@ -13,6 +13,9 @@ type MysqlManager interface {
 	UpdateFavoriteCount(req *rpc_video.UpdateVideoFavoriteCountRequest) error
 	GetFavoriteVideoList(req *rpc_video.GetFavoriteVideoListByVideoIdRequest) ([]*model.VideoRecord, error)
 	UpdateCommentCount(req *rpc_video.UpdateVideoCommentCountRequest) error
+	GetAllVideo(ctx context.Context, req *rpc_video.GetFeedsReq) ([]*rpc_base.Video, error)
+	PublishVideo(req *rpc_video.PublishVideoReq) error
+	GetPublishVideo(ctx context.Context, userID int64) ([]*rpc_base.Video, error)
 }
 
 type VideoServiceImpl struct {
@@ -60,4 +63,29 @@ func (s *VideoServiceImpl) UpdateVideoCommentCount(ctx context.Context, req *rpc
 	var resp = new(rpc_video.UpdateVideoCommentCountResponse)
 	err := s.MysqlManager.UpdateCommentCount(req)
 	return resp, err
+}
+
+func (s *VideoServiceImpl) GetFeedsReq(ctx context.Context, req *rpc_video.GetFeedsReq) (*rpc_video.GetFeedsRsp, error) {
+	videos, err := s.MysqlManager.GetAllVideo(ctx, req)
+	if err != nil {
+		return nil, err
+	}
+	return &rpc_video.GetFeedsRsp{
+		Feeds: videos,
+	}, nil
+}
+
+func (s *VideoServiceImpl) PublishVideo(ctx context.Context, req *rpc_video.PublishVideoReq) (*rpc_video.PublishVideoRsp, error) {
+	if err := s.MysqlManager.PublishVideo(req); err != nil {
+		return nil, err
+	}
+	return &rpc_video.PublishVideoRsp{}, nil
+}
+
+func (s *VideoServiceImpl) GetPublishVideo(ctx context.Context, req *rpc_video.GetPublishVideoReq) (*rpc_video.GetPublishVideoRsp, error) {
+	videos, err := s.MysqlManager.GetPublishVideo(ctx, req.GetUserId())
+	if err != nil {
+		return nil, err
+	}
+	return &rpc_video.GetPublishVideoRsp{Video: videos}, nil
 }

@@ -3,12 +3,14 @@ module github.com/haomiao000/DY/server/base_serv/video
 go 1.22.3
 
 require (
+	github.com/bwmarrin/snowflake v0.3.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
 	github.com/haomiao000/DY/comm/discovery v0.0.0-20240902091432-c10cb114c0b2
 	github.com/haomiao000/DY/comm/redis v0.0.0-20240902091432-c10cb114c0b2
-	github.com/haomiao000/DY/comm/trace v0.0.0-20240902091432-c10cb114c0b2
-	github.com/haomiao000/DY/internal/grpc_gen v0.0.0-20240902091432-c10cb114c0b2
+	github.com/haomiao000/DY/comm/trace v0.0.0-20240902100953-832f55b0c7d2
+	github.com/haomiao000/DY/internal/grpc_gen v0.0.0-20240903054208-949e7bf82718
 	github.com/haomiao000/DY/internal/interceptor v0.0.0-20240902091432-c10cb114c0b2
+	github.com/haomiao000/DY/server/common v0.0.0-20240902100953-832f55b0c7d2
 	google.golang.org/grpc v1.66.0
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/mysql v1.5.7
