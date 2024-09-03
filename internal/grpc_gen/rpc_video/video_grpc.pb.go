@@ -36,7 +36,7 @@ type VideoServiceImplClient interface {
 	GetFavoriteVideoListByVideoId(ctx context.Context, in *GetFavoriteVideoListByVideoIdRequest, opts ...grpc.CallOption) (*GetFavoriteVideoListByVideoIdResponse, error)
 	GetFeeds(ctx context.Context, in *GetFeedsReq, opts ...grpc.CallOption) (*GetFeedsRsp, error)
 	PublishVideo(ctx context.Context, in *PublishVideoReq, opts ...grpc.CallOption) (*PublishVideoRsp, error)
-	GetPublishVideo(ctx context.Context, in *GetPublishVideoReq, opts ...grpc.CallOption) (*PublishVideoRsp, error)
+	GetPublishVideo(ctx context.Context, in *GetPublishVideoReq, opts ...grpc.CallOption) (*GetPublishVideoRsp, error)
 }
 
 type videoServiceImplClient struct {
@@ -97,9 +97,9 @@ func (c *videoServiceImplClient) PublishVideo(ctx context.Context, in *PublishVi
 	return out, nil
 }
 
-func (c *videoServiceImplClient) GetPublishVideo(ctx context.Context, in *GetPublishVideoReq, opts ...grpc.CallOption) (*PublishVideoRsp, error) {
+func (c *videoServiceImplClient) GetPublishVideo(ctx context.Context, in *GetPublishVideoReq, opts ...grpc.CallOption) (*GetPublishVideoRsp, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(PublishVideoRsp)
+	out := new(GetPublishVideoRsp)
 	err := c.cc.Invoke(ctx, VideoServiceImpl_GetPublishVideo_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
@@ -116,7 +116,7 @@ type VideoServiceImplServer interface {
 	GetFavoriteVideoListByVideoId(context.Context, *GetFavoriteVideoListByVideoIdRequest) (*GetFavoriteVideoListByVideoIdResponse, error)
 	GetFeeds(context.Context, *GetFeedsReq) (*GetFeedsRsp, error)
 	PublishVideo(context.Context, *PublishVideoReq) (*PublishVideoRsp, error)
-	GetPublishVideo(context.Context, *GetPublishVideoReq) (*PublishVideoRsp, error)
+	GetPublishVideo(context.Context, *GetPublishVideoReq) (*GetPublishVideoRsp, error)
 	mustEmbedUnimplementedVideoServiceImplServer()
 }
 
@@ -142,7 +142,7 @@ func (UnimplementedVideoServiceImplServer) GetFeeds(context.Context, *GetFeedsRe
 func (UnimplementedVideoServiceImplServer) PublishVideo(context.Context, *PublishVideoReq) (*PublishVideoRsp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method PublishVideo not implemented")
 }
-func (UnimplementedVideoServiceImplServer) GetPublishVideo(context.Context, *GetPublishVideoReq) (*PublishVideoRsp, error) {
+func (UnimplementedVideoServiceImplServer) GetPublishVideo(context.Context, *GetPublishVideoReq) (*GetPublishVideoRsp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetPublishVideo not implemented")
 }
 func (UnimplementedVideoServiceImplServer) mustEmbedUnimplementedVideoServiceImplServer() {}
