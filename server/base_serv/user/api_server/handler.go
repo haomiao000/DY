@@ -176,38 +176,37 @@ func (s *UserServiceImpl) GetUser(ctx context.Context, req *rpc_user.UserInfoReq
 	return resp, nil
 }
 
-func (s *UserServiceImpl) GetUserList(ctx context.Context, req *rpc_user.GetUserListRequest) (*rpc_user.GetUserListResponse, error) {
-	var resp = new(rpc_user.GetUserListResponse)
-	var userListStr []string
+func (s *UserServiceImpl) BatchGetUser(ctx context.Context, req *rpc_user.BatchGetUserRequest) (*rpc_user.BatchGetUserResponse , error) {
+	var resp = new(rpc_user.BatchGetUserResponse)
+	userMap := make(map[int64]*rpc_base.User)
+	var userIdListNotInRedis []int64
 	for _ , o := range req.UserIdList {
-		userListStr = append(userListStr , configs.UserRedisHead + strconv.FormatInt(o, 10))
-	}
-	var tmp []model.User
-	userMap , err := redis.BatchGetJson(ctx , userListStr , tmp) 
-	if err == nil {
-		for _, v := range userMap {
-			resp.UserList = append(resp.UserList, &rpc_base.User{
-				Id:            v.(*model.User).UserID,
-				Name:          v.(*model.User).Name,
-				FollowCount:   v.(*model.User).FollowCount,
-				FollowerCount: v.(*model.User).FollowerCount,
-				IsFollow:      false,
-			})
+		userListStr := configs.UserRedisHead + strconv.FormatInt(o, 10)
+		var tmp model.User
+		exist , err := redis.GetJson(ctx , userListStr , tmp)
+		if !exist || err != nil {
+			userIdListNotInRedis = append(userIdListNotInRedis, o)
+			continue;
 		}
-		return resp, nil
+		userMap[o] = &rpc_base.User{
+			Id:            tmp.UserID,
+			Name:          tmp.Name,
+			FollowCount:   tmp.FollowCount,
+			FollowerCount: tmp.FollowerCount,
+			IsFollow:      false,
+		}
 	}
-	userList, err := s.MysqlManager.GetUserListByUserId(req.UserIdList)
-	if err != nil {
-		return nil, err
-	}
+	//如果redis或mysql出现问题这里不判错了
+	userList, _ := s.MysqlManager.GetUserListByUserId(userIdListNotInRedis)
 	for _, o := range userList {
-		resp.UserList = append(resp.UserList, &rpc_base.User{
+		userMap[o.UserID] = &rpc_base.User{
 			Id:            o.UserID,
 			Name:          o.Name,
 			FollowCount:   o.FollowCount,
 			FollowerCount: o.FollowerCount,
 			IsFollow:      false,
-		})
+		}
 	}
-	return resp, nil
+	resp.UserMp = userMap
+	return resp , nil
 }

@@ -16,6 +16,8 @@ replace github.com/haomiao000/DY/comm/trace => ../../../comm/trace
 
 replace github.com/haomiao000/DY/internal/interceptor => ../../../internal/interceptor
 
+replace github.com/haomiao000/DY/internal/grpc_gen => ../../../internal/grpc_gen
+
 require (
 	github.com/bwmarrin/snowflake v0.3.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
