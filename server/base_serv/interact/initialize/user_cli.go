@@ -14,7 +14,7 @@ func InitUser() user.UserServiceImplClient {
 	tracer , closer := trace.NewTracer("user")
 	defer closer.Close()
 	conn, err := grpc.NewClient(
-		"etcd:///user", 
+		"etcd:///user",
 		grpc.WithResolvers(discovery.GetResolver()),
 		grpc.WithUnaryInterceptor(
 			grpcMiddleware.ChainUnaryClient(
