@@ -2,12 +2,10 @@ module github.com/haomiao000/DY/server/common
 
 go 1.22.3
 
-replace github.com/haomiao000/DY/comm/trace => ../../comm/trace
-
 require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/golang-jwt/jwt/v4 v4.5.0
-	github.com/haomiao000/DY/comm/trace v0.0.0-00010101000000-000000000000
+	github.com/haomiao000/DY/comm/trace v0.0.0-20240902090342-a33c1b2f9b99
 	github.com/opentracing/opentracing-go v1.2.0
 )
 

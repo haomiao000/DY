@@ -2,15 +2,19 @@ module github.com/haomiao000/DY/server/base_serv/video
 
 go 1.22.3
 
-replace github.com/haomiao000/DY/server/redis_svr => ../../redis_svr
-
-replace github.com/haomiao000/DY/server/common => ../../common
-
-replace github.com/haomiao000/DY/comm/redis => ../../../comm/redis
-
-replace github.com/haomiao000/DY/comm/trace => ../../../comm/trace
-
-replace github.com/haomiao000/DY/internal/interceptor => ../../../internal/interceptor
+require (
+	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
+	github.com/haomiao000/DY/comm/discovery v0.0.0-20240902091432-c10cb114c0b2
+	github.com/haomiao000/DY/comm/redis v0.0.0-20240902091432-c10cb114c0b2
+	github.com/haomiao000/DY/comm/trace v0.0.0-20240902091432-c10cb114c0b2
+	github.com/haomiao000/DY/internal/grpc_gen v0.0.0-20240902091432-c10cb114c0b2
+	github.com/haomiao000/DY/internal/interceptor v0.0.0-20240902091432-c10cb114c0b2
+	google.golang.org/grpc v1.66.0
+	gopkg.in/yaml.v2 v2.4.0
+	gorm.io/driver/mysql v1.5.7
+	gorm.io/gorm v1.25.11
+	gorm.io/plugin/opentelemetry v0.1.4
+)
 
 require (
 	github.com/coreos/go-semver v0.3.1 // indirect
@@ -18,13 +22,7 @@ require (
 	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/protobuf v1.5.4 // indirect
-	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0 // indirect
-	github.com/haomiao000/DY/comm/discovery v0.0.0-20240813153545-6b79adae2ec9 // indirect
-	github.com/haomiao000/DY/comm/redis v0.0.0-20240813153545-6b79adae2ec9 // indirect
-	github.com/haomiao000/DY/comm/trace v0.0.0-20240814034019-ac08d07fcd0c // indirect
-	github.com/haomiao000/DY/internal/grpc_gen v0.0.0-20240806055354-ce5fa6dc9190 // indirect
-	github.com/haomiao000/DY/internal/interceptor v0.0.0-00010101000000-000000000000 // indirect
-	github.com/haomiao000/DY/server/redis_svr v0.0.0-00010101000000-000000000000 // indirect
+	github.com/haomiao000/DY/server/redis_svr v0.0.0-20240902085405-2b835a786799 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/opentracing/opentracing-go v1.2.0 // indirect
@@ -45,10 +43,5 @@ require (
 	golang.org/x/text v0.16.0 // indirect
 	google.golang.org/genproto/googleapis/api v0.0.0-20240730163845-b1a4ccb954bf // indirect
 	google.golang.org/genproto/googleapis/rpc v0.0.0-20240730163845-b1a4ccb954bf // indirect
-	google.golang.org/grpc v1.65.0 // indirect
 	google.golang.org/protobuf v1.34.2 // indirect
-	gopkg.in/yaml.v2 v2.4.0 // indirect
-	gorm.io/driver/mysql v1.5.7 // indirect
-	gorm.io/gorm v1.25.11 // indirect
-	gorm.io/plugin/opentelemetry v0.1.4 // indirect
 )

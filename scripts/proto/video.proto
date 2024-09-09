@@ -8,7 +8,9 @@ service VideoServiceImpl {
     rpc UpdateVideoFavoriteCount(UpdateVideoFavoriteCountRequest) returns (UpdateVideoFavoriteCountResponse);
     rpc UpdateVideoCommentCount(UpdateVideoCommentCountRequest) returns (UpdateVideoCommentCountResponse);
     rpc GetFavoriteVideoListByVideoId(GetFavoriteVideoListByVideoIdRequest) returns (GetFavoriteVideoListByVideoIdResponse);
-
+    rpc GetFeeds (GetFeedsReq) returns (GetFeedsRsp);
+    rpc PublishVideo (PublishVideoReq) returns (PublishVideoRsp);
+    rpc GetPublishVideo (GetPublishVideoReq) returns (GetPublishVideoRsp);
 }
 
 //Request message------------------->
@@ -36,4 +38,30 @@ message UpdateVideoCommentCountResponse {
 
 message GetFavoriteVideoListByVideoIdResponse {
     repeated Video video_list = 1;
+}
+
+message GetFeedsReq {
+    int64 user_id = 1;
+}
+
+message GetFeedsRsp {
+    repeated Video feeds = 1;
+}
+
+message PublishVideoReq {
+    int64 user_id = 1;
+    string file_name = 2;
+    string video_data = 3;
+}
+
+message PublishVideoRsp {
+
+}
+
+message GetPublishVideoReq {
+    int64 user_id = 1;
+}
+
+message GetPublishVideoRsp {
+    repeated Video video = 2;
 }
