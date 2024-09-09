@@ -30,3 +30,4 @@ server/base_serv/interact/interact
 
 server/base_serv/video/video
 
+server/redis_svr/jmeter.log

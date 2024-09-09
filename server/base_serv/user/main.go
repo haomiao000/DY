@@ -21,6 +21,7 @@ func main() {
 	discovery.Init()
 	redis.Init()
 	tracer, closer := trace.NewTracer("user")
+	// All the bells and whistles:
 	defer closer.Close()
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(
 		grpcMiddleware.ChainUnaryServer(
@@ -41,5 +42,4 @@ func main() {
 	if err := grpcServer.Serve(listener); err != nil {
 		fmt.Printf("Failed To Serve GRPC Server: %v", err)
 	}
-
 }

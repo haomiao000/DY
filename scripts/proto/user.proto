@@ -8,8 +8,10 @@ service UserServiceImpl {
     rpc Login(UserLoginRequest) returns (UserLoginResponse);
     rpc Register(UserRegisterRequest) returns (UserRegisterResponse);
     rpc GetUser(UserInfoRequest) returns (UserResponse);
-    rpc GetUserList(GetUserListRequest) returns (GetUserListResponse);
+    rpc BatchGetUser(BatchGetUserRequest) returns (BatchGetUserResponse);
 }
+
+//protoc --go_out=. --go-grpc_out=. proto/service.proto
 
 //Request message------------------->
 message UserRegisterRequest {
@@ -27,7 +29,7 @@ message UserInfoRequest {
     int64 viewer_id = 2;
 }
 
-message GetUserListRequest {
+message BatchGetUserRequest {
     repeated int64 user_id_list = 1;
 }
 
@@ -49,6 +51,6 @@ message UserResponse {
     User user = 2;
 }
 
-message GetUserListResponse {
-    repeated User user_list = 1;
+message BatchGetUserResponse {
+    map<int64, User> user_mp = 1;
 }
