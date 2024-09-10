@@ -19,10 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	UserServiceImpl_Login_FullMethodName       = "/UserServiceImpl/Login"
-	UserServiceImpl_Register_FullMethodName    = "/UserServiceImpl/Register"
-	UserServiceImpl_GetUser_FullMethodName     = "/UserServiceImpl/GetUser"
-	UserServiceImpl_GetUserList_FullMethodName = "/UserServiceImpl/GetUserList"
+	UserServiceImpl_Login_FullMethodName        = "/UserServiceImpl/Login"
+	UserServiceImpl_Register_FullMethodName     = "/UserServiceImpl/Register"
+	UserServiceImpl_GetUser_FullMethodName      = "/UserServiceImpl/GetUser"
+	UserServiceImpl_BatchGetUser_FullMethodName = "/UserServiceImpl/BatchGetUser"
 )
 
 // UserServiceImplClient is the client API for UserServiceImpl service.
@@ -32,7 +32,7 @@ type UserServiceImplClient interface {
 	Login(ctx context.Context, in *UserLoginRequest, opts ...grpc.CallOption) (*UserLoginResponse, error)
 	Register(ctx context.Context, in *UserRegisterRequest, opts ...grpc.CallOption) (*UserRegisterResponse, error)
 	GetUser(ctx context.Context, in *UserInfoRequest, opts ...grpc.CallOption) (*UserResponse, error)
-	GetUserList(ctx context.Context, in *GetUserListRequest, opts ...grpc.CallOption) (*GetUserListResponse, error)
+	BatchGetUser(ctx context.Context, in *BatchGetUserRequest, opts ...grpc.CallOption) (*BatchGetUserResponse, error)
 }
 
 type userServiceImplClient struct {
@@ -73,10 +73,10 @@ func (c *userServiceImplClient) GetUser(ctx context.Context, in *UserInfoRequest
 	return out, nil
 }
 
-func (c *userServiceImplClient) GetUserList(ctx context.Context, in *GetUserListRequest, opts ...grpc.CallOption) (*GetUserListResponse, error) {
+func (c *userServiceImplClient) BatchGetUser(ctx context.Context, in *BatchGetUserRequest, opts ...grpc.CallOption) (*BatchGetUserResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetUserListResponse)
-	err := c.cc.Invoke(ctx, UserServiceImpl_GetUserList_FullMethodName, in, out, cOpts...)
+	out := new(BatchGetUserResponse)
+	err := c.cc.Invoke(ctx, UserServiceImpl_BatchGetUser_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -90,7 +90,7 @@ type UserServiceImplServer interface {
 	Login(context.Context, *UserLoginRequest) (*UserLoginResponse, error)
 	Register(context.Context, *UserRegisterRequest) (*UserRegisterResponse, error)
 	GetUser(context.Context, *UserInfoRequest) (*UserResponse, error)
-	GetUserList(context.Context, *GetUserListRequest) (*GetUserListResponse, error)
+	BatchGetUser(context.Context, *BatchGetUserRequest) (*BatchGetUserResponse, error)
 	mustEmbedUnimplementedUserServiceImplServer()
 }
 
@@ -107,8 +107,8 @@ func (UnimplementedUserServiceImplServer) Register(context.Context, *UserRegiste
 func (UnimplementedUserServiceImplServer) GetUser(context.Context, *UserInfoRequest) (*UserResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUser not implemented")
 }
-func (UnimplementedUserServiceImplServer) GetUserList(context.Context, *GetUserListRequest) (*GetUserListResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetUserList not implemented")
+func (UnimplementedUserServiceImplServer) BatchGetUser(context.Context, *BatchGetUserRequest) (*BatchGetUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BatchGetUser not implemented")
 }
 func (UnimplementedUserServiceImplServer) mustEmbedUnimplementedUserServiceImplServer() {}
 
@@ -177,20 +177,20 @@ func _UserServiceImpl_GetUser_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UserServiceImpl_GetUserList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetUserListRequest)
+func _UserServiceImpl_BatchGetUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BatchGetUserRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UserServiceImplServer).GetUserList(ctx, in)
+		return srv.(UserServiceImplServer).BatchGetUser(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: UserServiceImpl_GetUserList_FullMethodName,
+		FullMethod: UserServiceImpl_BatchGetUser_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UserServiceImplServer).GetUserList(ctx, req.(*GetUserListRequest))
+		return srv.(UserServiceImplServer).BatchGetUser(ctx, req.(*BatchGetUserRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -215,8 +215,8 @@ var UserServiceImpl_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UserServiceImpl_GetUser_Handler,
 		},
 		{
-			MethodName: "GetUserList",
-			Handler:    _UserServiceImpl_GetUserList_Handler,
+			MethodName: "BatchGetUser",
+			Handler:    _UserServiceImpl_BatchGetUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
