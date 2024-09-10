@@ -52,6 +52,10 @@ func (m *MysqlManager) GetAllVideo(ctx context.Context, req *rpc_video.GetFeedsR
 	if err != nil {
 		return nil, err
 	}
+	favoriteVideos, err := client.GetUserFavoriteVideo(ctx, req.GetUserId())
+	if err != nil {
+		return nil, err
+	}
 	for _, record := range videoRecords {
 		user := userMap[record.UserID]
 		videos = append(videos, &rpc_base.Video{
@@ -67,7 +71,7 @@ func (m *MysqlManager) GetAllVideo(ctx context.Context, req *rpc_video.GetFeedsR
 			CoverUrl:      record.CoverUrl,
 			FavoriteCount: record.FavoriteCount,
 			CommentCount:  record.CommentCount,
-			IsFavorite:    false,
+			IsFavorite:    favoriteVideos[record.VideoID],
 		})
 	}
 	return videos, nil
@@ -98,6 +102,13 @@ func (m *MysqlManager) GetPublishVideo(ctx context.Context, userID int64) ([]*rp
 		return nil, err
 	}
 	users, err := getUserByVideoRecord(ctx, videoRecords)
+	if err != nil {
+		return nil, err
+	}
+	favoriteVideos, err := client.GetUserFavoriteVideo(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
 	var videos []*rpc_base.Video
 	for _, record := range videoRecords {
 		user := users[record.UserID]
@@ -114,7 +125,7 @@ func (m *MysqlManager) GetPublishVideo(ctx context.Context, userID int64) ([]*rp
 			CoverUrl:      record.CoverUrl,
 			FavoriteCount: record.FavoriteCount,
 			CommentCount:  record.CommentCount,
-			IsFavorite:    false,
+			IsFavorite:    favoriteVideos[record.VideoID],
 		})
 	}
 	return videos, nil

@@ -65,7 +65,7 @@ func (s *VideoServiceImpl) UpdateVideoCommentCount(ctx context.Context, req *rpc
 	return resp, err
 }
 
-func (s *VideoServiceImpl) GetFeedsReq(ctx context.Context, req *rpc_video.GetFeedsReq) (*rpc_video.GetFeedsRsp, error) {
+func (s *VideoServiceImpl) GetFeeds(ctx context.Context, req *rpc_video.GetFeedsReq) (*rpc_video.GetFeedsRsp, error) {
 	videos, err := s.MysqlManager.GetAllVideo(ctx, req)
 	if err != nil {
 		return nil, err
