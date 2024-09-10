@@ -14,3 +14,9 @@ type VideoRecord struct {
 func (VideoRecord) TableName() string {
 	return "video_records" // TODO 表名
 }
+
+type Favorite struct {
+	UserID     int64 `gorm:"column:user_id; 	type:INT"`
+	VideoID    int64 `gorm:"column:video_id;	type:INT"`
+	CreateDate int64 `gorm:"column:create_time;	type:INT;not null"`
+}

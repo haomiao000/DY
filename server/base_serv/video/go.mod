@@ -8,7 +8,7 @@ require (
 	github.com/haomiao000/DY/comm/discovery v0.0.0-20240902091432-c10cb114c0b2
 	github.com/haomiao000/DY/comm/redis v0.0.0-20240902091432-c10cb114c0b2
 	github.com/haomiao000/DY/comm/trace v0.0.0-20240902100953-832f55b0c7d2
-	github.com/haomiao000/DY/internal/grpc_gen v0.0.0-20240903054208-949e7bf82718
+	github.com/haomiao000/DY/internal/grpc_gen v0.0.0-20240910081142-e3c6b0ec6872
 	github.com/haomiao000/DY/internal/interceptor v0.0.0-20240902091432-c10cb114c0b2
 	github.com/haomiao000/DY/server/common v0.0.0-20240902100953-832f55b0c7d2
 	google.golang.org/grpc v1.66.0
