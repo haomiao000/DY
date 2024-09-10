@@ -1,10 +1,16 @@
 package dao
 
 import (
+	"context"
 	"fmt"
+	"time"
 
+	"github.com/bwmarrin/snowflake"
+	"github.com/haomiao000/DY/internal/grpc_gen/rpc_base"
 	rpc_video "github.com/haomiao000/DY/internal/grpc_gen/rpc_video"
+	client "github.com/haomiao000/DY/server/base_serv/video/api_client"
 	model "github.com/haomiao000/DY/server/base_serv/video/model"
+	"github.com/haomiao000/DY/server/common/configs"
 	gorm "gorm.io/gorm"
 )
 
@@ -35,6 +41,96 @@ func (m *MysqlManager) GetFavoriteVideoList(req *rpc_video.GetFavoriteVideoListB
 	return videoRecords, nil
 }
 
+func (m *MysqlManager) GetAllVideo(ctx context.Context, req *rpc_video.GetFeedsReq) ([]*rpc_base.Video, error) {
+	var videoRecords []*model.VideoRecord
+	err := m.videoDB.Find(&videoRecords).Error
+	if err != nil {
+		return nil, err
+	}
+	var videos []*rpc_base.Video
+	userMap, err := getUserByVideoRecord(ctx, videoRecords)
+	if err != nil {
+		return nil, err
+	}
+	favoriteVideos, err := client.GetUserFavoriteVideo(ctx, req.GetUserId())
+	if err != nil {
+		return nil, err
+	}
+	for _, record := range videoRecords {
+		user := userMap[record.UserID]
+		videos = append(videos, &rpc_base.Video{
+			Id: record.VideoID,
+			Author: &rpc_base.User{
+				Id:            user.GetId(),
+				Name:          user.GetName(),
+				FollowCount:   user.GetFollowCount(),
+				FollowerCount: user.GetFollowerCount(),
+				IsFollow:      user.GetIsFollow(),
+			},
+			PlayUrl:       record.PlayUrl,
+			CoverUrl:      record.CoverUrl,
+			FavoriteCount: record.FavoriteCount,
+			CommentCount:  record.CommentCount,
+			IsFavorite:    favoriteVideos[record.VideoID],
+		})
+	}
+	return videos, nil
+}
+
+func (m *MysqlManager) PublishVideo(req *rpc_video.PublishVideoReq) error {
+	videoID, err := genVideoID()
+	if err != nil {
+		return err
+	}
+	// 保存视频数据
+	return m.videoDB.Create(&model.VideoRecord{
+		VideoID:       videoID,
+		UserID:        req.UserId,
+		FileName:      req.FileName,
+		UpdateTime:    time.Now().Unix(),
+		PlayUrl:       "",
+		CoverUrl:      "",
+		FavoriteCount: 0,
+		CommentCount:  0,
+	}).Error
+}
+
+func (m *MysqlManager) GetPublishVideo(ctx context.Context, userID int64) ([]*rpc_base.Video, error) {
+	var videoRecords []*model.VideoRecord
+	err := m.videoDB.Where("user_id = ?", userID).Find(&videoRecords).Error
+	if err != nil {
+		return nil, err
+	}
+	users, err := getUserByVideoRecord(ctx, videoRecords)
+	if err != nil {
+		return nil, err
+	}
+	favoriteVideos, err := client.GetUserFavoriteVideo(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+	var videos []*rpc_base.Video
+	for _, record := range videoRecords {
+		user := users[record.UserID]
+		videos = append(videos, &rpc_base.Video{
+			Id: record.VideoID,
+			Author: &rpc_base.User{
+				Id:            user.GetId(),
+				Name:          user.GetName(),
+				FollowCount:   user.GetFollowCount(),
+				FollowerCount: user.GetFollowerCount(),
+				IsFollow:      user.GetIsFollow(),
+			},
+			PlayUrl:       record.PlayUrl,
+			CoverUrl:      record.CoverUrl,
+			FavoriteCount: record.FavoriteCount,
+			CommentCount:  record.CommentCount,
+			IsFavorite:    favoriteVideos[record.VideoID],
+		})
+	}
+	return videos, nil
+}
+
 func (m *MysqlManager) UpdateCommentCount(req *rpc_video.UpdateVideoCommentCountRequest) error {
 	err := m.videoDB.Model(&model.VideoRecord{}).Where("video_id = ?", req.VideoId).
 		UpdateColumn("comment_count", gorm.Expr("comment_count + ?", req.ChangeNumber)).Error
@@ -58,4 +154,28 @@ func NewMysqlManager(db *gorm.DB) *MysqlManager {
 		}
 	}
 	return &MysqlManager{videoDB: db}
+}
+
+func genVideoID() (int64, error) {
+	node, err := snowflake.NewNode(configs.VideoSnowFlakeNode)
+	if err != nil {
+		return -1, err
+	}
+	return node.Generate().Int64(), nil
+}
+
+func getUserByVideoRecord(ctx context.Context, records []*model.VideoRecord) (map[int64]*rpc_base.User, error) {
+	users := map[int64]bool{}
+	var userList []int64
+	for _, record := range records {
+		users[record.UserID] = true
+	}
+	for userID := range users {
+		userList = append(userList, userID)
+	}
+	userMap, err := client.GetUser(ctx, userList)
+	if err != nil {
+		return nil, err
+	}
+	return userMap, nil
 }
