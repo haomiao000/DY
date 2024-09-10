@@ -1,4 +1,4 @@
 server:
   service:
     name: video #replace me
-    address: 127.0.0.1:8004 #replace me
+    address: 43.138.235.2:8002 #replace me

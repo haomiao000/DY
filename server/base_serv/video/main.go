@@ -10,6 +10,7 @@ import (
 	trace "github.com/haomiao000/DY/comm/trace"
 	rpc_video "github.com/haomiao000/DY/internal/grpc_gen/rpc_video"
 	interceptor "github.com/haomiao000/DY/internal/interceptor"
+	"github.com/haomiao000/DY/server/base_serv/video/api_client"
 	api_server "github.com/haomiao000/DY/server/base_serv/video/api_server"
 	configs "github.com/haomiao000/DY/server/base_serv/video/configs"
 	dao "github.com/haomiao000/DY/server/base_serv/video/dao"
@@ -19,8 +20,15 @@ import (
 
 func main() {
 	db := initialize.InitDB()
-	discovery.Init()
-	redis.Init()
+	if err := discovery.Init(); err != nil {
+		panic(err)
+	}
+	if err := redis.Init(); err != nil {
+		panic(err)
+	}
+	if err := api_client.Init(); err != nil {
+		panic(err)
+	}
 	tracer, closer := trace.NewTracer("video")
 	defer closer.Close()
 	grpcServer := grpc.NewServer(grpc.UnaryInterceptor(
