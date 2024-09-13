@@ -20,7 +20,7 @@ const (
 
 	Minus_comment = -1
 	Plus_comment = 1
-
+	
 	UserSnowflakeNode    = 1
 	NacosSnowflakeNode   = 2
 	CommentSnowFlakeNode = 3

@@ -8,9 +8,7 @@ service VideoServiceImpl {
     rpc UpdateVideoFavoriteCount(UpdateVideoFavoriteCountRequest) returns (UpdateVideoFavoriteCountResponse);
     rpc UpdateVideoCommentCount(UpdateVideoCommentCountRequest) returns (UpdateVideoCommentCountResponse);
     rpc GetFavoriteVideoListByVideoId(GetFavoriteVideoListByVideoIdRequest) returns (GetFavoriteVideoListByVideoIdResponse);
-    rpc GetFeeds (GetFeedsReq) returns (GetFeedsRsp);
-    rpc PublishVideo (PublishVideoReq) returns (PublishVideoRsp);
-    rpc GetPublishVideo (GetPublishVideoReq) returns (GetPublishVideoRsp);
+    
 }
 
 //Request message------------------->

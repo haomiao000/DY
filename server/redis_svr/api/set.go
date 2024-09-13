@@ -3,12 +3,14 @@ package api
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/haomiao000/DY/server/redis_svr/internal"
 	pb "github.com/haomiao000/DY/server/redis_svr/pb/redis_svr"
 )
 
 func (r *RedisSvrImpl) Set(ctx context.Context, req *pb.SetReq) (*pb.SetRsp, error) {
+	fmt.Println("-------")
 	err := internal.Set(req.GetKey(), req.GetVal())
 	if err != nil {
 		return nil, err

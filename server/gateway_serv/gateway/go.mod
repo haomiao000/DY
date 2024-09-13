@@ -2,15 +2,19 @@ module github.com/haomiao000/DY/server/gateway_serv/gateway
 
 go 1.22.5
 
+replace github.com/haomiao000/DY/server/common => ../../common
+
+replace github.com/haomiao000/DY/server/gateway_serv/gateway/initialize => ../initialize
+
 require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
-	github.com/haomiao000/DY/comm/discovery v0.0.0-20240902085937-d840a8f564a5
-	github.com/haomiao000/DY/comm/trace v0.0.0-20240902085937-d840a8f564a5
-	github.com/haomiao000/DY/internal/grpc_gen v0.0.0-20240902085937-d840a8f564a5
-	github.com/haomiao000/DY/internal/interceptor v0.0.0-20240902085937-d840a8f564a5
-	github.com/haomiao000/DY/server/common v0.0.0-20240902085937-d840a8f564a5
-	google.golang.org/grpc v1.66.0
+	github.com/haomiao000/DY/comm/discovery v0.0.0-20240910104147-6c2be4b0d554
+	github.com/haomiao000/DY/comm/trace v0.0.0-20240910104147-6c2be4b0d554
+	github.com/haomiao000/DY/internal/grpc_gen v0.0.0-20240910104147-6c2be4b0d554
+	github.com/haomiao000/DY/internal/interceptor v0.0.0-20240910104147-6c2be4b0d554
+	github.com/haomiao000/DY/server/common v0.0.0-00010101000000-000000000000
+	google.golang.org/grpc v1.66.1
 )
 
 require (

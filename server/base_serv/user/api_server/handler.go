@@ -10,10 +10,9 @@ import (
 	rpc_base "github.com/haomiao000/DY/internal/grpc_gen/rpc_base"
 	rpc_user "github.com/haomiao000/DY/internal/grpc_gen/rpc_user"
 	model "github.com/haomiao000/DY/server/base_serv/user/model"
-	configs "github.com/haomiao000/DY/server/common/configs"
+	globalConfigs "github.com/haomiao000/DY/server/common/configs"
 	middleware "github.com/haomiao000/DY/server/common/middleware"
-
-	snowflake "github.com/bwmarrin/snowflake"
+	configs "github.com/haomiao000/DY/server/base_serv/user/configs"
 	redis "github.com/haomiao000/DY/comm/redis"
 	gorm "gorm.io/gorm"
 )
@@ -32,16 +31,16 @@ type UserServiceImpl struct {
 
 func (s *UserServiceImpl) Register(ctx context.Context, req *rpc_user.UserRegisterRequest) (*rpc_user.UserRegisterResponse, error) {
 	resp := new(rpc_user.UserRegisterResponse)
-	sf, err := snowflake.NewNode(configs.UserSnowflakeNode)
-	if err != nil {
-		resp.BaseResp = &rpc_base.Response{
-			StatusCode: http.StatusInternalServerError,
-			StatusMsg:  err.Error(),
-		}
-		return resp, err
-	}
+	// sf := 
+	// if err != nil {
+	// 	resp.BaseResp = &rpc_base.Response{
+	// 		StatusCode: http.StatusInternalServerError,
+	// 		StatusMsg:  err.Error(),
+	// 	}
+	// 	return resp, err
+	// }
 	user := &model.User{
-		UserID:        sf.Generate().Int64(),
+		UserID:        configs.UserSnowFlakeNode.Generate().Int64(),
 		Name:          req.Username,
 		FollowCount:   0,
 		FollowerCount: 0,
@@ -51,8 +50,8 @@ func (s *UserServiceImpl) Register(ctx context.Context, req *rpc_user.UserRegist
 		Username: req.Username,
 		Password: middleware.Gen_sha256(req.Password),
 	}
-	err = s.MysqlManager.CreateUserLoginInfo(userLoginInfo)
-	if err == errors.New(configs.MysqlAlreadyExists) {
+	err := s.MysqlManager.CreateUserLoginInfo(userLoginInfo)
+	if err == errors.New(globalConfigs.MysqlAlreadyExists) {
 		resp.BaseResp = &rpc_base.Response{
 			StatusCode: http.StatusConflict,
 			StatusMsg:  "Username Already Exist",
@@ -67,14 +66,15 @@ func (s *UserServiceImpl) Register(ctx context.Context, req *rpc_user.UserRegist
 		fmt.Println(resp)
 		return resp, err
 	}
-	err = redis.SetJson(ctx , configs.LoginInfoRedisHead + req.Username , userLoginInfo)
-	if err != nil {
-		resp.BaseResp = &rpc_base.Response{
-			StatusCode: http.StatusInternalServerError,
-			StatusMsg:  "Error Redis Insert",
-		}
-		return resp, err
-	}
+	// err = redis.SetJson(ctx , globalConfigs.LoginInfoRedisHead + req.Username , userLoginInfo)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// 	resp.BaseResp = &rpc_base.Response{
+	// 		StatusCode: http.StatusInternalServerError,
+	// 		StatusMsg:  "Error Redis Insert",
+	// 	}
+	// 	return resp, err
+	// }
 	err = s.MysqlManager.CreateUser(user)
 	if err != nil {
 		resp.BaseResp = &rpc_base.Response{
@@ -83,26 +83,27 @@ func (s *UserServiceImpl) Register(ctx context.Context, req *rpc_user.UserRegist
 		}
 		return resp, err
 	}
-	err = redis.SetJson(ctx , configs.UserRedisHead + strconv.FormatInt(user.UserID, 10) ,user)
-	if err != nil {
-		resp.BaseResp = &rpc_base.Response{
-			StatusCode: http.StatusInternalServerError,
-			StatusMsg:  "Error Redis Insert User",
-		}
-		return resp, err
-	}
+	// err = redis.SetJson(ctx , globalConfigs.UserRedisHead + strconv.FormatInt(user.UserID, 10) ,user)
+	// if err != nil {
+	// 	resp.BaseResp = &rpc_base.Response{
+	// 		StatusCode: http.StatusInternalServerError,
+	// 		StatusMsg:  "Error Redis Insert User",
+	// 	}
+	// 	return resp, err
+	// }
 	//返回的resp没用
 	resp.BaseResp = &rpc_base.Response{
 
 		StatusCode: http.StatusOK,
 		StatusMsg:  "Successful Register User",
 	}
+	
 	return resp, nil
 }
 func (s *UserServiceImpl) Login(ctx context.Context, req *rpc_user.UserLoginRequest) (*rpc_user.UserLoginResponse, error) {
 	resp := new(rpc_user.UserLoginResponse)
 	userLoginInfo := new(model.UserLoginInfo)
-	exist , err := redis.GetJson(ctx , configs.LoginInfoRedisHead + req.Username , userLoginInfo)
+	exist , err := redis.GetJson(ctx , globalConfigs.LoginInfoRedisHead + req.Username , userLoginInfo)
 	if err != nil || !exist {
 		userLoginInfo , err = s.MysqlManager.CheckUserLoginInfo(req)
 		if err == gorm.ErrRecordNotFound {
@@ -142,7 +143,7 @@ func (s *UserServiceImpl) Login(ctx context.Context, req *rpc_user.UserLoginRequ
 func (s *UserServiceImpl) GetUser(ctx context.Context, req *rpc_user.UserInfoRequest) (*rpc_user.UserResponse, error) {
 	var resp = new(rpc_user.UserResponse)
 	user := new(model.User)
-	exist , err := redis.GetJson(ctx , configs.UserRedisHead + strconv.FormatInt(req.UserId, 10) , user)
+	exist , err := redis.GetJson(ctx , globalConfigs.UserRedisHead + strconv.FormatInt(req.UserId, 10) , user)
 	if err != nil || !exist {
 		fmt.Println(err)
 		user, err = s.MysqlManager.GetUserByUid(req.UserId)
@@ -181,7 +182,7 @@ func (s *UserServiceImpl) BatchGetUser(ctx context.Context, req *rpc_user.BatchG
 	userMap := make(map[int64]*rpc_base.User)
 	var userIdListNotInRedis []int64
 	for _ , o := range req.UserIdList {
-		userListStr := configs.UserRedisHead + strconv.FormatInt(o, 10)
+		userListStr := globalConfigs.UserRedisHead + strconv.FormatInt(o, 10)
 		var tmp model.User
 		exist , err := redis.GetJson(ctx , userListStr , tmp)
 		if !exist || err != nil {

@@ -1,4 +1,6 @@
 package configs
+import snowflake "github.com/bwmarrin/snowflake"
+
 var (
     MySqlDSN       = "%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local"
     UserDBUser     = "root"
@@ -11,3 +13,4 @@ var (
     RedisPort      = ":50051"
 	UserServerAddr = "127.0.0.1:8081"
 )
+var UserSnowFlakeNode *snowflake.Node

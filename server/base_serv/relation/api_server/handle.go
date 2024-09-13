@@ -22,7 +22,7 @@ type MysqlManager interface {
 	GetMutualFollowersIdList(userID int64) ([]int64, error)
 }
 type UserManager interface {
-	GetUserList(ctx context.Context, userIds []int64) ([]*rpc_base.User, error)
+	BatchGetUser(ctx context.Context, userIds []int64) (map[int64]*rpc_base.User, error)
 }
 type RelationServiceImpl struct {
 	rpc_relation.UnimplementedRelationServiceImplServer
@@ -135,6 +135,7 @@ func (s *RelationServiceImpl) RelationAction(ctx context.Context, req *rpc_relat
 		}
 	}
 }
+
 func (s *RelationServiceImpl) GetFollowList(ctx context.Context, req *rpc_relation.RelationFollowListRequest) (*rpc_relation.RelationFollowListResponse, error) {
 	var resp = new(rpc_relation.RelationFollowListResponse)
 	mp, err := s.GetFollowMap(ctx , req.ViewerId)
@@ -170,7 +171,7 @@ func (s *RelationServiceImpl) GetFollowList(ctx context.Context, req *rpc_relati
 			followUserIdList[i] = user_id
 		}
 	}
-	followUserList, err := s.UserManager.GetUserList(ctx, followUserIdList)
+	followUserMap, err := s.UserManager.BatchGetUser(ctx, followUserIdList)
 	if err != nil {
 		resp.BaseResp = &rpc_base.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -178,13 +179,16 @@ func (s *RelationServiceImpl) GetFollowList(ctx context.Context, req *rpc_relati
 		}
 		return resp, err
 	}
-	for _, o := range followUserList {
+	for _ , o := range followUserIdList {
+		if _ , exist := followUserMap[o]; !exist {
+			continue
+		}
 		resp.UserList = append(resp.UserList, &rpc_base.User{
-			Id:            o.Id,
-			Name:          o.Name,
-			FollowCount:   o.FollowCount,
-			FollowerCount: o.FollowerCount,
-			IsFollow:      (*mp)[o.Id],
+			Id:            followUserMap[o].Id,
+			Name:          followUserMap[o].Name,
+			FollowCount:   followUserMap[o].FollowCount,
+			FollowerCount: followUserMap[o].FollowerCount,
+			IsFollow:      (*mp)[followUserMap[o].Id],
 		})
 	}
 	resp.BaseResp = &rpc_base.Response{
@@ -193,6 +197,7 @@ func (s *RelationServiceImpl) GetFollowList(ctx context.Context, req *rpc_relati
 	}
 	return resp, nil
 }
+
 func (s *RelationServiceImpl) GetFollowerList(ctx context.Context, req *rpc_relation.RelationFollowerListRequest) (*rpc_relation.RelationFollowerListResponse, error) {
 	var resp = new(rpc_relation.RelationFollowerListResponse)
 	mp, err := s.GetFollowMap(ctx , req.ViewerId)
@@ -203,7 +208,6 @@ func (s *RelationServiceImpl) GetFollowerList(ctx context.Context, req *rpc_rela
 		}
 		return resp, err
 	}
-	fmt.Println("---?--")
 	var followerUserIdList []int64
 	followerUserIdListStr , err := redis.SMembers(ctx , configs.UserFollowerHead + strconv.FormatInt(req.OwnerId, 10)) 
 	fmt.Println(followerUserIdListStr)
@@ -230,8 +234,7 @@ func (s *RelationServiceImpl) GetFollowerList(ctx context.Context, req *rpc_rela
 			followerUserIdList[i] = user_id
 		}
 	}
-	fmt.Println("-----")
-	followerUserList, err := s.UserManager.GetUserList(ctx, followerUserIdList)
+	followerUserMap, err := s.UserManager.BatchGetUser(ctx, followerUserIdList)
 	if err != nil {
 		resp.BaseResp = &rpc_base.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -239,13 +242,16 @@ func (s *RelationServiceImpl) GetFollowerList(ctx context.Context, req *rpc_rela
 		}
 		return resp, err
 	}
-	for _, o := range followerUserList {
+	for _ , o := range followerUserIdList {
+		if _ , exist := followerUserMap[o]; !exist {
+			continue
+		}
 		resp.UserList = append(resp.UserList, &rpc_base.User{
-			Id:            o.Id,
-			Name:          o.Name,
-			FollowCount:   o.FollowCount,
-			FollowerCount: o.FollowerCount,
-			IsFollow:      (*mp)[o.Id],
+			Id:            followerUserMap[o].Id,
+			Name:          followerUserMap[o].Name,
+			FollowCount:   followerUserMap[o].FollowCount,
+			FollowerCount: followerUserMap[o].FollowerCount,
+			IsFollow:      (*mp)[followerUserMap[o].Id],
 		})
 	}
 	resp.BaseResp = &rpc_base.Response{
@@ -273,7 +279,7 @@ func (s *RelationServiceImpl) GetFriendList(ctx context.Context, req *rpc_relati
 		}
 		return resp, err
 	}
-	friendUserList, err := s.UserManager.GetUserList(ctx, friendUserIdList)
+	friendUserMap, err := s.UserManager.BatchGetUser(ctx, friendUserIdList)
 	if err != nil {
 		resp.BaseResp = &rpc_base.Response{
 			StatusCode: http.StatusInternalServerError,
@@ -281,13 +287,16 @@ func (s *RelationServiceImpl) GetFriendList(ctx context.Context, req *rpc_relati
 		}
 		return resp, err
 	}
-	for _, o := range friendUserList {
+	for _ , o := range friendUserIdList {
+		if _ , exist := friendUserMap[o]; !exist {
+			continue
+		}
 		resp.UserList = append(resp.UserList, &rpc_base.User{
-			Id:            o.Id,
-			Name:          o.Name,
-			FollowCount:   o.FollowCount,
-			FollowerCount: o.FollowerCount,
-			IsFollow:      (*mp)[o.Id],
+			Id:            friendUserMap[o].Id,
+			Name:          friendUserMap[o].Name,
+			FollowCount:   friendUserMap[o].FollowCount,
+			FollowerCount: friendUserMap[o].FollowerCount,
+			IsFollow:      (*mp)[friendUserMap[o].Id],
 		})
 	}
 	resp.BaseResp = &rpc_base.Response{

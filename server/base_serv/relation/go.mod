@@ -4,17 +4,17 @@ go 1.22.5
 
 require (
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
-	github.com/haomiao000/DY/comm/discovery v0.0.0-20240902085937-d840a8f564a5
-	github.com/haomiao000/DY/comm/redis v0.0.0-20240902085937-d840a8f564a5
-	github.com/haomiao000/DY/comm/trace v0.0.0-20240902085937-d840a8f564a5
-	github.com/haomiao000/DY/internal/grpc_gen v0.0.0-20240902085937-d840a8f564a5
-	github.com/haomiao000/DY/internal/interceptor v0.0.0-20240902085937-d840a8f564a5
-	github.com/haomiao000/DY/server/common v0.0.0-20240902085937-d840a8f564a5
-	google.golang.org/grpc v1.66.0
+	github.com/haomiao000/DY/comm/discovery v0.0.0-20240909035116-e03a34129df5
+	github.com/haomiao000/DY/comm/redis v0.0.0-20240909035116-e03a34129df5
+	github.com/haomiao000/DY/comm/trace v0.0.0-20240909035116-e03a34129df5
+	github.com/haomiao000/DY/internal/grpc_gen v0.0.0-20240909035116-e03a34129df5
+	github.com/haomiao000/DY/internal/interceptor v0.0.0-20240909035116-e03a34129df5
+	github.com/haomiao000/DY/server/common v0.0.0-20240909035116-e03a34129df5
+	google.golang.org/grpc v1.66.1
 	gopkg.in/yaml.v2 v2.4.0
 	gorm.io/driver/mysql v1.5.7
-	gorm.io/gorm v1.25.11
-	gorm.io/plugin/opentelemetry v0.1.4
+	gorm.io/gorm v1.25.12
+	gorm.io/plugin/opentelemetry v0.1.6
 )
 
 require (
@@ -34,8 +34,8 @@ require (
 	go.etcd.io/etcd/api/v3 v3.5.15 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.15 // indirect
 	go.etcd.io/etcd/client/v3 v3.5.15 // indirect
-	go.opentelemetry.io/otel v1.16.0 // indirect
-	go.opentelemetry.io/otel/trace v1.16.0 // indirect
+	go.opentelemetry.io/otel v1.19.0 // indirect
+	go.opentelemetry.io/otel/trace v1.19.0 // indirect
 	go.uber.org/atomic v1.9.0 // indirect
 	go.uber.org/multierr v1.11.0 // indirect
 	go.uber.org/zap v1.27.0 // indirect
