@@ -3,21 +3,23 @@ package main
 import (
 	"fmt"
 	"net"
+
+	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
+	discovery "github.com/haomiao000/DY/comm/discovery"
+	redis "github.com/haomiao000/DY/comm/redis"
+	trace "github.com/haomiao000/DY/comm/trace"
 	rpc_user "github.com/haomiao000/DY/internal/grpc_gen/rpc_user"
+	interceptor "github.com/haomiao000/DY/internal/interceptor"
 	api_server "github.com/haomiao000/DY/server/base_serv/user/api_server"
 	configs "github.com/haomiao000/DY/server/base_serv/user/configs"
 	dao "github.com/haomiao000/DY/server/base_serv/user/dao"
 	initialize "github.com/haomiao000/DY/server/base_serv/user/initialize"
 	grpc "google.golang.org/grpc"
-	discovery "github.com/haomiao000/DY/comm/discovery"
-	redis "github.com/haomiao000/DY/comm/redis"
-	trace "github.com/haomiao000/DY/comm/trace"
-	interceptor "github.com/haomiao000/DY/internal/interceptor"
-	grpcMiddleware "github.com/grpc-ecosystem/go-grpc-middleware"
 )
 
 func main() {
 	db := initialize.InitDB()
+	initialize.InitSnowFlake()
 	discovery.Init()
 	redis.Init()
 	tracer, closer := trace.NewTracer("user")
