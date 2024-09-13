@@ -4,6 +4,7 @@ import (
 	"context"
 	"errors"
 	http "net/http"
+	"time"
 
 	gin "github.com/gin-gonic/gin"
 	rpc_interact "github.com/haomiao000/DY/internal/grpc_gen/rpc_interact"
@@ -16,8 +17,9 @@ import (
 // Register .
 // @router /douyin/user/register/ [POST]
 func Register(c *gin.Context) {
-	o, _ := c.Get("ctx")
-	ctx := o.(context.Context)
+	ctx := context.Background()
+	ctx, fun := context.WithTimeout(ctx, time.Second*1)
+	defer fun()
 	var userRegisterReq model.UserRegisterRequest
 	if err := c.ShouldBind(&userRegisterReq); err != nil {
 		c.String(http.StatusBadRequest, err.Error())
@@ -27,14 +29,19 @@ func Register(c *gin.Context) {
 		Username: userRegisterReq.Username,
 		Password: userRegisterReq.Password,
 	})
+	if err != nil {
+		c.JSON(http.StatusGatewayTimeout, &model.UserRegisterResponse{
+			BaseResp: &model.Response{
+				StatusCode: 504,
+				StatusMsg:  "time out",
+			},
+		})
+		return
+	}
 	var resp = new(model.UserRegisterResponse)
 	resp.BaseResp = &model.Response{
 		StatusCode: res.BaseResp.StatusCode,
 		StatusMsg:  res.BaseResp.StatusMsg,
-	}
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, resp)
-		return
 	}
 	c.JSON(http.StatusOK, resp)
 }

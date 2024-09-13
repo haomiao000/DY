@@ -20,6 +20,7 @@ func InitDB() *gorm.DB {
 			SlowThreshold: time.Second,   // Slow SQL Threshold
 			LogLevel:      logger.Silent, // Log level
 			Colorful:      true,          // Disable color printing
+
 		},
 	)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{
@@ -29,7 +30,13 @@ func InitDB() *gorm.DB {
 		Logger: newLogger,
 	})
 	if err != nil {
-		fmt.Printf("[DB Err]\t%v\n", err)
+		panic(err)
 	}
+	sqlDB, err := db.DB()
+	if err != nil {
+		panic(err)
+	}
+	sqlDB.SetMaxIdleConns(10)
+	sqlDB.SetMaxOpenConns(100)
 	return db
 }
