@@ -9,12 +9,12 @@ go 1.22.5
 require (
 	github.com/gin-gonic/gin v1.10.0
 	github.com/grpc-ecosystem/go-grpc-middleware v1.4.0
-	github.com/haomiao000/DY/comm/discovery v0.0.0-20240910104147-6c2be4b0d554
-	github.com/haomiao000/DY/comm/trace v0.0.0-20240910104147-6c2be4b0d554
-	github.com/haomiao000/DY/internal/grpc_gen v0.0.0-20240910104147-6c2be4b0d554
-	github.com/haomiao000/DY/internal/interceptor v0.0.0-20240910104147-6c2be4b0d554
-	github.com/haomiao000/DY/server/common v0.0.0-00010101000000-000000000000
-	google.golang.org/grpc v1.66.1
+	github.com/haomiao000/DY/comm/discovery v0.0.0-20241222062133-51dfd6f4ea26
+	github.com/haomiao000/DY/comm/trace v0.0.0-20241222062133-51dfd6f4ea26
+	github.com/haomiao000/DY/internal/grpc_gen v0.0.0-20240913082622-9397b29bf053
+	github.com/haomiao000/DY/internal/interceptor v0.0.0-20241222062133-51dfd6f4ea26
+	github.com/haomiao000/DY/server/common v0.0.0-20240913082622-9397b29bf053
+	google.golang.org/grpc v1.69.2
 )
 
 require (
@@ -53,12 +53,12 @@ require (
 	go.uber.org/multierr v1.6.0 // indirect
 	go.uber.org/zap v1.18.1 // indirect
 	golang.org/x/arch v0.8.0 // indirect
-	golang.org/x/crypto v0.24.0 // indirect
-	golang.org/x/net v0.26.0 // indirect
-	golang.org/x/sys v0.21.0 // indirect
-	golang.org/x/text v0.16.0 // indirect
-	google.golang.org/genproto/googleapis/api v0.0.0-20240604185151-ef581f913117 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20240604185151-ef581f913117 // indirect
-	google.golang.org/protobuf v1.34.2 // indirect
+	golang.org/x/crypto v0.28.0 // indirect
+	golang.org/x/net v0.30.0 // indirect
+	golang.org/x/sys v0.26.0 // indirect
+	golang.org/x/text v0.19.0 // indirect
+	google.golang.org/genproto/googleapis/api v0.0.0-20241015192408-796eee8c2d53 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20241015192408-796eee8c2d53 // indirect
+	google.golang.org/protobuf v1.35.1 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
