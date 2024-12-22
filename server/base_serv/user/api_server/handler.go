@@ -31,14 +31,6 @@ type UserServiceImpl struct {
 
 func (s *UserServiceImpl) Register(ctx context.Context, req *rpc_user.UserRegisterRequest) (*rpc_user.UserRegisterResponse, error) {
 	resp := new(rpc_user.UserRegisterResponse)
-	// sf := 
-	// if err != nil {
-	// 	resp.BaseResp = &rpc_base.Response{
-	// 		StatusCode: http.StatusInternalServerError,
-	// 		StatusMsg:  err.Error(),
-	// 	}
-	// 	return resp, err
-	// }
 	user := &model.User{
 		UserID:        configs.UserSnowFlakeNode.Generate().Int64(),
 		Name:          req.Username,
@@ -66,15 +58,15 @@ func (s *UserServiceImpl) Register(ctx context.Context, req *rpc_user.UserRegist
 		fmt.Println(resp)
 		return resp, err
 	}
-	// err = redis.SetJson(ctx , globalConfigs.LoginInfoRedisHead + req.Username , userLoginInfo)
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	resp.BaseResp = &rpc_base.Response{
-	// 		StatusCode: http.StatusInternalServerError,
-	// 		StatusMsg:  "Error Redis Insert",
-	// 	}
-	// 	return resp, err
-	// }
+	err = redis.SetJson(ctx , globalConfigs.LoginInfoRedisHead + req.Username , userLoginInfo)
+	if err != nil {
+		fmt.Println(err)
+		resp.BaseResp = &rpc_base.Response{
+			StatusCode: http.StatusInternalServerError,
+			StatusMsg:  "Error Redis Insert",
+		}
+		return resp, err
+	}
 	err = s.MysqlManager.CreateUser(user)
 	if err != nil {
 		resp.BaseResp = &rpc_base.Response{
@@ -83,14 +75,14 @@ func (s *UserServiceImpl) Register(ctx context.Context, req *rpc_user.UserRegist
 		}
 		return resp, err
 	}
-	// err = redis.SetJson(ctx , globalConfigs.UserRedisHead + strconv.FormatInt(user.UserID, 10) ,user)
-	// if err != nil {
-	// 	resp.BaseResp = &rpc_base.Response{
-	// 		StatusCode: http.StatusInternalServerError,
-	// 		StatusMsg:  "Error Redis Insert User",
-	// 	}
-	// 	return resp, err
-	// }
+	err = redis.SetJson(ctx , globalConfigs.UserRedisHead + strconv.FormatInt(user.UserID, 10) ,user)
+	if err != nil {
+		resp.BaseResp = &rpc_base.Response{
+			StatusCode: http.StatusInternalServerError,
+			StatusMsg:  "Error Redis Insert User",
+		}
+		return resp, err
+	}
 	//返回的resp没用
 	resp.BaseResp = &rpc_base.Response{
 
@@ -105,6 +97,7 @@ func (s *UserServiceImpl) Login(ctx context.Context, req *rpc_user.UserLoginRequ
 	userLoginInfo := new(model.UserLoginInfo)
 	exist , err := redis.GetJson(ctx , globalConfigs.LoginInfoRedisHead + req.Username , userLoginInfo)
 	if err != nil || !exist {
+		fmt.Println(userLoginInfo)
 		userLoginInfo , err = s.MysqlManager.CheckUserLoginInfo(req)
 		if err == gorm.ErrRecordNotFound {
 			resp.BaseResp = &rpc_base.Response{

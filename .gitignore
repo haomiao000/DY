@@ -31,3 +31,5 @@ server/base_serv/interact/interact
 server/base_serv/video/video
 
 jmeter.log
+
+server/base_serv/user/configs/consts.go

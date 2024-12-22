@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	http "net/http"
-	"time"
+	// "time"
 
 	gin "github.com/gin-gonic/gin"
 	rpc_interact "github.com/haomiao000/DY/internal/grpc_gen/rpc_interact"
@@ -18,8 +18,8 @@ import (
 // @router /douyin/user/register/ [POST]
 func Register(c *gin.Context) {
 	ctx := context.Background()
-	ctx, fun := context.WithTimeout(ctx, time.Second*1)
-	defer fun()
+	// ctx, fun := context.WithTimeout(ctx, time.Second*1)
+	// defer fun()
 	var userRegisterReq model.UserRegisterRequest
 	if err := c.ShouldBind(&userRegisterReq); err != nil {
 		c.String(http.StatusBadRequest, err.Error())
