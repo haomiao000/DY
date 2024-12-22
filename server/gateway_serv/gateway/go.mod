@@ -2,9 +2,9 @@ module github.com/haomiao000/DY/server/gateway_serv/gateway
 
 go 1.22.5
 
-replace github.com/haomiao000/DY/server/common => ../../common
+// replace github.com/haomiao000/DY/server/common => ../../common
 
-replace github.com/haomiao000/DY/server/gateway_serv/gateway/initialize => ../initialize
+// replace github.com/haomiao000/DY/server/gateway_serv/gateway/initialize => ../initialize
 
 require (
 	github.com/gin-gonic/gin v1.10.0
